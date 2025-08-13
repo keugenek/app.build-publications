@@ -1,0 +1,21 @@
+# local artifacts
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.bbl
+*.blg
+*.toc
+*.lof
+*.lot
+*.fdb_latexmk
+*.fls
+*.xdv
+*.pdf
+
+# editor
+.DS_Store
+.idea/
+.vscode/
+
+

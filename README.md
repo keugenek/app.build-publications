@@ -22,6 +22,9 @@
 - **Official website**: [SEA Workshop @ NeurIPS 2025](https://sea-workshop.github.io/)
 - **OpenReview submissions**: Link provided via the official website when available (submissions handled on OpenReview)
 
+### Manuscript
+- Draft manuscript (markdown): `docs/sea-2025/paper.md`
+
 ### Contact
 Email: sea-workshop-neurips2025@googlegroups.com
 
