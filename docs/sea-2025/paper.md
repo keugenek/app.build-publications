@@ -183,9 +183,6 @@ Notes for authors (to be removed before submission):
 
 ### Author Notes (internal; translate and track)
 - [a] Looks like we need to ask students or ourselves to one-shot apps to compare with the naive approach.
-- [b] Let's drop this.
-- [c] Why? Comparing open-source vs closed seems valuable.
-- [d] Sure, but not in the scope of this write-up?
 - [e] Not matching the original post — to be updated by @arseni.kravchenko@databricks.com. Assigned.
 - [f] We need better references; this is mostly weak. Assigned to @igor.rekun@databricks.com.
 - [g] Need a very short TL;DR on meta-agent by @igor.rekun@databricks.com. Assigned.

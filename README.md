@@ -1,40 +1,45 @@
-## NeurIPS 2025 — Workshop on Scaling Environments for Agents (SEA): Call for Papers
+# app.build Paper Submission - NeurIPS 2025 SEA Workshop
 
-**Date**: Saturday, December 6, 2025 (San Diego Convention Center, San Diego, USA)  
-**Submission site**: OpenReview (double‑blind)  
-**Website**: [SEA Workshop @ NeurIPS 2025](https://sea-workshop.github.io/)
+This repository contains the paper submission for the NeurIPS 2025 Workshop on Scaling Environments for Agents (SEA).
 
-### Important Dates (Anywhere on Earth)
-- **Paper submission deadline**: August 22, 2025
-- **Notification of acceptance**: September 22, 2025
-- **Camera‑ready deadline**: October 10, 2025
-- **Workshop**: December 6, 2025
+## Paper: Production Reliability at Scale: Scaffolding Systems for Agentic Prompt-to-App Generation
 
-### Submission Guidelines
-- **Platform**: OpenReview (double‑blind; submit anonymized PDFs)
-- **Length**: ≤ 9 pages (excluding references and appendices)
-- **Format**: Use the NeurIPS 2025 LaTeX style file (preprint option allowed for non‑anonymous online preprints)
-- **Archival status**: Non‑archival by default; authors can request indexing upon acceptance
-- **Types of work**: Original, recently published, or work‑in‑progress
-- **Presentations**: Selected papers may receive lightning talks; Best Paper Award announced at the workshop
+### About the Collaboration
 
-### Links
-- **Official website**: [SEA Workshop @ NeurIPS 2025](https://sea-workshop.github.io/)
-- **OpenReview submissions**: Link provided via the official website when available (submissions handled on OpenReview)
+This submission is a collaborative research effort between **app.build** and **THWS University of Applied Sciences Würzburg-Schweinfurt (CAIRO Lab)**, exploring how environment scaffolding transforms LLMs into production-ready software engineering agents. The research presents empirical evidence from the app.build platform - an open-source prompt-to-app generator that demonstrates systematic reliability improvements through structured environment design.
+
+### The app.build Tool
+
+[app.build](https://app.build) is an open-source prompt-to-app generation platform (originally developed at Neon.com, now part of Databricks) that enables reliable production deployment of AI-generated applications through:
+- FSM-guided multi-agent orchestration
+- Multi-layered validation pipelines
+- Structured error recovery and feedback loops
+- Production-grade quality gates
 
 ### Manuscript
-- Draft manuscript (markdown): `docs/sea-2025/paper.md`
 
-### Contact
-Email: sea-workshop-neurips2025@googlegroups.com
+- Draft manuscript: [`docs/sea-2025/draft0.md`](docs/sea-2025/paper.md)
 
-Notes: Dates are listed in AOE. Always confirm the latest details on the official website.
+### Authors & Contributors
 
+**app.build Team (Neon.com/Databricks)**
+- Evgenii Kniazev
+- Arseny Kravchenko  
+- Igor Rekun
 
-### Submission — Collaboration
+**THWS CAIRO Lab**
+- Prof. Dr. Ivan Yamshchikov
+- Pranav Sah
+- Pratik
+- Dheena Dayalan
 
-THis submission is prepared in a collaboration with App.build (Neon.com, now Databricks) team with THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO).
+Lab website: [https://www.thws.de/en/research/institutes/cairo](https://www.thws.de/en/research/institutes/cairo)
 
-- app.build: Evgenii Kniazev, Arseny Kravchenko, Igor Rekun 
-- THWS: Prof. Dr. Ivan Yamshchikov, Pranav Sah, Pratik, Dheena Dayalan (https://www.thws.de/en/research/institutes/cairo).
+### Workshop Information
+
+**SEA Workshop @ NeurIPS 2025**  
+- Date: December 6, 2025 (San Diego Convention Center)
+- Website: [https://sea-workshop.github.io/](https://sea-workshop.github.io/)
+- Submission deadline: August 22, 2025
+- Contact: sea-workshop-neurips2025@googlegroups.com
 
