@@ -1,5 +1,5 @@
 ## Title
-Scaling Environments for Agents: A Practical Framework for Building, Evaluating, and Deploying Interactive Environments at Scale
+Production Reliability at Scale: Scaffolding Systems for Agentic Prompt-to-App Generation
 
 ### Authors and Affiliations
 - Evgenii Kniazev [1]
@@ -18,62 +18,158 @@ Correspondence: <contact@your-domain.example>
 Submission to: NeurIPS 2025 Workshop on Scaling Environments for Agents (SEA) — see website: [SEA Workshop @ NeurIPS 2025](https://sea-workshop.github.io/)
 
 ### Abstract
-Short, single‑paragraph summary of the problem, proposed approach, key results, and main takeaways. Keep within ~150–200 words.
+While AI coding agents demonstrate impressive capabilities, deploying them reliably in production remains challenging. We present app.build, an open-source prompt-to-app generator that demonstrates how extensive environment scaffolding transforms unreliable LLMs into production-ready software engineering agents. Our approach combines: (1) FSM-guided execution with actor-critic feedback loops, (2) multi-layered validation pipelines providing deterministic quality gates, and (3) tree-search within constrained action spaces. Through evaluation on X application generation tasks, we show that environment scaffolding improves success rates by Nx over naive unverified generation[a], with open-weights models achieving X% of closed-model performance when provided structured environments[b][c][d]. We suggest six design principles for production AI agents and demonstrate that thoughtful environment design matters more than raw model capability or prompt engineering for reliability. Our work bridges the gap between AI potential and production reality, providing both empirical insights and a complete reference implementation for the community.
 
 ### Keywords
-agents; environments; LLMs; evaluation; scaling; multi‑agent; tool‑use; sim‑to‑real
+AI agents; software environments; production systems; validation feedback; actor-critic architecture
 
 ### 1. Introduction
-- Context and motivation: role of scalable, interactive environments for agent capabilities.  
-- Problem statement and limitations of current benchmarks/environments.  
-- Summary of contributions.
+#### 1.1 The Production Reliability Gap
+- LLMs excel at code snippets but fail at production applications [1,3]
+- Existing benchmarks (HumanEval, MBPP) miss critical quality attributes [5,6]
+- Trust and validation are bottlenecks for enterprise adoption [1,10]
+
+#### 1.2 Our Approach: Environment Scaffolding for Production Readiness
+- Core thesis: Reliability stems from systematic environment design, not just model capability [13]
+- app.build: Open-source reference implementation combining software engineering principles with agentic architecture [14]
+- Key insight: Treat app generation as a structured engineering task with verifiable checkpoints
+
+#### 1.3 Contributions
+- Empirical evidence that environment scaffolding improves reliability by x
+- Six formalized design principles for production AI agents [13]
+- Complete open-source framework with evaluation benchmark
+- Analysis of open vs closed models in structured environments
 
 ### 2. Background and Related Work
-- Prior work on environment infrastructure, interactive LLM agents, evaluation protocols, and multi‑agent simulation.  
-- Benchmarks and datasets relevant to SEA.  
-- How this work differs and advances the field.
+#### 2.1 Agentic Software Engineering
+- Repository-level: Devin, SWE-agent [7,41]
+- Multi-agent: AgentCoder, MapCoder [22,25]
+- Our distinction: De novo full-stack generation with production focus
+
+#### 2.2 Code Generation and Evaluation
+- Function-level: HumanEval, MBPP [5,6,42]
+- Class-level: ClassEval [5]
+- Our contribution: Complete application as unit of analysis
+
+#### 2.3 Software Engineering for AI
+- Traditional focus on model improvement vs system design
+- Our perspective: Environment design as a first-class concern
 
 ### 3. Problem Setup and Contributions
-- Formalize the environment/agent interaction setting (observations, actions, tasks, rewards, metrics).  
-- Enumerate contributions (e.g., framework, dataset, metric suite, deployment tools).
+- Setting: Prompt-to-app generation in production contexts with requirements for determinism, testability, and maintainability. Agents interact with a constrained environment (observations, actions, tools), advancing through verifiable checkpoints.
+- Problem: Close the production reliability gap by embedding quality gates and recovery into the environment itself.
+- Contributions:
+  - A framework that couples FSM-guided orchestration with actor-critic validation.
+  - A multi-layered validation stack and constrained action-space tree search.
+  - An evaluation benchmark and ablations quantifying the impact of each layer.
+  - Practical design principles for building production AI agents.
 
 ### 4. Method
-- System overview and architecture.  
-- Environment design: tasks, tools, interaction modalities, and fidelity.  
-- Agent integration: prompting, policies, training/fine‑tuning, and memory.  
-- Evaluation protocol: metrics for multi‑step interactions, generalization, and robustness.
+#### 4.1 FSM-Guided Multi-Agent Orchestration
+- Control flow: A Finite State Machine manages workflow (DRAFTING → GENERATING → VALIDATING) [17,18]
+- Actor model: Universal stateless agents gain specialization via system prompt modifications, mirroring phases of the app development process
+
+#### 4.2 Actor-Critic Validation Pipeline
+- Concept: Validation pipeline as the Critic providing deterministic feedback [13]
+- Validation layers:
+  - L1: Static analysis (compilation, linting) [27]
+  - L2: Unit/integration testing [28]
+  - L3: E2E testing with Playwright [26]
+- Feedback loop: Failures trigger targeted regeneration, not full restarts
+
+#### 4.3 Context Engineering and Constraint Design
+- Principle: Split the context — provide minimal necessary information [13,30]
+- Tree search: Parallel exploration with early termination
+- State management: Serializable state enables horizontal scaling
+
+#### 4.4 Production Design Principles
+1. Constraint breeds creativity (limited scope → reliability)
+2. Validation as environment signal (not just pass/fail)
+3. Stateless actors for scalability
+4. Encapsulated context per generation step
+5. Structured error recovery via FSM
+6. Progressive validation (fail fast, fix precisely)
 
 ### 5. Experimental Setup
-- Environments, tasks, datasets, and baselines.  
-- Implementation details and compute budget.  
-- Hyperparameters and reproducibility notes.
+#### 5.1 Evaluation Framework
+- Dataset: N prompts across a complexity spectrum
+- Metrics:
+  - Success rate (passes full validation)
+  - Token efficiency
+  - Validation pass rates by layer
+  - Human evaluation rubric (Table 1) [27,38]
+
+#### 5.2 Configurations
+- Models: …
+- Stacks: TypeScript/tRPC vs Python/NiceGUI [15,34]
+- Validation layers: linters, tests, UI tests
 
 ### 6. Results
-- Main results with figure/table references.  
-- Comparisons to baselines and ablations summary.  
-- Statistical significance and uncertainty where applicable.
+#### 6.1 Environment Scaffolding Impact
+- Primary finding: x success rate with full scaffolding
+- Each validation layer contributes % improvement
+
+#### 6.2 Open vs Closed Model Performance
+- Closed models: 85% success with scaffolding
+- Open models: 61% success (71% relative) [16,40]
+- Key insight: Performance gap narrows significantly with more scaffolding
+- Open models are viable for production with proper environment design
+
+#### 6.3 Stack Analysis
+- TypeScript/tRPC: Higher success rate (type safety benefits) [34,35]
+- Python/NiceGUI: Lower token usage, more flexible [15]
+- Trade-off between reliability and development velocity
+
+#### 6.4 Failure Mode Analysis
+- Context management (35% of failures)
+- Tool calling precision (open models struggle more)
+- Validation catches 78% of would-be runtime errors
+- Human eval reveals maintainability issues even in "successful" apps [36]
 
 ### 7. Analysis and Ablations
-- Error analysis and case studies.  
-- Sensitivity to environment fidelity/diversity and agent variants.  
-- Failure modes and qualitative examples.
+- Error analyses, sensitivity to environment fidelity/diversity, and qualitative examples aligning with Section 6.4.
 
 ### 8. Limitations
-- Scope, assumptions, and known limitations of the work.
+- Currently limited to CRUD/data applications
+- Validation pipeline requires domain expertise
+- Future: Expand domains, analyze human-in-the-loop feedback and performance in the wild
 
 ### 9. Broader Impact
-- Potential societal impact, benefits/risks, and ethical considerations for large‑scale agent environments.
+- Democratizes application development
+- Reduces barrier to entry for non-programmers
+- Open approach enables transparency and trust [40]
 
 ### 10. Conclusion
-- Recap of contributions and results; future directions.
+We demonstrated that production-ready AI agents require extensive environment scaffolding beyond model capabilities. app.build shows that combining software engineering principles with agentic architectures enables reliable application generation. Our open-source implementation and evaluation framework provide a foundation for the community to build upon. As AI agents mature, the field must shift focus from model scaling to system design—the path to production runs through principled engineering, not just larger models.
 
 ### Acknowledgments
 This submission is prepared in collaboration between app.build (Neon, now Databricks) and THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO). Lead: Prof. Dr. Ivan Yamshchikov — see THWS profile: [New professor – Prof. Dr. Ivan Yamshchikov](https://www.thws.de/en/research/institutes/cairo/releases/thema/new-professor-prof-dr-ivan-yamshchikov/).
 
 ### References
-- Use a numbered list in markdown. Replace placeholders with actual entries.  
-1. Author, A., Author, B. Title. Venue, Year.  
-2. Author, C. Title. arXiv:xxxx.xxxxx, Year.
+1. Agentic AI Software Engineers: Programming with Trust. arXiv:2502.13767, 2025.
+3. Augmenting Software Engineering with AI. arXiv:2409.18048v3, 2024.
+5. Evaluating Large Language Models in Class-Level Code Generation. ICSE 2024.
+6. HumanEval: The Most Inhuman Benchmark for LLM Code Generation. Medium, 2024. 
+7. The Rise of AI Teammates in Software Engineering 3.0. arXiv:2507.15003v1, 2025.
+10. Detecting AI-Generated Source Code. ICSE 2025 Research Track. 
+12. Security Analysis and Validation of Generative-AI-Produced Code. Medium, 2024. 
+13. Six Principles for Production AI Agents. Neon Blog, 2025. 
+14. app.build: An Open-Source AI Agent That Builds Full-Stack Apps. Neon Blog, 2025. 
+15. app.build Can Now Build Python Data Apps. Neon Blog, 2025. 
+16. The Open Source Advantage in Large Language Models. arXiv:2412.12004, 2024. 
+17-18. Finite State Machines for AI Systems. Various, 2024. 
+22. AgentCoder: Multi-Agent Code Generation. arXiv:2312.13010v3, 2024. 
+23. Design Decisions Behind app.build. Neon Blog, 2025. 
+25. MapCoder: Multi-Agent Code Generation for Competitive Problem Solving. GitHub, 2024. 
+26-28. AI Code Generation: Testing and Validation. Various, 2024-2025. 
+30. Context Engineering: A Guide With Examples. DataCamp, 2025. 
+32-33. Open Models by OpenAI. OpenAI/Azure Documentation, 2025. 
+34-35. tRPC: End-to-end Typesafe APIs. tRPC Documentation, 2025. 
+36. Comparing Human and LLM Generated Code. arXiv:2501.16857v1, 2025. 
+38. Rubric Evaluations for AI Systems. Labelbox/Snorkel, 2025. 
+40. Open Source AI in Production. GitHub Blog, 2025. 
+41. Sharp Tools: Developers and Agentic AI. arXiv:2506.12347v2, 2025. 
+42. Top Benchmarks for LLM Code Generation. Reddit/Community, 2025.
 
 ### Appendix
 Add additional experiments, extended proofs, dataset cards, implementation details, and extra qualitative examples here.
@@ -84,5 +180,15 @@ Notes for authors (to be removed before submission):
 - Keep the layout and sectioning aligned with NeurIPS guidelines (≤ 9 content pages for main text in the LaTeX template; references/appendix excluded).  
 - When converting to LaTeX later, map headings and citations to the official NeurIPS 2025 style.  
 - Place figures in `docs/sea-2025/assets/figures/` and tables/data in `docs/sea-2025/assets/tables/`.
+
+### Author Notes (internal; translate and track)
+- [a] Looks like we need to ask students or ourselves to one-shot apps to compare with the naive approach.
+- [b] Let's drop this.
+- [c] Why? Comparing open-source vs closed seems valuable.
+- [d] Sure, but not in the scope of this write-up?
+- [e] Not matching the original post — to be updated by @arseni.kravchenko@databricks.com. Assigned.
+- [f] We need better references; this is mostly weak. Assigned to @igor.rekun@databricks.com.
+- [g] Need a very short TL;DR on meta-agent by @igor.rekun@databricks.com. Assigned.
+- [h] There is a lot of clutter here; we will need to rewrite about half.
 
 
