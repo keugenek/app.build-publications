@@ -104,6 +104,13 @@ AI agents; software environments; production systems; validation feedback; actor
 - Stacks: TypeScript/tRPC vs Python/NiceGUI [15,34]
 - Validation layers: linters, tests, UI tests
 
+#### 5.3 Prompt Dataset
+- Source and curation: The evaluation prompts were prepared by a set of individual human contributors who performed blind testing of the app.build system. Contributors authored tasks based on their own workflows without access to the agent internals or prior generation runs, to reduce bias.
+- Obfuscation and normalization: The raw prompts were post-processed with an LLM to obfuscate sensitive identifiers (e.g., company names, domains, data) and to normalize structure and phrasing, while preserving task semantics for fair evaluation.
+- Availability: The prompt list used by the benchmark harness is available in the repository (see
+  [Benchmark prompts (agent/benchmark.py:L71)](https://github.com/appdotbuild/agent/blob/0df56e8ca70a8fa669caf7710e5a387fe9e2feac/agent/benchmark.py#L71)).
+ - Full listing: See Appendix Table A1 for the complete prompt set and metadata.
+
 ### 6. Results
 #### 6.1 Environment Scaffolding Impact
 - Primary finding: x success rate with full scaffolding
@@ -173,6 +180,14 @@ This submission is prepared in collaboration between app.build (Neon, now Databr
 
 ### Appendix
 Add additional experiments, extended proofs, dataset cards, implementation details, and extra qualitative examples here.
+
+#### A.1 Prompt Dataset (Full List)
+The table below enumerates the full prompt set used in the benchmark, with short summaries and provenance/obfuscation notes. The canonical prompt texts and loader live in the repository (see
+[Benchmark prompts (agent/benchmark.py:L71)](https://github.com/appdotbuild/agent/blob/0df56e8ca70a8fa669caf7710e5a387fe9e2feac/agent/benchmark.py#L71)).
+
+| ID    | Prompt (summary)                               | 
+
+Note: This is a placeholder view for layout. The final camera‑ready will include the complete table populated from the benchmark source.
 
 ---
 
