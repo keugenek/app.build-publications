@@ -110,6 +110,46 @@ AI agents; software environments; production systems; validation feedback; actor
 - Availability: The prompt list used by the benchmark harness is available in the repository (see
   [Benchmark prompts (agent/benchmark.py:L71)](https://github.com/appdotbuild/agent/blob/0df56e8ca70a8fa669caf7710e5a387fe9e2feac/agent/benchmark.py#L71)).
  - Full listing: See Appendix Table A1 for the complete prompt set and metadata.
+ - Assessor checklist: See Appendix Table A2 for per‑prompt PASS/FAIL/NA recording across standardized checks.
+
+#### 5.4 Assessor Protocol and Checks
+We define small, app.build‑specific checks with stable IDs. Assessors record PASS/FAIL/NA per prompt in Appendix Table A2. Full “how to” steps live in Appendix A.3.
+
+- AB‑01 Boot & Home — Does the app open cleanly?
+  - Why it matters: If the homepage does not load cleanly, nothing else is trustworthy.
+
+- AB‑02 Health/Status — Does the app report that it’s up?
+  - Why it matters: A simple status page catches “it looks up, but isn’t” failures early.
+
+- AB‑03 Prompt Match (Happy Path) — Does the built app actually match the prompt?
+  - AB‑03a Create, AB‑03b List, AB‑03c View/Edit, AB‑03d Refresh
+  - Why it matters: This is the core promise of app.build—turn a prompt into a working flow with data that sticks.
+
+- AB‑04 Auth (when present) — Can people sign up, sign in, sign out, and see clear errors?
+  - Why it matters: Basic account flows are table stakes; silent failures here break trust.
+
+- AB‑05 Backend/API wiring — Does the UI talk to a real backend and handle errors gracefully?
+  - Why it matters: We verify “plumbing,” not just a pretty front end. Real apps must save and fetch for real.
+
+- AB‑06 Forms & Validation — Do forms block bad input and save good input once?
+  - Why it matters: Good forms are the baseline for usability and data quality.
+
+- AB‑11 Performance (quick) — Is the first load reasonably fast, and are there obvious red flags?
+  - Why it matters: We do not micro‑optimize here—we simply avoid shipping obviously slow apps.
+
+- AB‑12 Second Load & Caching — Does a reload keep your work (unless clearly temporary)?
+  - Why it matters: Surprising data loss on refresh signals bundling/caching or state issues.
+
+- AB‑14 Accessibility (automated pass) — Do automated checks avoid major issues?
+  - Why it matters: Accessibility is basic quality. A quick automated pass catches common problems.
+
+- AB‑15 Mobile/Responsive — Does it work on a small phone screen without sideways scrolling?
+  - Why it matters: Most apps are used on phones; core tasks must remain usable.
+
+- AB‑17 Usability Snap — Can a new user find and complete the main task in under 30 seconds?
+  - Why it matters: If the main action is hard to find, the generated app fails its job.
+
+See Appendix A.3 for detailed methods, exact pass criteria, and reporting rules (including the AB‑00 “clean start” preparation).
 
 ### 6. Results
 #### 6.1 Environment Scaffolding Impact
@@ -188,6 +228,93 @@ The table below enumerates the full prompt set used in the benchmark, with short
 | ID    | Prompt (summary)                               | 
 
 Note: This is a placeholder view for layout. The final camera‑ready will include the complete table populated from the benchmark source.
+
+#### A.2 Assessor Checklist (Template)
+Record PASS/FAIL/NA for each prompt and check. Use the Notes column for brief context or defect links.
+
+| ID    | AB-01 Boot | AB-02 Health | AB-03a Create | AB-03b List | AB-03c View/Edit | AB-03d Refresh | AB-04 Auth | AB-05 API | AB-06 Forms | AB-11 Perf | AB-12 2nd Load | AB-14 A11y | AB-15 Mobile | AB-17 Usability | Notes |
+|-------|------------|--------------|---------------|-------------|------------------|----------------|------------|-----------|-------------|------------|----------------|------------|--------------|-----------------|-------|
+| P-001 |            |              |               |             |                  |                |            |           |             |            |                |            |              |                 |       |
+| P-002 |            |              |               |             |                  |                |            |           |             |            |                |            |              |                 |       |
+
+#### A.3 Assessor Protocol Details (app.build‑specific)
+This appendix section provides atomic, app.build‑specific methods, pass criteria, and reporting rules for each check. Report PASS/FAIL/NA in Table A.2.
+
+- AB‑00 Setup & Reset (≈1 minute)
+  - Method: Quit Chrome. Relaunch with a fresh profile.
+    - GUI: profile menu → “Guest” or “Add” → temporary profile; do not sign in.
+    - CLI (Linux): `google-chrome --user-data-dir="$(mktemp -d)" --no-first-run --no-default-browser-check`
+  - Reset env: If `./scripts/reset_env.sh` exists, run it; else run:
+    - `docker compose down -v && docker volume prune -f && docker compose build --no-cache && docker compose up -d`
+  - DevTools: open on localhost; Console clear; Network “Preserve log” + “Disable cache”. Optional: open Lighthouse tab.
+  - Criteria: Fresh profile used; containers rebuilt and running; DevTools configured.
+  - Reporting: PASS if all sub‑items completed; else FAIL with note.
+
+- AB‑01 Boot & Home
+  - Method: Navigate to `http://localhost`.
+  - Criteria: Page renders; Console shows 0 errors; Network shows no 404/5xx for main JS/CSS assets.
+  - Reporting: PASS/FAIL; attach first error message if FAIL.
+
+- AB‑02 Health/Status
+  - Method: In browser, open `http://localhost/health-check`.
+  - Criteria: HTTP 200 with JSON body; if endpoint not implemented, mark NA and note “absent”.
+  - Reporting: PASS/FAIL/NA with status code and brief body snippet.
+
+- AB‑03 Prompt Match (Happy Path)
+  - AB‑03a Create
+    - Method: From the main entity form, fill valid fields; submit.
+    - Criteria: Success toast/indicator appears; no Console errors.
+  - AB‑03b List
+    - Method: Open list/index view.
+    - Criteria: Newly created item is present with expected fields.
+  - AB‑03c View/Edit
+    - Method: Open detail/edit; change one field; save.
+    - Criteria: Success indicator; updated value visible in detail and list.
+  - AB‑03d Refresh
+    - Method: Hard refresh (Ctrl/Cmd+Shift+R).
+    - Criteria: Data persists; if app declares in‑memory storage, mark NA with note.
+  - Reporting: Record each sub‑step separately in A.2; attach failing step and symptom if applicable.
+
+- AB‑04 Auth (tRPC stacks only)
+  - Method: Register new user → Login → Logout → Login; attempt wrong password once.
+  - Criteria: Wrong password shows inline error; no crash/unhandled exception in Console; authenticated routes render after login.
+  - Reporting: PASS/FAIL/NA with note of stack type.
+
+- AB‑05 Backend/API wiring
+  - Method: Trigger an action that calls backend (`/api/`, `/api/trpc/`); inspect Network tab.
+  - Criteria: Response 2xx with meaningful JSON; on non‑2xx, UI shows clean error state (no raw stack traces).
+  - Reporting: PASS/FAIL with sample endpoint path and status.
+
+- AB‑06 Forms & Validation
+  - Method: Submit with empty required fields; then submit valid data twice rapidly.
+  - Criteria: Required fields block submit with clear messages; valid data saves once (no duplicate on double‑click).
+  - Reporting: PASS/FAIL with field name examples.
+
+- AB‑11 Performance (quick)
+  - Method: Run Lighthouse once on home (Mobile). Note Performance and Best Practices.
+  - Criteria: FCP on throttled settings <~5s. Not a gating metric; record scores.
+  - Reporting: Record numeric scores and FCP.
+
+- AB‑12 No‑cache & second load
+  - Method: Hard refresh (Ctrl/Cmd+Shift+R).
+  - Criteria: Previously saved data remains unless app declares ephemeral storage.
+  - Reporting: PASS/FAIL/NA with note on storage mode.
+
+- AB‑14 Automated a11y
+  - Method: Run Axe or WAVE on main page.
+  - Criteria: Count serious+critical violations; record count.
+  - Reporting: Numeric count in A.2; FAIL if >0 unless justified as NA.
+
+- AB‑15 Mobile/Responsive
+  - Method: DevTools device toolbar at 360px width; inspect home and one form.
+  - Criteria: No horizontal scroll for core content; inputs/buttons accessible.
+  - Reporting: PASS/FAIL with offending element if FAIL.
+
+- AB‑17 Usability Snap
+  - Method: As a new user, try to locate and complete the primary action.
+  - Criteria: Completed within ≤30s.
+  - Reporting: Record time bucket (0/15/30s) and PASS if ≤30s; else FAIL with blocker.
+
 
 ---
 
