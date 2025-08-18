@@ -7,7 +7,7 @@ Production Reliability at Scale: Scaffolding Systems for Agentic Prompt-to-App G
 - Igor Rekun [1]
 - Prof. Dr. Ivan Yamshchikov [2]
 - Pranav Sah [2]
-- Pratik [2]
+- Pratik Nichite [2]
 - Dheena Dayalan [2]
 
 [1] app.build (Neon, now at Databricks)
@@ -173,30 +173,45 @@ We demonstrated that production-ready AI agents require extensive environment sc
 This submission is prepared in collaboration between app.build (Neon, now Databricks) and THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO). 
 
 ### References
-1. Agentic AI Software Engineers: Programming with Trust. arXiv:2502.13767, 2025.
-3. Augmenting Software Engineering with AI. arXiv:2409.18048v3, 2024.
-5. Evaluating Large Language Models in Class-Level Code Generation. ICSE 2024.
-6. HumanEval: The Most Inhuman Benchmark for LLM Code Generation. Medium, 2024.
-7. The Rise of AI Teammates in Software Engineering 3.0. arXiv:2507.15003v1, 2025.
-10. Detecting AI-Generated Source Code. ICSE 2025 Research Track.
-12. Security Analysis and Validation of Generative-AI-Produced Code. Medium, 2024.
-13. Six Principles for Production AI Agents. Neon Blog, 2025.
-14. app.build: An Open-Source AI Agent That Builds Full-Stack Apps. Neon Blog, 2025.
-15. app.build Can Now Build Python Data Apps. Neon Blog, 2025.
-16. The Open Source Advantage in Large Language Models. arXiv:2412.12004, 2024.
-17-18. Finite State Machines for AI Systems. Various, 2024.
-22. AgentCoder: Multi-Agent Code Generation. arXiv:2312.13010v3, 2024.
-23. Design Decisions Behind app.build. Neon Blog, 2025.
-25. MapCoder: Multi-Agent Code Generation for Competitive Problem Solving. GitHub, 2024.
-26-28. AI Code Generation: Testing and Validation. Various, 2024-2025.
-30. Context Engineering: A Guide With Examples. DataCamp, 2025.
-32-33. Open Models by OpenAI. OpenAI/Azure Documentation, 2025.
-34-35. tRPC: End-to-end Typesafe APIs. tRPC Documentation, 2025.
-36. Comparing Human and LLM Generated Code. arXiv:2501.16857v1, 2025.
-38. Rubric Evaluations for AI Systems. Labelbox/Snorkel, 2025.
-40. Open Source AI in Production. GitHub Blog, 2025.
-41. Sharp Tools: Developers and Agentic AI. arXiv:2506.12347v2, 2025.
-42. Top Benchmarks for LLM Code Generation. Reddit/Community, 2025.
+- [1] A. Roychoudhury, C. Păsăreanu, M. Pradel, and B. Ray, “Agentic AI Software Engineers: Programming with Trust,” arXiv preprint arXiv:2502.13767, 2025. [Online]. Available: https://arxiv.org/abs/2502.13767
+  
+- [2] I. K. Schieferdecker, “Augmenting software engineering with AI and developing it further towards AI-assisted model-driven software engineering,” arXiv preprint arXiv:2409.18048, 2025. [Online]. Available: https://arxiv.org/abs/2409.18048
+  
+- [3] X. Du, M. Liu, K. Wang, H. Wang, J. Liu, Y. Chen, J. Feng, C. Sha, X. Peng, and Y. Lou, “Evaluating Large Language Models in Class-Level Code Generation,” in Proc. IEEE/ACM 46th Int. Conf. Software Engineering (ICSE), Lisbon, Portugal, 2024, pp. 81:1–81:13. doi: 10.1145/3597503.3639219
+  
+- [4] S. Cohen, “HumanEval: The Most Inhuman Benchmark for LLM Code Generation,” Medium, Mar. 9, 2025. [Online]. Available: https://shmulc.medium.com/humaneval-the-most-inhuman-benchmark-for-llm-code-generation-0386826cd334
+  
+- [5] H. Li, H. Zhang, and A. E. Hassan, “The Rise of AI Teammates in Software Engineering (SE) 3.0: How Autonomous Coding Agents Are Reshaping Software Engineering,” arXiv preprint arXiv:2507.15003, 2025. [Online]. Available: https://arxiv.org/abs/2507.15003
+  
+- [6] H. Suh, M. Tafreshipour, J. Li, A. Bhattiprolu, and I. Ahmed, “An Empirical Study on Automatically Detecting AI-Generated Source Code: How Far Are We?,” arXiv preprint arXiv:2411.04299, 2024. [Online]. Available: https://arxiv.org/abs/2411.04299
+  
+- [7] A. Masood, “Security Analysis and Validation of Generative-AI-Produced Code,” Medium, May 9, 2025. [Online]. Available: https://medium.com/@adnanmasood/security-analysis-and-validation-of-generative-ai-produced-code-d4218078bd63
+  
+- [8] A. Kravchenko, “Six Principles for Production AI Agents,” Neon Blog, Jul. 2025. [Online]. Available: https://neon.tech/blog/six-principles-for-production-ai-agents
+  
+- [9] D. Gomes, “app.build: An Open-Source AI Agent That Builds Full-Stack Apps,” Neon Blog, Jun. 2025. [Online]. Available: https://neon.com/blog/app-build-open-source-ai-agent
+  
+- [10] A. Kravchenko, D. Gomes, and P. Figueiredo, “app.build Can Now Build Python Data Apps,” Neon Blog, Jul. 2025. [Online]. Available: https://neon.tech/blog/app-build-can-now-build-python-data-apps
+  
+- [11] J. Manchanda, L. Boettcher, M. Westphalen, and J. Jasser, “The Open Source Advantage in Large Language Models (LLMs),” arXiv preprint arXiv:2412.12004, 2025. [Online]. Available: https://arxiv.org/abs/2412.12004
+  
+- [12] D. Huang, J. M. Zhang, M. Luck, Q. Bu, Y. Qing, and H. Cui, “AgentCoder: Multi-Agent-based Code Generation with Iterative Testing and Optimisation,” arXiv preprint arXiv:2312.13010, 2024. [Online]. Available: https://arxiv.org/abs/2312.13010
+  
+- [13] A. Kravchenko, I. Rekun, and E. Kniazev, “Design Decisions Behind app.build, a Prompt-to-App Generator,” Neon Blog, Jun. 2025. [Online]. Available: https://neon.tech/blog/design-decisions-behind-app-build
+  
+- [14] M. A. Islam, M. E. Ali, and M. R. Parvez, “MapCoder: Multi-Agent Code Generation for Competitive Problem Solving,” arXiv preprint arXiv:2405.11403, 2024. [Online]. Available: https://arxiv.org/abs/2405.11403
+  
+- [15] Context Engineering: A Guide With Examples. DataCamp, 2025. 32-33. Open Models by OpenAI. OpenAI/Azure Documentation, 2025. 34-35. tRPC: End-to-end Typesafe APIs. tRPC Documentation, 2025. {Placeholder}
+  
+- [16] S. A. Licorish, A. Bajpai, C. Arora, F. Wang, and K. Tantithamthavorn, “Comparing Human and LLM Generated Code: The Jury is Still Out!,” arXiv preprint arXiv:2501.16857, 2025. [Online]. Available: https://arxiv.org/abs/2501.16857
+  
+- [17] Labelbox, “Rubric evaluations: Fueling the next wave of reinforcement learning,” Labelbox Blog, May 2025. [Online]. Available: https://labelbox.com/blog/rubric-evals-fuel-next-wave-of-reinforcement-learning-rl
+  
+- [18] Open Source AI in Production. GitHub Blog, 2025. {Placeholder}
+  
+- [19] A. Kumar, Y. Bajpai, S. Gulwani, G. Soares, and E. Murphy-Hill, “Sharp Tools: How Developers Wield Agentic AI in Real Software Engineering Tasks,” arXiv preprint arXiv:2506.12347, 2025. [Online]. Available: https://arxiv.org/abs/2506.12347
+  
+- [20] Top Benchmarks for LLM Code Generation. Reddit/Community, 2025. {Placeholder}
 
 ### Appendix
 Add additional experiments, extended proofs, dataset cards, implementation details, and extra qualitative examples here.
