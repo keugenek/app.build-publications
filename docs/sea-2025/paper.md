@@ -241,11 +241,10 @@ Record PASS/FAIL/NA for each prompt and check. Use the Notes column for brief co
 This appendix section provides atomic, app.build‑specific methods, pass criteria, and reporting rules for each check. Report PASS/FAIL/NA in Table A.2.
 
 - AB‑00 Setup & Reset (≈1 minute)
-  - Method: Quit Chrome. Relaunch with a fresh profile.
-    - GUI: profile menu → “Guest” or “Add” → temporary profile; do not sign in.
-    - CLI (Linux): `google-chrome --user-data-dir="$(mktemp -d)" --no-first-run --no-default-browser-check`
-  - Reset env: If `./scripts/reset_env.sh` exists, run it; else run:
+  - Method: Quit Chrome. Relaunch with a incognito mode.
+  - Reset env: If `./scripts/reset_env.sh` exists, run it from app directory; else run:
     - `docker compose down -v && docker volume prune -f && docker compose build --no-cache && docker compose up -d`
+  - If see Bind for 0.0.0.0:80 failed: port is already allocated or The container name "/postgres" is already in use by container - restart ./scripts/reset_env.sh - do not report failure
   - DevTools: open on localhost; Console clear; Network “Preserve log” + “Disable cache”. Optional: open Lighthouse tab.
   - Criteria: Fresh profile used; containers rebuilt and running; DevTools configured.
   - Reporting: PASS if all sub‑items completed; else FAIL with note.
