@@ -114,11 +114,13 @@ The evaluation dataset comprises 30 prompts designed to assess system performanc
 *Reproducibility*. The complete prompt dataset and associated benchmark harness are publicly available in the project repository.
 
 #### 5.4 Assessor Protocol and Checks
-In order to assess the quality of generated apps, we run a checklist with ~10 smore tests by human evaluators.
-Unless the majority of checks are PASS or WARN, we believe the application is functional with possible occasional FAILs.
-As a result we calculate PASS as 1 point, WARN as 0.7 points and FAIL as 0 points and use these metrics to assign an overall score to the each generated application.
+In order to assess the quality of generated apps, we run a checklist with ~10 smoke tests run by human evaluators.
+Assessors record PASS/WARN/FAIL/NA per prompt in Appendix Table A2. Full “how to” steps live in Appendix A.3.
 
-To make manual work manageable we define small, app.build‑specific checks with stable IDs. Assessors record PASS/FAIL/NA per prompt in Appendix Table A2. Full “how to” steps live in Appendix A.3.
+Unless the majority of checks are PASS or WARN, we believe the application is functional with possible occasional FAILs.
+As a result we calculate PASS as 1 point, WARN as 0.75 points and FAIL as -1 points and use these metrics to assign an overall score to the each generated application.
+
+To make manual work manageable we define small, app.build‑specific checks with stable IDs. 
 
 Table below contains a complete set of checks we believe is enough to assess the application qiality from our personal experience that will be used for the evaluation: 
 — Does the app open cleanly?
@@ -131,7 +133,9 @@ Table below contains a complete set of checks we believe is enough to assess the
 
 See Appendix A.3 for detailed methods, exact pass criteria, and reporting rules (including the AB‑00 “clean start” preparation).
 
-### 6. Results
+### 6. Results (@keugenek)
+
+
 #### 6.1 Environment Scaffolding Impact
 - Primary finding: x success rate with full scaffolding
 - Each validation layer contributes % improvement
@@ -169,10 +173,10 @@ See Appendix A.3 for detailed methods, exact pass criteria, and reporting rules 
 ### 10. Conclusion
 We demonstrated that production-ready AI agents require extensive environment scaffolding beyond model capabilities. app.build shows that combining software engineering principles with agentic architectures enables reliable application generation. Our open-source implementation and evaluation framework provide a foundation for the community to build upon. As AI agents mature, the field must shift focus from model scaling to system design—the path to production runs through principled engineering, not just larger models.
 
-### Acknowledgments
-This submission is prepared in collaboration between app.build (Neon, now Databricks) and THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO). 
+### Acknowledgments (@keugenek DONE)
+This submission is prepared in collaboration between app.build (Neon, now Databricks) and THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO).
 
-### References
+### References (@pratik)
 1. Agentic AI Software Engineers: Programming with Trust. arXiv:2502.13767, 2025.
 3. Augmenting Software Engineering with AI. arXiv:2409.18048v3, 2024.
 5. Evaluating Large Language Models in Class-Level Code Generation. ICSE 2024.
@@ -212,15 +216,13 @@ Note: This is a placeholder view for layout. The final camera‑ready will inclu
 #### A.2 Assessor Checklist (Template)
 Record PASS/FAIL/NA for each prompt and check. Use the Notes column for brief context or defect links.
 
-| ID    | AB-00 Reset | AB-01 Boot | AB-02 Prompt | AB-03 Create | AB-04 View/Edit | AB-05 Refresh | AB-06 Auth | AB-07 Forms | AB-08 Clicks | AB-09 Perf | AB-10 2nd Load | AB-11 Usability | Notes |
-|-------|-------------|------------|--------------|--------------|------------------|---------------|------------|-------------|--------------|------------|----------------|------------------|-------|
-| P-001 |             |            |              |              |                  |               |            |             |              |            |                |                  |       |
-| P-002 |             |            |              |              |                  |               |            |             |              |            |                |                  |       |
+ID	AB-00 Reset	AB-01 Boot	AB-02 Prompt	AB-03 Create	AB-04 View/Edit	AB-05 Refresh	AB‑06 Clickable Sweep	AB‑07 Performance (quick)	Notes	PASS#	WARN#	PTS
+P-001										0	0	0
 
 #### A.3 Assessor Protocol Details (app.build‑specific)
 This appendix section provides atomic, app.build‑specific methods, pass criteria, and reporting rules for each check. Report PASS/FAIL/NA in Table A.2.
 
-- AB‑00 Setup & Reset (≈1 minute)
+- Setup & Reset (≈1 minute)
   - Method: Quit Chrome. Relaunch with incognito mode. If present, run `./scripts/reset_env.sh` from the app `source_code` directory.
   - Notes: If you see common setup issues (Bind for 0.0.0.0:80 failed: port is already allocated; or The container name "/postgres" is already in use by container), re‑run the reset script once; do not report failure.
 
@@ -236,23 +238,25 @@ This appendix section provides atomic, app.build‑specific methods, pass criter
 
 - AB‑03 Create
   - Method: From the main entity form, fill valid fields; submit.
-  - Criteria: Success toast/indicator appears; no Console errors.
+  - Criteria: PASS if success toast/indicator appears; no Console errors; WARN if errors, NA if no such action; FAIL if action does not work - shows some user error and is not clickable or not updating the page.
 
 - AB‑04 View/Edit
   - Method: Open detail/edit; change one field; save.
-  - Criteria: Success indicator; updated value visible in detail and list.
+  - Criteria: PASS if success toast/indicator appears; no Console errors; WARN if errors, NA if no such action; FAIL if action does not work - shows some user error and is not clickable or not updating the page or if refresh cleans up the data.
 
-- AB‑05 Refresh
+--
+- AB‑05 Refresh --- REMOVED
   - Method: Hard refresh (Ctrl/Cmd+Shift+R).
   - Criteria: Data persists; if app declares in‑memory storage, mark NA with note.
+--
 
 - AB‑06 Clickable Sweep
   - Method: Systematically click all visible primary clickable elements across main pages (nav links, primary/secondary buttons, list rows, tabs). Avoid clearly destructive actions; if confirmation appears, confirm once.
-  - Criteria: No navigation errors; no 404/5xx on route changes; no unhandled Console errors; target routes/components render.
+  - Criteria: PASS -no navigation errors; no 404/5xx on route changes; target routes/components render, WARN if unhandled Console errors or one or two out of 10 minor buttons/elements dont work, FAIL if >30% of elements not clickable or brokens 
 
 - AB‑07 Performance (quick)
   - Method: Run Lighthouse once on home (Mobile). Note Performance and Best Practices.
-  - Criteria: Record performance score.
+  - Criteria: Record performance score in notes, PASS >75, 30>WARN>75, FAIL<30
 
 
 ---
