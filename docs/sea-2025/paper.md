@@ -56,16 +56,45 @@ AI agents; software environments; production systems; validation feedback; actor
 - Our perspective: Environment design as a first-class concern
 
 ### 3. Problem Setup and Contributions
+
+AI tools have already affected software engieering, but most of the existing work focuses on code generation, not on building production-ready applications. We focus on the latter, which requires a different approach to AI agents and their environments. Naive approaches based on direct code generation may work for simple tasks, but fail to deliver working stateful applications at scale. We present app.build, an open-source framework that demonstrates how to build production-ready applications using AI agents by focusing on environment scaffolding and validation. We aim to reduce the gap between AI-driven code generation used for prototyping and the production-ready applications that enterprises need.
+
+The proposed framework follows the following principles:
+- **Environment Scaffolding**: Build a structured environment that provides necessary context and constraints for reliable generation. We support two application stacks (Typescript / tRPC and Python / NiceGUI) to demonstrate the approach, and can extend it to other stacks.
+- **Multi-Layered Validation**: Implement a feedback loop with deterministic quality gates at each stage of the generation process to ensure correctness and reliability. Exact list of checks is stack-specific, but follows the same concept.
+- **Model-agnostic Design**: Use a model-agnostic architecture that allows for easy integration of different LLMs, focusing on the environment scaffolding rather than the model itself.
+
+
+
+// what subset of ai codegen we're solving
+// why naive approaches fail
 - Setting: Prompt-to-app generation in production contexts with requirements for determinism, testability, and maintainability. Agents interact with a constrained environment (observations, actions, tools), advancing through verifiable checkpoints.
 - Problem: Close the production reliability gap by embedding quality gates and recovery into the environment itself.
+
+
+### 4. Method
+
+// all the jelly we have
+// including Igor's part on trees search and FSM
+
+- scaffolding
+- isolated envs
+- tree search
+- baseopsactor as universal agent
+- feedback loop (including checks and validation)
+- ast-grep as universal validation tool
+- model agnostic design
+
+
+
 - Contributions:
   - A framework that couples FSM-guided orchestration with actor-critic validation.
   - A multi-layered validation stack and constrained action-space tree search.
   - An evaluation benchmark and ablations quantifying the impact of each layer.
   - Practical design principles for building production AI agents.
 
-### 4. Method
-#### 4.1 FSM-Guided Multi-Agent Orchestration
+
+  #### 4.1 FSM-Guided Multi-Agent Orchestration
 - Control flow: A Finite State Machine manages workflow (DRAFTING → GENERATING → VALIDATING) [17,18]
 - Actor model: Universal stateless agents gain specialization via system prompt modifications, mirroring phases of the app development process
 
@@ -91,7 +120,7 @@ AI agents; software environments; production systems; validation feedback; actor
 6. Progressive validation (fail fast, fix precisely)
 
 ### 5. Experimental Setup
-#### 5.1 Evaluation Framework
+#### 5.1 Evaluation Framework  (todo @eugenek)
 - Dataset: N prompts across a complexity spectrum
 - Metrics:
   - Success rate (passes full validation)
@@ -113,7 +142,7 @@ The evaluation dataset comprises 30 prompts designed to assess system performanc
 *Data Processing*. Raw prompts underwent automated post-processing using LLMs to anonymize sensitive information and standardize linguistic structure. This normalization process preserved semantic content and task complexity while ensuring consistent evaluation conditions across all test cases.
 *Reproducibility*. The complete prompt dataset and associated benchmark harness are publicly available in the project repository.
 
-#### 5.4 Assessor Protocol and Checks
+#### 5.4 Assessor Protocol and Checks (todo @eugenek)
 We define small, app.build‑specific checks with stable IDs. Assessors record PASS/FAIL/NA per prompt in Appendix Table A2. Full “how to” steps live in Appendix A.3.
 
 - AB‑01 Boot & Home — Does the app open cleanly?
@@ -139,7 +168,7 @@ We define small, app.build‑specific checks with stable IDs. Assessors record P
 
 See Appendix A.3 for detailed methods, exact pass criteria, and reporting rules (including the AB‑00 “clean start” preparation).
 
-### 6. Results
+### 6. Results (TBD after runs )
 #### 6.1 Environment Scaffolding Impact
 - Primary finding: x success rate with full scaffolding
 - Each validation layer contributes % improvement
@@ -161,24 +190,25 @@ See Appendix A.3 for detailed methods, exact pass criteria, and reporting rules 
 - Validation catches 78% of would-be runtime errors
 - Human eval reveals maintainability issues even in "successful" apps [36]
 
-### 7. Analysis and Ablations
-- Error analyses, sensitivity to environment fidelity/diversity, and qualitative examples aligning with Section 6.4.
+6.5 Analysis of the runs ^
 
-### 8. Limitations
+### 7. Summary (todo @eugenek)
+
+### 7.1 Limitations
 - Currently limited to CRUD/data applications
 - Validation pipeline requires domain expertise
 - Future: Expand domains, analyze human-in-the-loop feedback and performance in the wild
 
-### 9. Broader Impact
+### 7.2 Broader Impact
 - Democratizes application development
 - Reduces barrier to entry for non-programmers
 - Open approach enables transparency and trust [40]
 
-### 10. Conclusion
+### 7.3. Conclusion
 We demonstrated that production-ready AI agents require extensive environment scaffolding beyond model capabilities. app.build shows that combining software engineering principles with agentic architectures enables reliable application generation. Our open-source implementation and evaluation framework provide a foundation for the community to build upon. As AI agents mature, the field must shift focus from model scaling to system design—the path to production runs through principled engineering, not just larger models.
 
 ### Acknowledgments
-This submission is prepared in collaboration between app.build (Neon, now Databricks) and THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO). 
+This submission is prepared in collaboration between app.build (Neon, now Databricks) and THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO).
 
 ### References
 1. Agentic AI Software Engineers: Programming with Trust. arXiv:2502.13767, 2025.
