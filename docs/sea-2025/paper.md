@@ -118,7 +118,7 @@ We define small, app.build‑specific checks with stable IDs. Assessors record P
 - AB‑01 Boot & Home — Does the app open cleanly?
   - Why it matters: If the homepage does not load cleanly, nothing else is trustworthy.
 
-- AB‑02 Prompt‑to‑App Correspondence — Does the app reflect the user prompt on home?
+- AB‑02 Prompt to app correspondence — Does the app reflect the user prompt on home and support the primary action?
   - Why it matters: The generated app must correspond to the task, not be a generic template.
 
 - AB‑03 Create — Can a user create a new entity successfully?
@@ -130,23 +130,11 @@ We define small, app.build‑specific checks with stable IDs. Assessors record P
 - AB‑05 Refresh — Does data persist across a hard reload?
   - Why it matters: Refresh verifies real persistence and basic caching/bundling integrity.
 
-- AB‑06 Auth (tRPC stacks only) — Can users register, login, logout, and see clear errors?
-  - Why it matters: Account flows are table stakes; silent failures here break trust.
-
-- AB‑07 Forms & Validation — Do forms block bad input and save good input once?
-  - Why it matters: Good forms are the baseline for usability and data quality.
-
-- AB‑08 Clickable Sweep — Do all primary clickable elements work without errors?
+- AB‑06 Clickable Sweep — Do all primary clickable elements work without errors?
   - Why it matters: Dead links, broken buttons, or unhandled route transitions are high‑impact UX failures often missed by happy‑path flows.
 
-- AB‑09 Performance (quick) — Is the first load reasonably fast, with no obvious red flags?
+- AB‑07 Performance (quick) — Is the first load reasonably fast, with no obvious red flags?
   - Why it matters: We do not micro‑optimize here—we simply avoid shipping obviously slow apps.
-
-- AB‑10 Second Load & Caching — Does a reload keep your work (unless clearly temporary)?
-  - Why it matters: Surprising data loss on refresh signals bundling/caching or state issues.
-
-- AB‑11 Usability Snap — Can a new user find and complete the main task in under 30 seconds?
-  - Why it matters: If the main action is hard to find, the generated app fails its job.
 
 See Appendix A.3 for detailed methods, exact pass criteria, and reporting rules (including the AB‑00 “clean start” preparation).
 
@@ -248,10 +236,9 @@ This appendix section provides atomic, app.build‑specific methods, pass criter
   - Criteria: PASS if page renders and Console shows 0 errors; WARN if page renders with Console errors (attach first error); FAIL if page does not render.
   - Stop rule: If AB‑01 is FAIL, stop after recording AB‑00 - AB‑02 (smoke set). Mark remaining checks NA.
 
-
 - AB‑02 Prompt to app correspondence
-  - Method: Navigate to `http://localhost`.
-  - Criteria: PASS if app reflects user prompt; FAIL if application is generic or template with no correspondence to user prompt.
+  - Method: Navigate to `http://localhost`, find and execute main action.
+  - Criteria: PASS if app reflects user prompt; WARN if no way to find and execute primary action in 30s, FAIL if application is generic or template with no correspondence to user prompt.
   - Stop rule: If AB‑01 is FAIL, stop after recording AB‑00 - AB‑02 (smoke set). Mark remaining checks NA.
 
 - AB‑03 Create
@@ -266,29 +253,13 @@ This appendix section provides atomic, app.build‑specific methods, pass criter
   - Method: Hard refresh (Ctrl/Cmd+Shift+R).
   - Criteria: Data persists; if app declares in‑memory storage, mark NA with note.
 
-- AB‑06 Auth (tRPC stacks only)
-  - Method: Register → Login → Logout → Login; attempt wrong password once.
-  - Criteria: Wrong password shows inline error; no crash/unhandled Console exception; authenticated routes render after login.
-
-- AB‑07 Forms & Validation
-  - Method: Submit with empty required fields; then submit valid data twice rapidly.
-  - Criteria: Required fields block submit with clear messages; valid data saves once (no duplicate on double‑click).
-
-- AB‑08 Clickable Sweep
+- AB‑06 Clickable Sweep
   - Method: Systematically click all visible primary clickable elements across main pages (nav links, primary/secondary buttons, list rows, tabs). Avoid clearly destructive actions; if confirmation appears, confirm once.
   - Criteria: No navigation errors; no 404/5xx on route changes; no unhandled Console errors; target routes/components render.
 
-- AB‑09 Performance (quick)
+- AB‑07 Performance (quick)
   - Method: Run Lighthouse once on home (Mobile). Note Performance and Best Practices.
   - Criteria: Record performance score.
-
-- AB‑10 No‑cache & second load
-  - Method: Hard refresh (Ctrl/Cmd+Shift+R).
-  - Criteria: Previously saved data remains unless app declares ephemeral storage.
-
-- AB‑11 Usability Snap
-  - Method: As a new user, locate and complete the primary action.
-  - Criteria: Completed within ≤30s.
 
 
 ---
