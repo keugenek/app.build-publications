@@ -114,28 +114,20 @@ The evaluation dataset comprises 30 prompts designed to assess system performanc
 *Reproducibility*. The complete prompt dataset and associated benchmark harness are publicly available in the project repository.
 
 #### 5.4 Assessor Protocol and Checks
-We define small, app.build‑specific checks with stable IDs. Assessors record PASS/FAIL/NA per prompt in Appendix Table A2. Full “how to” steps live in Appendix A.3.
+In order to assess the quality of generated apps, we run a checklist with ~10 smore tests by human evaluators.
+Unless the majority of checks are PASS or WARN, we believe the application is functional with possible occasional FAILs.
+As a result we calculate PASS as 1 point, WARN as 0.7 points and FAIL as 0 points and use these metrics to assign an overall score to the each generated application.
 
-- AB‑01 Boot & Home — Does the app open cleanly?
-  - Why it matters: If the homepage does not load cleanly, nothing else is trustworthy.
+To make manual work manageable we define small, app.build‑specific checks with stable IDs. Assessors record PASS/FAIL/NA per prompt in Appendix Table A2. Full “how to” steps live in Appendix A.3.
 
-- AB‑02 Prompt to app correspondence — Does the app reflect the user prompt on home and support the primary action?
-  - Why it matters: The generated app must correspond to the task, not be a generic template.
-
-- AB‑03 Create — Can a user create a new entity successfully?
-  - Why it matters: Creation is the first half of CRUD and a core path for many apps.
-
-- AB‑04 View/Edit — Can a user open details and edit an entity?
-  - Why it matters: Editing verifies state loading and update flows beyond one‑off saves.
-
-- AB‑05 Refresh — Does data persist across a hard reload?
-  - Why it matters: Refresh verifies real persistence and basic caching/bundling integrity.
-
-- AB‑06 Clickable Sweep — Do all primary clickable elements work without errors?
-  - Why it matters: Dead links, broken buttons, or unhandled route transitions are high‑impact UX failures often missed by happy‑path flows.
-
-- AB‑07 Performance (quick) — Is the first load reasonably fast, with no obvious red flags?
-  - Why it matters: We do not micro‑optimize here—we simply avoid shipping obviously slow apps.
+Table below contains a complete set of checks we believe is enough to assess the application qiality from our personal experience that will be used for the evaluation: 
+— Does the app open cleanly?
+- Does the app reflect the user prompt on home and support the primary action?
+- Can a user create a new entity successfully?
+— Can a user open details and edit an entity?
+- Does data persist across a hard reload?
+— Do all primary clickable elements work without errors?
+— Is the first load reasonably fast, with no obvious red flags?
 
 See Appendix A.3 for detailed methods, exact pass criteria, and reporting rules (including the AB‑00 “clean start” preparation).
 
