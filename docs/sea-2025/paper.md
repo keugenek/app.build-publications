@@ -189,7 +189,7 @@ See Appendix A.3 for detailed methods, exact pass criteria, and reporting rules 
 We demonstrated that production-ready AI agents require extensive environment scaffolding beyond model capabilities. app.build shows that combining software engineering principles with agentic architectures enables reliable application generation. Our open-source implementation and evaluation framework provide a foundation for the community to build upon. As AI agents mature, the field must shift focus from model scaling to system design—the path to production runs through principled engineering, not just larger models.
 
 ### Acknowledgments
-This submission is prepared in collaboration between app.build (Neon, now Databricks) and THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO). Lead: Prof. Dr. Ivan Yamshchikov — see THWS profile: [New professor – Prof. Dr. Ivan Yamshchikov](https://www.thws.de/en/research/institutes/cairo/releases/thema/new-professor-prof-dr-ivan-yamshchikov/).
+This submission is prepared in collaboration between app.build (Neon, now Databricks) and THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO). 
 
 ### References
 1. Agentic AI Software Engineers: Programming with Trust. arXiv:2502.13767, 2025.
