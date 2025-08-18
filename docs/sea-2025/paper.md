@@ -118,35 +118,34 @@ We define small, app.build‑specific checks with stable IDs. Assessors record P
 - AB‑01 Boot & Home — Does the app open cleanly?
   - Why it matters: If the homepage does not load cleanly, nothing else is trustworthy.
 
-- AB‑02 Health/Status — Does the app report that it’s up?
-  - Why it matters: A simple status page catches “it looks up, but isn’t” failures early.
+- AB‑02 Prompt‑to‑App Correspondence — Does the app reflect the user prompt on home?
+  - Why it matters: The generated app must correspond to the task, not be a generic template.
 
-- AB‑03 Prompt Match (Happy Path) — Does the built app actually match the prompt?
-  - AB‑03a Create, AB‑03b List, AB‑03c View/Edit, AB‑03d Refresh
-  - Why it matters: This is the core promise of app.build—turn a prompt into a working flow with data that sticks.
+- AB‑03 Create — Can a user create a new entity successfully?
+  - Why it matters: Creation is the first half of CRUD and a core path for many apps.
 
-- AB‑04 Auth (when present) — Can people sign up, sign in, sign out, and see clear errors?
-  - Why it matters: Basic account flows are table stakes; silent failures here break trust.
+- AB‑04 View/Edit — Can a user open details and edit an entity?
+  - Why it matters: Editing verifies state loading and update flows beyond one‑off saves.
 
-- AB‑05 Backend/API wiring — Does the UI talk to a real backend and handle errors gracefully?
-  - Why it matters: We verify “plumbing,” not just a pretty front end. Real apps must save and fetch for real.
+- AB‑05 Refresh — Does data persist across a hard reload?
+  - Why it matters: Refresh verifies real persistence and basic caching/bundling integrity.
 
-- AB‑06 Forms & Validation — Do forms block bad input and save good input once?
+- AB‑06 Auth (tRPC stacks only) — Can users register, login, logout, and see clear errors?
+  - Why it matters: Account flows are table stakes; silent failures here break trust.
+
+- AB‑07 Forms & Validation — Do forms block bad input and save good input once?
   - Why it matters: Good forms are the baseline for usability and data quality.
 
-- AB‑11 Performance (quick) — Is the first load reasonably fast, and are there obvious red flags?
+- AB‑08 Clickable Sweep — Do all primary clickable elements work without errors?
+  - Why it matters: Dead links, broken buttons, or unhandled route transitions are high‑impact UX failures often missed by happy‑path flows.
+
+- AB‑09 Performance (quick) — Is the first load reasonably fast, with no obvious red flags?
   - Why it matters: We do not micro‑optimize here—we simply avoid shipping obviously slow apps.
 
-- AB‑12 Second Load & Caching — Does a reload keep your work (unless clearly temporary)?
+- AB‑10 Second Load & Caching — Does a reload keep your work (unless clearly temporary)?
   - Why it matters: Surprising data loss on refresh signals bundling/caching or state issues.
 
-- AB‑14 Accessibility (automated pass) — Do automated checks avoid major issues?
-  - Why it matters: Accessibility is basic quality. A quick automated pass catches common problems.
-
-- AB‑15 Mobile/Responsive — Does it work on a small phone screen without sideways scrolling?
-  - Why it matters: Most apps are used on phones; core tasks must remain usable.
-
-- AB‑17 Usability Snap — Can a new user find and complete the main task in under 30 seconds?
+- AB‑11 Usability Snap — Can a new user find and complete the main task in under 30 seconds?
   - Why it matters: If the main action is hard to find, the generated app fails its job.
 
 See Appendix A.3 for detailed methods, exact pass criteria, and reporting rules (including the AB‑00 “clean start” preparation).
@@ -232,87 +231,64 @@ Note: This is a placeholder view for layout. The final camera‑ready will inclu
 #### A.2 Assessor Checklist (Template)
 Record PASS/FAIL/NA for each prompt and check. Use the Notes column for brief context or defect links.
 
-| ID    | AB-01 Boot | AB-02 Health | AB-03a Create | AB-03b List | AB-03c View/Edit | AB-03d Refresh | AB-04 Auth | AB-05 API | AB-06 Forms | AB-11 Perf | AB-12 2nd Load | AB-14 A11y | AB-15 Mobile | AB-17 Usability | Notes |
-|-------|------------|--------------|---------------|-------------|------------------|----------------|------------|-----------|-------------|------------|----------------|------------|--------------|-----------------|-------|
-| P-001 |            |              |               |             |                  |                |            |           |             |            |                |            |              |                 |       |
-| P-002 |            |              |               |             |                  |                |            |           |             |            |                |            |              |                 |       |
+| ID    | AB-00 Reset | AB-01 Boot | AB-02 Prompt | AB-03 Create | AB-04 View/Edit | AB-05 Refresh | AB-06 Auth | AB-07 Forms | AB-08 Clicks | AB-09 Perf | AB-10 2nd Load | AB-11 Usability | Notes |
+|-------|-------------|------------|--------------|--------------|------------------|---------------|------------|-------------|--------------|------------|----------------|------------------|-------|
+| P-001 |             |            |              |              |                  |               |            |             |              |            |                |                  |       |
+| P-002 |             |            |              |              |                  |               |            |             |              |            |                |                  |       |
 
 #### A.3 Assessor Protocol Details (app.build‑specific)
 This appendix section provides atomic, app.build‑specific methods, pass criteria, and reporting rules for each check. Report PASS/FAIL/NA in Table A.2.
 
 - AB‑00 Setup & Reset (≈1 minute)
-  - Method: Quit Chrome. Relaunch with a incognito mode.
-  - Reset env: If `./scripts/reset_env.sh` exists, run it from app directory; else run:
-    - `docker compose down -v && docker volume prune -f && docker compose build --no-cache && docker compose up -d`
-  - If see Bind for 0.0.0.0:80 failed: port is already allocated or The container name "/postgres" is already in use by container - restart ./scripts/reset_env.sh - do not report failure
-  - DevTools: open on localhost; Console clear; Network “Preserve log” + “Disable cache”. Optional: open Lighthouse tab.
-  - Criteria: Fresh profile used; containers rebuilt and running; DevTools configured.
-  - Reporting: PASS if all sub‑items completed; else FAIL with note.
+  - Method: Quit Chrome. Relaunch with incognito mode. If present, run `./scripts/reset_env.sh` from the app `source_code` directory.
+  - Notes: If you see common setup issues (Bind for 0.0.0.0:80 failed: port is already allocated; or The container name "/postgres" is already in use by container), re‑run the reset script once; do not report failure.
 
 - AB‑01 Boot & Home
   - Method: Navigate to `http://localhost`.
-  - Criteria: Page renders; Console shows 0 errors; Network shows no 404/5xx for main JS/CSS assets.
-  - Reporting: PASS/FAIL; attach first error message if FAIL.
+  - Criteria: PASS if page renders and Console shows 0 errors; WARN if page renders with Console errors (attach first error); FAIL if page does not render.
+  - Stop rule: If AB‑01 is FAIL, stop after recording AB‑00 - AB‑02 (smoke set). Mark remaining checks NA.
 
-- AB‑02 Health/Status
-  - Method: In browser, open `http://localhost/health-check`.
-  - Criteria: HTTP 200 with JSON body; if endpoint not implemented, mark NA and note “absent”.
-  - Reporting: PASS/FAIL/NA with status code and brief body snippet.
 
-- AB‑03 Prompt Match (Happy Path)
-  - AB‑03a Create
-    - Method: From the main entity form, fill valid fields; submit.
-    - Criteria: Success toast/indicator appears; no Console errors.
-  - AB‑03b List
-    - Method: Open list/index view.
-    - Criteria: Newly created item is present with expected fields.
-  - AB‑03c View/Edit
-    - Method: Open detail/edit; change one field; save.
-    - Criteria: Success indicator; updated value visible in detail and list.
-  - AB‑03d Refresh
-    - Method: Hard refresh (Ctrl/Cmd+Shift+R).
-    - Criteria: Data persists; if app declares in‑memory storage, mark NA with note.
-  - Reporting: Record each sub‑step separately in A.2; attach failing step and symptom if applicable.
+- AB‑02 Prompt to app correspondence
+  - Method: Navigate to `http://localhost`.
+  - Criteria: PASS if app reflects user prompt; FAIL if application is generic or template with no correspondence to user prompt.
+  - Stop rule: If AB‑01 is FAIL, stop after recording AB‑00 - AB‑02 (smoke set). Mark remaining checks NA.
 
-- AB‑04 Auth (tRPC stacks only)
-  - Method: Register new user → Login → Logout → Login; attempt wrong password once.
-  - Criteria: Wrong password shows inline error; no crash/unhandled exception in Console; authenticated routes render after login.
-  - Reporting: PASS/FAIL/NA with note of stack type.
+- AB‑03 Create
+  - Method: From the main entity form, fill valid fields; submit.
+  - Criteria: Success toast/indicator appears; no Console errors.
 
-- AB‑05 Backend/API wiring
-  - Method: Trigger an action that calls backend (`/api/`, `/api/trpc/`); inspect Network tab.
-  - Criteria: Response 2xx with meaningful JSON; on non‑2xx, UI shows clean error state (no raw stack traces).
-  - Reporting: PASS/FAIL with sample endpoint path and status.
+- AB‑04 View/Edit
+  - Method: Open detail/edit; change one field; save.
+  - Criteria: Success indicator; updated value visible in detail and list.
 
-- AB‑06 Forms & Validation
+- AB‑05 Refresh
+  - Method: Hard refresh (Ctrl/Cmd+Shift+R).
+  - Criteria: Data persists; if app declares in‑memory storage, mark NA with note.
+
+- AB‑06 Auth (tRPC stacks only)
+  - Method: Register → Login → Logout → Login; attempt wrong password once.
+  - Criteria: Wrong password shows inline error; no crash/unhandled Console exception; authenticated routes render after login.
+
+- AB‑07 Forms & Validation
   - Method: Submit with empty required fields; then submit valid data twice rapidly.
   - Criteria: Required fields block submit with clear messages; valid data saves once (no duplicate on double‑click).
-  - Reporting: PASS/FAIL with field name examples.
 
-- AB‑11 Performance (quick)
+- AB‑08 Clickable Sweep
+  - Method: Systematically click all visible primary clickable elements across main pages (nav links, primary/secondary buttons, list rows, tabs). Avoid clearly destructive actions; if confirmation appears, confirm once.
+  - Criteria: No navigation errors; no 404/5xx on route changes; no unhandled Console errors; target routes/components render.
+
+- AB‑09 Performance (quick)
   - Method: Run Lighthouse once on home (Mobile). Note Performance and Best Practices.
-  - Criteria: FCP on throttled settings <~5s. Not a gating metric; record scores.
-  - Reporting: Record numeric scores and FCP.
+  - Criteria: Record performance score.
 
-- AB‑12 No‑cache & second load
+- AB‑10 No‑cache & second load
   - Method: Hard refresh (Ctrl/Cmd+Shift+R).
   - Criteria: Previously saved data remains unless app declares ephemeral storage.
-  - Reporting: PASS/FAIL/NA with note on storage mode.
 
-- AB‑14 Automated a11y
-  - Method: Run Axe or WAVE on main page.
-  - Criteria: Count serious+critical violations; record count.
-  - Reporting: Numeric count in A.2; FAIL if >0 unless justified as NA.
-
-- AB‑15 Mobile/Responsive
-  - Method: DevTools device toolbar at 360px width; inspect home and one form.
-  - Criteria: No horizontal scroll for core content; inputs/buttons accessible.
-  - Reporting: PASS/FAIL with offending element if FAIL.
-
-- AB‑17 Usability Snap
-  - Method: As a new user, try to locate and complete the primary action.
+- AB‑11 Usability Snap
+  - Method: As a new user, locate and complete the primary action.
   - Criteria: Completed within ≤30s.
-  - Reporting: Record time bucket (0/15/30s) and PASS if ≤30s; else FAIL with blocker.
 
 
 ---
