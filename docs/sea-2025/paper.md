@@ -18,16 +18,16 @@ Correspondence: <contact@your-domain.example>
 Submission to: NeurIPS 2025 Workshop on Scaling Environments for Agents (SEA) — see website: [SEA Workshop @ NeurIPS 2025](https://sea-workshop.github.io/)
 
 ### Abstract
-While AI coding agents demonstrate impressive capabilities, deploying them reliably in production remains challenging. We present app.build, an open-source prompt-to-app generator that demonstrates how extensive environment scaffolding transforms unreliable LLMs into production-ready software engineering agents. Our approach combines: (1) FSM-guided execution with actor-critic feedback loops, (2) multi-layered validation pipelines providing deterministic quality gates, and (3) tree-search within constrained action spaces. Through evaluation on X application generation tasks, we show that environment scaffolding improves success rates by Nx over naive unverified generation[a], with open-weights models achieving X% of closed-model performance when provided structured environments[b][c][d]. We suggest six design principles for production AI agents and demonstrate that thoughtful environment design matters more than raw model capability or prompt engineering for reliability. Our work bridges the gap between AI potential and production reality, providing both empirical insights and a complete reference implementation for the community.
+While AI coding agents demonstrate impressive capabilities, relying on them on building even simple production-ready application without human supervision is not possible yet. We present app.build, an open-source prompt-to-app generator that demonstrates how extensive environment scaffolding transforms unreliable LLMs into production-ready software engineering agents. Our approach combines: .... Through evaluation on 30 application generation tasks, we show that environment scaffolding is crucial for , with even open-weights models achieving X% of closed-model performance when provided structured environments. We demonstrate that thoughtful environment design matters more than raw model capability or prompt engineering for reliability. Our work bridges the gap between AI potential and production reality, providing both empirical insights and a complete reference implementation for the community.
 
 ### Keywords
 AI agents; software environments; production systems; validation feedback; actor-critic architecture
 
 ### 1. Introduction
 #### 1.1 The Production Reliability Gap
-- LLMs excel at code snippets but fail at production applications [1,3]
-- Existing benchmarks (HumanEval, MBPP) miss critical quality attributes [5,6]
-- Trust and validation are bottlenecks for enterprise adoption [1,10]
+- LLMs excel at code snippets but fail at production applications
+- Existing benchmarks (HumanEval, MBPP) miss critical quality attributes
+- Trust and validation are bottlenecks for enterprise adoption
 
 #### 1.2 Our Approach: Environment Scaffolding for Production Readiness
 - Core thesis: Reliability stems from systematic environment design, not just model capability [13]
@@ -35,8 +35,7 @@ AI agents; software environments; production systems; validation feedback; actor
 - Key insight: Treat app generation as a structured engineering task with verifiable checkpoints
 
 #### 1.3 Contributions
-- Empirical evidence that environment scaffolding improves reliability by x
-- Six formalized design principles for production AI agents [13]
+- Empirical evidence that environment scaffolding improves reliability
 - Complete open-source framework with evaluation benchmark
 - Analysis of open vs closed models in structured environments
 
@@ -49,75 +48,47 @@ AI agents; software environments; production systems; validation feedback; actor
 #### 2.2 Code Generation and Evaluation
 - Function-level: HumanEval, MBPP [5,6,42]
 - Class-level: ClassEval [5]
-- Our contribution: Complete application as unit of analysis
+- Github Copilot, CodeWhisperer [1,2]
 
 #### 2.3 Software Engineering for AI
 - Traditional focus on model improvement vs system design
 - Our perspective: Environment design as a first-class concern
 
-### 3. Problem Setup and Contributions
+## 3. Problem Setup and Method
 
-AI tools have already affected software engieering, but most of the existing work focuses on code generation, not on building production-ready applications. We focus on the latter, which requires a different approach to AI agents and their environments. Naive approaches based on direct code generation may work for simple tasks, but fail to deliver working stateful applications at scale. We present app.build, an open-source framework that demonstrates how to build production-ready applications using AI agents by focusing on environment scaffolding and validation. We aim to reduce the gap between AI-driven code generation used for prototyping and the production-ready applications that enterprises need.
+### 3.1 Problem Formulation
 
-The proposed framework follows the following principles:
-- **Environment Scaffolding**: Build a structured environment that provides necessary context and constraints for reliable generation. We support two application stacks (Typescript / tRPC and Python / NiceGUI) to demonstrate the approach, and can extend it to other stacks.
-- **Multi-Layered Validation**: Implement a feedback loop with deterministic quality gates at each stage of the generation process to ensure correctness and reliability. Exact list of checks is stack-specific, but follows the same concept.
-- **Model-agnostic Design**: Use a model-agnostic architecture that allows for easy integration of different LLMs, focusing on the environment scaffolding rather than the model itself.
+While LLM-based code generation offers rapid prototyping, its outputs often fail production standards. We address this gap through app.build, an open-source framework that bridges AI-driven generation and production requirements via systematic environment scaffolding and multi-layered validation.
 
+### 3.2 Approach
 
+Our framework operates on three core principles:
 
-// what subset of ai codegen we're solving
-// why naive approaches fail
-- Setting: Prompt-to-app generation in production contexts with requirements for determinism, testability, and maintainability. Agents interact with a constrained environment (observations, actions, tools), advancing through verifiable checkpoints.
-- Problem: Close the production reliability gap by embedding quality gates and recovery into the environment itself.
+**Environment Scaffolding**: We provide structured environments with explicit constraints and contextual information for reliable code generation, demonstrated through two reference implementations (TypeScript/tRPC and Python/NiceGUI).
 
+**Multi-Layered Validation**: We implement deterministic quality gates with stack-specific validation pipelines, creating feedback loops that ensure generated code meets production standards.
 
-### 4. Method
+**Model-Agnostic Architecture**: The framework decouples environment scaffolding from the underlying LLM, enabling integration with various language models while maintaining consistent quality assurance.
 
-// all the jelly we have
-// including Igor's part on trees search and FSM
+### 3.3 Architecture
 
-- scaffolding
-- isolated envs
-- tree search
-- baseopsactor as universal agent
-- feedback loop (including checks and validation)
-- ast-grep as universal validation tool
-- model agnostic design
+#### 3.3.1 Universal Components
 
+**BaseActor**: A model-agnostic agent implementing core operations (file I/O, code editing, task completion) through tool calling. Stack-specific extensions augment functionality (e.g., dependency management via `uv add` for Python). The completion mechanism triggers stack-specific validation pipelines.
 
+**Tree Search**: [Placeholder - to be added by Igor]
 
-- Contributions:
-  - A framework that couples FSM-guided orchestration with actor-critic validation.
-  - A multi-layered validation stack and constrained action-space tree search.
-  - An evaluation benchmark and ablations quantifying the impact of each layer.
-  - Practical design principles for building production AI agents.
+**Runtime Infrastructure**: [Placeholder - to be added by Igor]
 
+**AST-based Validation**: We employ `ast-grep` for pattern-based code analysis, identifying common anti-patterns in generated code (e.g., silent failures, improper error propagation) that distinguish superficially correct code from production-ready implementations.
 
-  #### 4.1 FSM-Guided Multi-Agent Orchestration
-- Control flow: A Finite State Machine manages workflow (DRAFTING → GENERATING → VALIDATING) [17,18]
-- Actor model: Universal stateless agents gain specialization via system prompt modifications, mirroring phases of the app development process
+#### 3.3.2 Stack-Specific Components
 
-#### 4.2 Actor-Critic Validation Pipeline
-- Concept: Validation pipeline as the Critic providing deterministic feedback [13]
-- Validation layers:
-  - L1: Static analysis (compilation, linting) [27]
-  - L2: Unit/integration testing [28]
-  - L3: E2E testing with Playwright [26]
-- Feedback loop: Failures trigger targeted regeneration, not full restarts
+**Generation Flow**: Each stack implements a finite state machine orchestrating the generation process. The TypeScript/tRPC stack follows a sequential pipeline: data models → API interfaces → frontend → backend handlers. The Python/NiceGUI stack employs a two-phase approach: data models → API/UI implementation.
 
-#### 4.3 Context Engineering and Constraint Design
-- Principle: Split the context — provide minimal necessary information [13,30]
-- Tree search: Parallel exploration with early termination
-- State management: Serializable state enables horizontal scaling
+**Templates**: Stack-specific templates provide initial application scaffolding, reducing generation overhead while embedding universal smoke tests and health checks into the validation pipeline.
 
-#### 4.4 Production Design Principles
-1. Constraint breeds creativity (limited scope → reliability)
-2. Validation as environment signal (not just pass/fail)
-3. Stateless actors for scalability
-4. Encapsulated context per generation step
-5. Structured error recovery via FSM
-6. Progressive validation (fail fast, fix precisely)
+**Validation Pipeline**: Stack-specific validation implements hierarchical checks ordered by computational cost and diagnostic value. Compilation verification precedes integration testing; static analysis gates dynamic testing. This design minimizes computational overhead while maximizing error detection coverage.
 
 ### 5. Experimental Setup
 #### 5.1 Evaluation Framework  (todo @eugenek)
