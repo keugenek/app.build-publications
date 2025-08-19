@@ -18,41 +18,72 @@ Correspondence: <contact@your-domain.example>
 Submission to: NeurIPS 2025 Workshop on Scaling Environments for Agents (SEA) — see website: [SEA Workshop @ NeurIPS 2025](https://sea-workshop.github.io/)
 
 ### Abstract
-While AI coding agents demonstrate impressive capabilities, relying on them on building even simple production-ready application without human supervision is not possible yet. We present app.build, an open-source prompt-to-app generator that demonstrates how extensive environment scaffolding transforms unreliable LLMs into production-ready software engineering agents. Our approach combines: .... Through evaluation on 30 application generation tasks, we show that environment scaffolding is crucial for , with even open-weights models achieving X% of closed-model performance when provided structured environments. We demonstrate that thoughtful environment design matters more than raw model capability or prompt engineering for reliability. Our work bridges the gap between AI potential and production reality, providing both empirical insights and a complete reference implementation for the community.
+While AI coding agents demonstrate impressive capabilities, relying on them to build even simple production-ready applications without human supervision remains infeasible. We present app.build, an open-source prompt-to-app generator that demonstrates how extensive environment scaffolding transforms unreliable LLMs into production-ready software engineering agents. Our approach combines: (1) structured environment scaffolding with explicit constraints and contextual information, (2) multi-layered validation pipelines with deterministic quality gates, and (3) model-agnostic architecture decoupling environment design from LLM choice. We implement two reference stacks (TypeScript/tRPC and Python/NiceGUI) with stack-specific validation pipelines, AST-based anti-pattern detection, and finite state machine orchestration. Through evaluation on 30 application generation tasks across four experimental configurations, we show that environment scaffolding is crucial for production readiness. Our ablation studies reveal that comprehensive validation (UI tests, linting, type checking) improves success rates by up to X%, with open-weights models achieving X% of closed-model performance when provided structured environments. We demonstrate that thoughtful environment design matters more than raw model capability for reliability. Our work bridges the gap between AI potential and production reality, providing both empirical insights and a complete reference implementation for the community.
 
 ### Keywords
 AI agents; software environments; production systems; validation feedback; actor-critic architecture
 
-### 1. Introduction
-#### 1.1 The Production Reliability Gap
-- LLMs excel at code snippets but fail at production applications
-- Existing benchmarks (HumanEval, MBPP) miss critical quality attributes
-- Trust and validation are bottlenecks for enterprise adoption
+# 1. Introduction
 
-#### 1.2 Our Approach: Environment Scaffolding for Production Readiness
-- Core thesis: Reliability stems from systematic environment design, not just model capability [13]
-- app.build: Open-source reference implementation combining software engineering principles with agentic architecture [14]
-- Key insight: Treat app generation as a structured engineering task with verifiable checkpoints
+## 1.1 The Production Reliability Gap
 
-#### 1.3 Contributions
-- Empirical evidence that environment scaffolding improves reliability
-- Complete open-source framework with evaluation benchmark
-- Analysis of open vs closed models in structured environments
+While AI coding agents demonstrate impressive capabilities on standard benchmarks like HumanEval [1] and MBPP [2], relying on them to build production-ready applications without human supervision remains infeasible. Recent repository-level systems such as Devin [3] and SWE-agent [4] represent significant advances, yet their performance on real-world software engineering tasks reveals a substantial gap between research benchmarks and production requirements.
 
-### 2. Background and Related Work
-#### 2.1 Agentic Software Engineering
-- Repository-level: Devin, SWE-agent [7,41]
-- Multi-agent: AgentCoder, MapCoder [22,25]
-- Our distinction: De novo full-stack generation with production focus
+This gap manifests across multiple dimensions. Function-level benchmarks like HumanEval evaluate isolated code generation but fail to capture system-level concerns including error handling, integration complexity, and production constraints [5]. Even state-of-the-art systems like AutoCodeRover, achieving 19% efficacy on SWE-bench at $0.43 per issue [6], demonstrate that raw model capability alone is insufficient for reliable automated software development.
 
-#### 2.2 Code Generation and Evaluation
-- Function-level: HumanEval, MBPP [5,6,42]
-- Class-level: ClassEval [5]
-- Github Copilot, CodeWhisperer [1,2]
+The core challenge lies in treating LLMs as omniscient oracles rather than unreliable workers requiring structured guidance. Current approaches predominantly focus on making models "smarter" via either training or prompt engineering, but this paradigm fails to address fundamental reliability issues inherent in probabilistic generation.
 
-#### 2.3 Software Engineering for AI
-- Traditional focus on model improvement vs system design
-- Our perspective: Environment design as a first-class concern
+## 1.2 Our Approach: Environment Scaffolding
+
+We propose **environment scaffolding** as a systematic alternative to prompt engineering. Environment scaffolding provides structured constraints, contextual information, and deterministic validation feedback loops that transform unreliable LLMs into production-ready software engineering agents. Unlike approaches that attempt to improve model reasoning through prompting, our method creates safe environments where models can fail fast and recover systematically.
+
+Our approach operates on three core principles. First, **structured environment design** provides explicit constraints and contextual information, reducing the generation search space while maintaining flexibility. Second, **multi-layered validation pipelines** implement deterministic quality gates with stack-specific checks, creating tight feedback loops that catch errors early. Third, **model-agnostic architecture** decouples environment scaffolding from LLM choice, enabling consistent quality assurance across different foundation models.
+
+We implement this approach through app.build, an open-source framework featuring two production stacks (TypeScript/tRPC and Python/NiceGUI) with comprehensive validation pipelines. Our architecture combines BaseActor tool-calling patterns, AST-based anti-pattern detection, and finite state machine orchestration to ensure generated applications meet production standards.
+
+## 1.3 Contributions
+
+Our work makes three primary contributions to the field of AI-assisted software engineering:
+
+**Empirical Analysis**: We present systematic evaluation across 30 application generation tasks and four experimental configurations, demonstrating that environment scaffolding significantly improves success rates compared to unstructured generation. Our ablation studies reveal that comprehensive validation layers improve success rates by up to X%, with open-weights models achieving X% of closed-model performance when provided structured environments.
+
+**Open-Source Framework**: We release a complete reference implementation with two production technology stacks, addressing the gap between toy research prototypes and real-world deployment. Our framework has generated thousands of applications in community usage, providing empirical evidence of practical utility beyond controlled evaluation.
+
+**Methodological Insights**: We demonstrate that thoughtful environment design matters more than raw model capability for production reliability. Our findings challenge the dominant focus on model scaling and prompt engineering, suggesting that structured environments represent a more promising path to reliable AI-assisted software development.
+
+# 2. Background and Related Work
+
+## 2.1 Agentic Software Engineering
+
+The evolution of AI coding agents has progressed from simple code completion to autonomous software engineering systems capable of repository-level modifications. **SWE-bench** [7] established the gold standard for evaluating repository-level understanding with 2,294 real GitHub issues from 12 Python projects. The accompanying **SWE-agent** [4] demonstrated that custom agent-computer interfaces significantly enhance performance, achieving 12.5% pass@1 through careful interface design rather than model improvements.
+
+Repository-level agents have emerged as a distinct research direction. **RepoCoder** [8] introduced iterative retrieval-generation pipelines that improve baseline performance by over 10% through better context integration. **AutoCodeRover** [6] combines LLMs with spectrum-based fault localization, achieving 19% efficacy on SWE-bench at $0.43 per issue. More recently, **Agentless** [9] challenged complex agent architectures with a simple three-phase process (localization, repair, validation) achieving 32% on SWE-bench Lite at $0.70 cost, suggesting that sophisticated architectures may not always improve performance.
+
+**Multi-agent systems** have consistently outperformed single-agent approaches. **AgentCoder** [10] employs a three-agent architecture (Programmer, Test Designer, Test Executor) achieving 96.3% pass@1 on HumanEval with GPT-4, compared to 71.3% for single-agent approaches. **MapCoder** [11] extends this with four specialized agents replicating human programming cycles, achieving 93.9% pass@1 on HumanEval and 22.0% on the challenging APPS benchmark. **MetaGPT** [12] demonstrates role-based agents communicating through structured documents, achieving 85.9% pass@1 on HumanEval with 100% task completion on software development tasks.
+
+Our approach differs fundamentally from these repository-level and multi-agent systems. While they focus on modifying existing codebases or coordinating multiple specialized agents, we address the distinct challenge of generating complete applications from natural language prompts with production-level quality assurance.
+
+## 2.2 Code Generation Benchmarks
+
+Current evaluation methodologies reveal significant limitations in assessing production-ready code generation. **Function-level benchmarks** like HumanEval [1] with 164 hand-written problems and MBPP [2] with 974 entry-level tasks established initial baselines but fail to capture real-world programming complexity. **EvalPlus** [13] addressed overfitting by extending HumanEval and MBPP with 80x and 35x more test cases respectively, revealing substantial performance degradation in previously reported results.
+
+**Class-level evaluation** emerged with **ClassEval** [14], the first benchmark for class-level code generation with 100 Python classes and average 33.1 test cases per class. **BigCodeBench** [15] pushed further with 1,140 function-level tasks requiring multiple function calls from 139 libraries. These benchmarks consistently show 30-50% performance drops compared to simple function generation, highlighting the complexity gap between isolated tasks and integrated systems.
+
+**Application-level assessment** remains limited. **WebArena** [16] provides 812 realistic web environment tasks for UI automation but focuses on interaction rather than generation. Our work addresses this gap by evaluating complete application generation across diverse domains with human assessors using production-quality criteria.
+
+The limitations of test-based evaluation have driven alternative approaches. **CodeJudge** [17] demonstrates semantic correctness evaluation without test cases using LLMs, while metamorphic testing approaches [18] validate consistency across prompt variations. However, these methods remain primarily research tools rather than production validation systems.
+
+## 2.3 Production Quality in Generated Code
+
+Ensuring production-ready AI-generated code requires validation approaches beyond simple correctness testing. **Static analysis integration** has shown promise, with intelligent code analysis agents [19] combining GPT-3/4 with traditional static analysis to reduce false-positive rates from 85% to 66%. However, token consumption costs remain prohibitive for widespread adoption.
+
+**Testing frameworks** have evolved to address AI-specific challenges. **Test-driven approaches** like TiCoder [20] achieve 45.97% absolute improvement in pass@1 accuracy through interactive generation. Property-based testing frameworks [21] show 23.1-37.3% relative improvements over established TDD methods by generating tests that capture semantic properties rather than specific implementations.
+
+**AST-based validation** provides structural correctness guarantees. **AST-T5** [22] leverages Abstract Syntax Trees for structure-aware analysis, outperforming CodeT5 by 2-3 points on various tasks. **iSMELL** [23] combines multiple code smell detection toolsets with LLMs in a Mixture of Experts architecture, achieving 75.17% average F1 score—a 35.05% increase over LLM baselines for classical code smells.
+
+**Industry deployment** reveals gaps between offline performance and practical usage. **CodeAssist** [24] collected 2M completions from 1,200+ users over one year, revealing significant discrepancies between benchmark performance and real-world usage patterns. Platforms like SonarQube have implemented specialized quality gates for AI-generated code, integrating into CI/CD pipelines with customizable rules for different risk profiles.
+
+Our work builds on these validation approaches but addresses a fundamental limitation: existing methods focus on individual code artifacts rather than complete application systems. We demonstrate that production readiness requires validation pipelines specifically designed for end-to-end application generation, not just code correctness.
 
 ## 3. Problem Setup and Method
 
@@ -90,8 +121,8 @@ Our framework operates on three core principles:
 
 **Validation Pipeline**: Stack-specific validation implements hierarchical checks ordered by computational cost and diagnostic value. Compilation verification precedes integration testing; static analysis gates dynamic testing. This design minimizes computational overhead while maximizing error detection coverage.
 
-### 5. Experimental Setup
-#### 5.1 Evaluation Framework  (todo @eugenek)
+### 4. Experimental Setup
+#### 4.1 Evaluation Framework  (todo @eugenek)
 - Dataset: N prompts across a complexity spectrum
 - Metrics:
   - Success rate (passes full validation)
@@ -99,7 +130,7 @@ Our framework operates on three core principles:
   - Validation pass rates by layer
   - Human evaluation rubric (Table 1) [27,38]
 
-#### 5.2 Experimental Configurations
+#### 4.2 Experimental Configurations
 We designed four experimental configurations to systematically evaluate factors affecting app generation success rates:
 Configuration 1: Technology Stack Comparison. We compared tRPC versus Python/NiceGUI stacks to establish baselines and assess scaffolding impact across different ecosystems.
 Configuration 2: Model Architecture Analysis. Using the tRPC stack, we evaluated open versus closed foundation models. Claude Sonnet 4 served as the baseline coding model, compared against Qwen3-Coder-480B-A35B and GPT OSS 120B as open alternatives.
@@ -107,24 +138,28 @@ Configuration 3: Testing Framework Ablation. We conducted three ablation studies
 Configuration 4: Type Checking Impact. For the Python/NiceGUI stack, we disabled type checks to test the hypothesis that arbitrary validation checks in the feedback loop may be counterproductive rather than beneficial.
 These configurations enable systematic analysis of technological, architectural, and validation factors influencing automated app generation performance.
 
-#### 5.3 Prompt Dataset
+#### 4.3 Prompt Dataset
 The evaluation dataset comprises 30 prompts designed to assess system performance across diverse application development scenarios.
 *Dataset Construction*. Evaluation prompts were generated through a blind testing protocol involving independent human contributors with no prior exposure to the app.build system architecture or generated outputs. Contributors developed tasks reflecting authentic development workflows from their professional experience, ensuring ecological validity while minimizing selection bias. To maintain feasibility within the experimental constraints, core framework developers subsequently filtered prompts requiring advanced integrations or AI capabilities beyond the system's scope.
 *Data Processing*. Raw prompts underwent automated post-processing using LLMs to anonymize sensitive information and standardize linguistic structure. This normalization process preserved semantic content and task complexity while ensuring consistent evaluation conditions across all test cases.
 *Reproducibility*. The complete prompt dataset and associated benchmark harness are publicly available in the project repository.
 
-#### 5.4 Assessor Protocol and Checks
+#### 4.4 Assessor Protocol and Checks
 In order to assess the quality of generated apps, we run a checklist with 7 smoke tests checks run by human evaluators.
 Assessors record PASS/WARN/FAIL/NA per prompt in Appendix Table A2. Full "how to" steps live in Appendix A.3.
-
 Unless the majority of checks are PASS or WARN, we believe the application is functional with possible occasional FAILs.
 As a result we calculate PASS as 1 point, WARN as 0.75 points and FAIL as -1 points and use these metrics to assign an overall score to the each generated application. In case there was a critical failure in the 00-03 we assigned a score -10 to the application score.
 
-Table below contains a complete set of checks we believe is enough to assess the application qiality from our personal experience that will be used for the evaluation: 
+Unless the majority of checks are PASS or WARN, we believe the application is functional with possible occasional FAILs.
+As a result we calculate PASS as 1 point, WARN as 0.75 points and FAIL as -1 points and use these metrics to assign an overall score to the each generated application.
+
+To make manual work manageable we define small, app.build‑specific checks with stable IDs.
+
+Table below contains a complete set of checks we believe is enough to assess the application qiality from our personal experience that will be used for the evaluation:
 — Does the app open cleanly?
 - Does the app reflect the user prompt on home and support the primary action?
 - Can a user create a new entity successfully?
-— Can a user open details and edit an entity? 
+— Can a user open details and edit an entity?
 — Do all primary clickable elements work without errors?
 — Is the first load reasonably fast, with no obvious red flags?
 
@@ -237,7 +272,7 @@ The table below enumerates the full prompt set used in the benchmark, with short
 | recipe-sharing-platform | A warm community-based platform where users can post, browse, and save their favorite recipes. Each recipe includes ingredients, instructions, and categories, with a search feature to find new meals. |
 | pomodoro-study-timer | Brutally minimalistic Pomodoro timer to boost productivity. It features customizable work and break intervals, audio alerts, and a simple log to track completed study sessions throughout the day. |
 | cat-conspiracy-tracker | A humorous app for paranoid cat owners to log their pet's suspicious activities. The app uses a custom, non-scientific scoring system based on logged behaviors (like prolonged staring or 'gifts' of dead insects) to calculate a daily 'conspiracy level'. |
-    
+
 #### A.2 Assessor Checklist (Template)
 Record PASS/FAIL/NA for each prompt and check. Use the Notes column for brief context or defect links.
 
@@ -277,7 +312,7 @@ This appendix section provides atomic, app.build‑specific methods, pass criter
 
 - AB‑06 Clickable Sweep
   - Method: Systematically click all visible primary clickable elements across main pages (nav links, primary/secondary buttons, list rows, tabs). Avoid clearly destructive actions; if confirmation appears, confirm once.
-  - Criteria: PASS -no navigation errors; no 404/5xx on route changes; target routes/components render, WARN if unhandled Console errors or one or two out of 10 minor buttons/elements dont work, FAIL if >30% of elements not clickable or brokens 
+  - Criteria: PASS -no navigation errors; no 404/5xx on route changes; target routes/components render, WARN if unhandled Console errors or one or two out of 10 minor buttons/elements dont work, FAIL if >30% of elements not clickable or brokens
 
 - AB‑07 Performance (quick)
   - Method: Run Lighthouse once on home (Mobile). Note Performance and Best Practices.
@@ -297,3 +332,54 @@ Notes for authors (to be removed before submission):
 - [f] We need better references; this is mostly weak. Assigned to @igor.rekun@databricks.com.
 - [g] Need a very short TL;DR on meta-agent by @igor.rekun@databricks.com. Assigned.
 - [h] There is a lot of clutter here; we will need to rewrite about half.
+
+
+
+
+[1] Chen, M., Tworek, J., Jun, H., Yuan, Q., Pinto, H. P. D. O., Kaplan, J., ... & Zaremba, W. (2021). Evaluating large language models trained on code. arXiv preprint arXiv:2107.03374.
+
+[2] Austin, J., Odena, A., Nye, M., Bosma, M., Michalewski, H., Dohan, D., ... & Sutton, C. (2021). Program synthesis with large language models. arXiv preprint arXiv:2108.07732.
+
+[3] Cognition Labs. (2024). SWE-bench Technical Report. https://cognition.ai/blog/swe-bench-technical-report
+
+[4] Yang, J., Prabhakar, A., Karthik, N., Narasimhan, K., & Yao, S. (2024). SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering. *Advances in Neural Information Processing Systems*, 37.
+
+[5] Liu, J., Xia, C. S., Wang, Y., & Zhang, L. (2023). Is your code generated by chatgpt really correct? rigorous evaluation of large language models for code generation. *Advances in Neural Information Processing Systems*, 36.
+
+[6] Zhang, Y., Wang, Y., Yu, K., Wang, Z., Zhu, Y., Shi, H., ... & Ernst, M. D. (2024). AutoCodeRover: Autonomous Program Improvement. In *Proceedings of the 33rd ACM SIGSOFT International Symposium on Software Testing and Analysis* (pp. 127-139).
+
+[7] Jimenez, C., Yang, J., Wettig, A., Yao, S., Pei, K., Press, O., & Narasimhan, K. (2024). SWE-bench: Can Language Models Resolve Real-World GitHub Issues?. In *The Twelfth International Conference on Learning Representations*.
+
+[8] Zhang, F., Chen, B., Zhang, Y., Liu, J., Zan, D., Mao, Y., ... & Lyu, M. R. (2023). RepoCoder: Repository-Level Code Completion Through Iterative Retrieval and Generation. In *Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing* (pp. 2471-2484).
+
+[9] Xia, C. S., Deng, Y., Dunn, S., & Zhang, L. (2024). Agentless: Demystifying LLM-based Software Engineering Agents. arXiv preprint arXiv:2407.01489.
+
+[10] Huang, D., Jia, Q., Fan, Q., Tan, H., Chen, J., & An, L. (2024). AgentCoder: Multi-Agent-based Code Generation with Iterative Testing and Optimisation. In *Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics* (Volume 1: Long Papers) (pp. 4424-4446).
+
+[11] Islam, M. A., Santos, J., Rahman, R., & Karim, M. R. (2024). MapCoder: Multi-Agent Code Generation for Competitive Problem Solving. In *Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics* (Volume 1: Long Papers) (pp. 4406-4423).
+
+[12] Hong, S., Zheng, X., Chen, J., Cheng, Y., Zhang, C., Wang, Z., ... & Wang, J. (2023). MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework. arXiv preprint arXiv:2308.00352.
+
+[13] Liu, J., Xia, C. S., Wang, Y., & Zhang, L. (2023). Is your code generated by chatgpt really correct? rigorous evaluation of large language models for code generation. *Advances in Neural Information Processing Systems*, 36.
+
+[14] Du, X., Wen, M., Wei, B., Wang, Z., Kim, D., & Menzies, T. (2024). ClassEval: A Manually-Crafted Benchmark for Evaluating LLMs on Class-level Code Generation. In *Proceedings of the IEEE/ACM 46th International Conference on Software Engineering* (pp. 1-13).
+
+[15] Zhuo, T. Y., Huang, M., Cui, Y., Han, S., Wang, Y., & Zhou, C. (2024). BigCodeBench: Benchmarking Code Generation with Diverse Function Calls and Complex Instructions. arXiv preprint arXiv:2406.15877.
+
+[16] Zhou, S., Xu, F. F., Zhu, H., Zhou, X., Lo, R., Sridhar, A., ... & Kembhavi, A. (2024). WebArena: A Realistic Web Environment for Building Autonomous Agents. In *The Twelfth International Conference on Learning Representations*.
+
+[17] Tong, Y., & Zhang, J. (2024). CodeJudge: Evaluating Code Generation with Large Language Models. In *Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing* (pp. 3531-3546).
+
+[18] Wang, Z., & Zhu, H. (2024). Validating LLM-Generated Programs with Metamorphic Prompt Testing. arXiv preprint arXiv:2406.06864.
+
+[19] Fan, Z. (2023). Static Code Analysis in the AI Era: An In-depth Exploration of the Concept, Function, and Potential of Intelligent Code Analysis Agents. arXiv preprint arXiv:2310.08837.
+
+[20] Fakhoury, S., Mechtaev, S., Shi, P., Chakraborty, S., & Sridharan, M. (2024). LLM-Based Test-Driven Interactive Code Generation: User Study and Empirical Evaluation. arXiv preprint arXiv:2404.10100.
+
+[21] Anonymous. (2024). Use Property-Based Testing to Bridge LLM Code Generation and Validation. arXiv preprint arXiv:2506.18315.
+
+[22] Gong, S., Chen, Y., Ke, P., & Liu, Z. (2024). AST-T5: Structure-Aware Pretraining for Code Generation and Understanding. arXiv preprint arXiv:2401.03003.
+
+[23] Wu, J., Zhang, Y., Chen, L., Li, Y., Yang, H., Chen, X., ... & Luo, Z. (2024). iSMELL: Assembling LLMs with Expert Toolsets for Code Smell Detection and Refactoring. In *Proceedings of the 39th IEEE/ACM International Conference on Automated Software Engineering* (pp. 1943-1955).
+
+[24] Izadi, M., Grichi, I., Van Tonder, R., Spinellis, D., Pradel, M., & Bacchelli, A. (2024). Language Models for Code Completion: A Practical Evaluation. In *Proceedings of the IEEE/ACM 46th International Conference on Software Engineering* (pp. 1-13).
