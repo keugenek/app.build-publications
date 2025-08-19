@@ -23,7 +23,7 @@ While AI coding agents demonstrate impressive capabilities, relying on them to b
 ### Keywords
 AI agents; software environments; production systems; validation feedback; actor-critic architecture
 
-# 1. Introduction
+# 1. Introduction - to be edited by @arsenyinfo
 
 ## 1.1 The Production Reliability Gap
 
@@ -51,7 +51,7 @@ Our work makes three primary contributions to the field of AI-assisted software 
 
 **Methodological Insights**: We demonstrate that thoughtful environment design matters more than raw model capability for production reliability. Our findings challenge the dominant focus on model scaling and prompt engineering, suggesting that structured environments represent a more promising path to reliable AI-assisted software development.
 
-# 2. Background and Related Work
+# 2. Background and Related Work (to be edited by @arsenyinfo)
 
 ## 2.1 Agentic Software Engineering
 
@@ -116,6 +116,7 @@ Our framework operates on three core principles:
 #### 3.3.2 Stack-Specific Components
 
 **Generation Flow**: Each stack implements a finite state machine orchestrating the generation process. The TypeScript/tRPC stack follows a sequential pipeline: data models → API interfaces → frontend → backend handlers. The Python/NiceGUI stack employs a two-phase approach: data models → API/UI implementation.
+# FixME: AI got wrong
 
 **Templates**: Stack-specific templates provide initial application scaffolding, reducing generation overhead while embedding universal smoke tests and health checks into the validation pipeline.
 
@@ -132,10 +133,15 @@ Our framework operates on three core principles:
 
 #### 4.2 Experimental Configurations
 We designed four experimental configurations to systematically evaluate factors affecting app generation success rates:
+
 Configuration 1: Technology Stack Comparison. We compared tRPC versus Python/NiceGUI stacks to establish baselines and assess scaffolding impact across different ecosystems.
+
 Configuration 2: Model Architecture Analysis. Using the tRPC stack, we evaluated open versus closed foundation models. Claude Sonnet 4 served as the baseline coding model, compared against Qwen3-Coder-480B-A35B and GPT OSS 120B as open alternatives.
+
 Configuration 3: Testing Framework Ablation. We conducted three ablation studies on the tRPC stack: (3a) disabled isolated Playwright UI smoke tests; (3b) additionally disabled ESLint checks; and (3c) further removed handlers tests, eliminating backend validation.
+
 Configuration 4: Type Checking Impact. For the Python/NiceGUI stack, we disabled type checks to test the hypothesis that arbitrary validation checks in the feedback loop may be counterproductive rather than beneficial.
+
 These configurations enable systematic analysis of technological, architectural, and validation factors influencing automated app generation performance.
 
 #### 4.3 Prompt Dataset
@@ -181,7 +187,7 @@ See Appendix A.3 for detailed methods, exact pass criteria, and reporting rules 
 - Python/NiceGUI: Lower token usage, more flexible [15]
 - Trade-off between reliability and development velocity
 
-#### 6.4 Failure Mode Analysis
+#### 6.4 Failure Mode Analysis - if manual analysis allows
 - Context management (35% of failures)
 - Tool calling precision (open models struggle more)
 - Validation catches 78% of would-be runtime errors
@@ -204,7 +210,7 @@ See Appendix A.3 for detailed methods, exact pass criteria, and reporting rules 
 ### 7.3. Conclusion
 We demonstrated that production-ready AI agents require extensive environment scaffolding beyond model capabilities. app.build shows that combining software engineering principles with agentic architectures enables reliable application generation. Our open-source implementation and evaluation framework provide a foundation for the community to build upon. As AI agents mature, the field must shift focus from model scaling to system design—the path to production runs through principled engineering, not just larger models.
 
-### Acknowledgments (@keugenek DONE)
+### Acknowledgments
 This submission is prepared in collaboration between app.build (Neon, now Databricks) and THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO).
 
 ### References (@pratik)
@@ -304,17 +310,11 @@ This appendix section provides atomic, app.build‑specific methods, pass criter
   - Method: Open detail/edit; change one field; save.
   - Criteria: PASS if success toast/indicator appears; no Console errors; WARN if errors, NA if no such action; FAIL if action does not work - shows some user error and is not clickable or not updating the page or if refresh cleans up the data.
 
---
-- AB‑05 Refresh --- REMOVED
-  - Method: Hard refresh (Ctrl/Cmd+Shift+R).
-  - Criteria: Data persists; if app declares in‑memory storage, mark NA with note.
---
-
-- AB‑06 Clickable Sweep
+- AB‑05 Clickable Sweep
   - Method: Systematically click all visible primary clickable elements across main pages (nav links, primary/secondary buttons, list rows, tabs). Avoid clearly destructive actions; if confirmation appears, confirm once.
   - Criteria: PASS -no navigation errors; no 404/5xx on route changes; target routes/components render, WARN if unhandled Console errors or one or two out of 10 minor buttons/elements dont work, FAIL if >30% of elements not clickable or brokens
 
-- AB‑07 Performance (quick)
+- AB‑06 Performance (quick)
   - Method: Run Lighthouse once on home (Mobile). Note Performance and Best Practices.
   - Criteria: Record performance score in notes, PASS >75, 30>WARN>75, FAIL<30
 
