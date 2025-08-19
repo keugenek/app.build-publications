@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}

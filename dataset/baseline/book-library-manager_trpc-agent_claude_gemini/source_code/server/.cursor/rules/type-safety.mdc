@@ -1,0 +1,14 @@
+---
+description: Type Safety and Error Handling
+globs: ["**/*.ts"]
+alwaysApply: true
+---
+
+- Always provide explicit return types for async functions
+- Use `SQL<unknown>[]` type for condition arrays in queries
+- Handle nullable database fields properly in TypeScript
+- For handler signatures, expect parsed Zod types with defaults applied
+- Validate foreign key constraints before INSERT/UPDATE operations
+- Use type guards for runtime type checking when necessary
+- Maintain type alignment between Zod schemas and Drizzle tables
+- Convert between display types (string) and storage types (number/null) appropriately

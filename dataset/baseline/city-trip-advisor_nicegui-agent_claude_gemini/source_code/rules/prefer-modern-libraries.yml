@@ -1,0 +1,13 @@
+id: prefer-modern-libraries
+message: Use modern libraries - httpx over requests, polars over pandas
+severity: error
+language: python
+rule:
+  any:
+    - pattern: import requests
+    - pattern: from requests import $MODULE
+    - pattern: import pandas
+    - pattern: from pandas import $MODULE
+fix: |
+  # Use httpx instead of requests
+  # Use polars instead of pandas

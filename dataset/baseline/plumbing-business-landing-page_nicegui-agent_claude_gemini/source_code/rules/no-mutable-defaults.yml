@@ -1,0 +1,13 @@
+id: no-mutable-defaults
+message: Avoid mutable default arguments in function definitions
+severity: error
+language: python
+rule:
+  pattern: |
+    def $NAME($$$ARGS, $ARG=[]$$$):
+        $$$BODY
+fix: |
+  def $NAME($$$ARGS, $ARG=None$$$):
+      if $ARG is None:
+          $ARG = []
+      $$$BODY

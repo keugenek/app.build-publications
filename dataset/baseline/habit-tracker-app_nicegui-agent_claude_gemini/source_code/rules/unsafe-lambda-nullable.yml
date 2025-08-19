@@ -1,0 +1,9 @@
+id: unsafe-lambda-nullable
+message: Lambda functions should capture nullable values safely
+severity: error
+language: python
+rule:
+  pattern: |
+    lambda: $FUNC($OBJ.id)
+fix: |
+  lambda obj_id=$OBJ.id: $FUNC(obj_id) if obj_id is not None else None

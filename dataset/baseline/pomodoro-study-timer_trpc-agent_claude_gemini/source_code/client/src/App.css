@@ -1,0 +1,23 @@
+/* Brutally minimalistic Pomodoro timer styles */
+
+@layer components {
+  /* Override default UI styles for more minimal appearance */
+  .timer-display {
+    @apply font-mono text-9xl font-black tracking-tight;
+  }
+  
+  /* Ensure buttons are stark and minimal */
+  .timer-button {
+    @apply font-bold uppercase tracking-wide;
+  }
+  
+  /* Clean card styling */
+  .settings-card {
+    @apply border-2 border-black;
+  }
+  
+  /* Session log styling */
+  .session-item {
+    @apply border-l-4 border-gray-900;
+  }
+}

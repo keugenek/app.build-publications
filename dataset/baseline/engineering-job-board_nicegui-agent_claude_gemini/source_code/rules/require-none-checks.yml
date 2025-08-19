@@ -1,0 +1,12 @@
+id: require-none-checks
+message: Check for None before using Optional values ending with _id
+severity: error
+language: python
+rule:
+  pattern: $VAR.$METHOD($$$ARGS)
+  has:
+    pattern: $VAR
+    regex: ".*_id$"
+fix: |
+  if $VAR is not None:
+      $VAR.$METHOD($$$ARGS)

@@ -1,0 +1,15 @@
+id: decimal-literal-conversion
+message: Use explicit Decimal conversion with string literals, not numeric literals
+severity: error
+language: python
+rule:
+  any:
+    - pattern: Decimal($A)
+      has:
+        pattern: $A
+        kind: integer
+    - pattern: Decimal($B)
+      has:
+        pattern: $B
+        kind: float
+fix: Decimal('$A')

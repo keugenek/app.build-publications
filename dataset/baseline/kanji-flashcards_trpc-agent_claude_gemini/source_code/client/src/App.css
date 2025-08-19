@@ -1,0 +1,207 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* Custom animation for kanji characters */
+  .kanji-bounce {
+    animation: kanjiPulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes kanjiPulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+  
+  /* SRS level specific animations and styles */
+  .srs-apprentice {
+    @apply bg-gradient-to-br from-pink-100 to-pink-200 text-pink-800;
+  }
+  
+  .srs-guru {
+    @apply bg-gradient-to-br from-purple-100 to-purple-200 text-purple-800;
+  }
+  
+  .srs-master {
+    @apply bg-gradient-to-br from-blue-100 to-blue-200 text-blue-800;
+  }
+  
+  .srs-enlightened {
+    @apply bg-gradient-to-br from-yellow-100 to-yellow-200 text-yellow-800;
+  }
+  
+  .srs-burned {
+    @apply bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800;
+  }
+  
+  /* Flashcard flip animation */
+  .flashcard-flip {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+  }
+  
+  .flashcard-flip.flipped {
+    transform: rotateY(180deg);
+  }
+  
+  .flashcard-front,
+  .flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 12px;
+  }
+  
+  .flashcard-back {
+    transform: rotateY(180deg);
+  }
+  
+  /* Progress bar animations */
+  .progress-animate {
+    transition: all 0.5s ease-in-out;
+  }
+  
+  /* Study streak fire animation */
+  .streak-fire {
+    animation: fireFlicker 1.5s ease-in-out infinite alternate;
+  }
+  
+  @keyframes fireFlicker {
+    0% {
+      transform: scale(1) rotate(-2deg);
+      filter: hue-rotate(0deg);
+    }
+    100% {
+      transform: scale(1.1) rotate(2deg);
+      filter: hue-rotate(20deg);
+    }
+  }
+  
+  /* Custom scrollbar for long lists */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(203 213 225) transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgb(203 213 225);
+    border-radius: 3px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(148 163 184);
+  }
+  
+  /* Gradient text for headings */
+  .gradient-text {
+    @apply bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent;
+  }
+  
+  /* Hover effects for cards */
+  .hover-lift {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  
+  /* Review result feedback */
+  .correct-feedback {
+    animation: correctPulse 0.6s ease-out;
+  }
+  
+  .incorrect-feedback {
+    animation: incorrectShake 0.6s ease-out;
+  }
+  
+  @keyframes correctPulse {
+    0% {
+      transform: scale(1);
+      background-color: rgb(34 197 94);
+    }
+    50% {
+      transform: scale(1.05);
+      background-color: rgb(22 163 74);
+    }
+    100% {
+      transform: scale(1);
+      background-color: rgb(34 197 94);
+    }
+  }
+  
+  @keyframes incorrectShake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+      transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+      transform: translateX(5px);
+    }
+  }
+  
+  /* JLPT level badges */
+  .jlpt-n1 {
+    @apply bg-gradient-to-r from-red-500 to-red-600 text-white;
+  }
+  
+  .jlpt-n2 {
+    @apply bg-gradient-to-r from-orange-500 to-orange-600 text-white;
+  }
+  
+  .jlpt-n3 {
+    @apply bg-gradient-to-r from-yellow-500 to-yellow-600 text-white;
+  }
+  
+  .jlpt-n4 {
+    @apply bg-gradient-to-r from-green-500 to-green-600 text-white;
+  }
+  
+  .jlpt-n5 {
+    @apply bg-gradient-to-r from-blue-500 to-blue-600 text-white;
+  }
+}
+
+/* Loading skeleton shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}

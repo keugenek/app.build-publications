@@ -1,0 +1,16 @@
+{
+  "success": false,
+  "exit_code": 124,
+  "docker_healthy": false,
+  "duration_seconds": 1500.028481,
+  "timestamp": "2025-08-19T15:03:09.191436",
+  "config": {
+    "prompt_name": "pc-gaming-niche-site",
+    "template_id": "nicegui_agent",
+    "coding_model_name": "claude",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "anthropic:claude-sonnet-4-20250514",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/pc-gaming-niche-site_nicegui-agent_claude_gemini/telemetry.json"
+  }
+}

@@ -1,0 +1,20 @@
+id: prefer-match-over-if
+message: Consider using match statement for complex conditional logic
+severity: error
+language: python
+rule:
+  pattern: |
+    if $VAR == $VALUE1:
+        $$$BODY1
+    elif $VAR == $VALUE2:
+        $$$BODY2
+    elif $VAR == $VALUE3:
+        $$$BODY3
+fix: |
+  match $VAR:
+      case $VALUE1:
+          $$$BODY1
+      case $VALUE2:
+          $$$BODY2
+      case $VALUE3:
+          $$$BODY3

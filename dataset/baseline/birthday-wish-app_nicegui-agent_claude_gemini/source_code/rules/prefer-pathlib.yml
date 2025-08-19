@@ -1,0 +1,7 @@
+id: prefer-pathlib
+message: Use pathlib.Path instead of os.path for path operations
+severity: warning
+language: python
+rule:
+  pattern: os.path.$METHOD($ARGS)
+fix: Path($ARGS).$METHOD()

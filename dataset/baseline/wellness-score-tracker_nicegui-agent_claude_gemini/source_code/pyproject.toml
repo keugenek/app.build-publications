@@ -1,0 +1,37 @@
+[project]
+name = "template"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "asyncpg>=0.30.0",
+    "nicegui[highcharts]>=2.19.0",
+    "psycopg2-binary>=2.9.10",
+    "pytest-asyncio>=1.0.0",
+    "pytest-selenium>=4.1.0",
+    "sqlmodel>=0.0.24",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.11.5",
+ "pyright>=1.1.403",
+ "ast-grep-cli>=0.39.1",
+]
+
+[tool.ruff]
+exclude = [".git", ".git-rewrite", ".pytest_cache", ".ruff_cache", ".venv"]
+
+line-length = 120
+indent-width = 4
+target-version = "py312"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.pyright]
+exclude = ["app/dbrx.py", '.venv']

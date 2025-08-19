@@ -1,0 +1,16 @@
+{
+  "success": false,
+  "exit_code": 124,
+  "docker_healthy": false,
+  "duration_seconds": 1500.071014,
+  "timestamp": "2025-08-19T15:28:09.267658",
+  "config": {
+    "prompt_name": "recipe-sharing-platform",
+    "template_id": "nicegui_agent",
+    "coding_model_name": "claude",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "anthropic:claude-sonnet-4-20250514",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/recipe-sharing-platform_nicegui-agent_claude_gemini/telemetry.json"
+  }
+}

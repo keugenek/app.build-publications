@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 951.74429,
+  "timestamp": "2025-08-19T13:56:10.009873",
+  "config": {
+    "prompt_name": "basic-inventory-system",
+    "template_id": "nicegui_agent",
+    "coding_model_name": "claude",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "anthropic:claude-sonnet-4-20250514",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/basic-inventory-system_nicegui-agent_claude_gemini/telemetry.json"
+  }
+}

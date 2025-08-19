@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom animations for the pantry app */
+@layer components {
+  .pantry-gradient {
+    background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+  }
+  
+  .expiring-pulse {
+    animation: pulse-warning 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse-warning {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: .8;
+    }
+  }
+  
+  .slide-in {
+    animation: slideInFromBottom 0.3s ease-out;
+  }
+  
+  @keyframes slideInFromBottom {
+    from {
+      transform: translateY(10px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
+/* Enhance form inputs with better focus states */
+@layer components {
+  .form-input:focus {
+    @apply ring-2 ring-orange-200 border-orange-300;
+  }
+  
+  .btn-primary {
+    @apply bg-orange-500 hover:bg-orange-600 text-white transition-colors duration-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-100 hover:bg-gray-200 text-gray-800 transition-colors duration-200;
+  }
+}

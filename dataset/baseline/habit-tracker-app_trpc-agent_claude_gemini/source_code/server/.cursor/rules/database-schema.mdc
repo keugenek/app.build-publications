@@ -1,0 +1,15 @@
+---
+description: Drizzle Database Schema Definition
+globs: ["**/db/schema.ts"]
+alwaysApply: true
+---
+
+- Define all database tables using drizzle-orm in `server/src/db/schema.ts`
+- ALWAYS export all tables in a `tables` object to enable relation queries
+- Use `numeric()` for monetary values with precision: `numeric('price', { precision: 10, scale: 2 })`
+- Use `integer()` for whole numbers and `serial()` for auto-incrementing IDs
+- Use `timestamp('created_at').defaultNow().notNull()` for timestamp fields
+- Export both select and insert types: `typeof table.$inferSelect` and `typeof table.$inferInsert`
+- Align nullability exactly with Zod schemas (nullable fields should not have `.notNull()`)
+
+@base-drizzle-schema.ts

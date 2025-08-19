@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 482.051672,
+  "timestamp": "2025-08-19T13:54:03.375903",
+  "config": {
+    "prompt_name": "pastel-blue-notes-app",
+    "template_id": "trpc_agent",
+    "coding_model_name": "claude",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "anthropic:claude-sonnet-4-20250514",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/pastel-blue-notes-app_trpc-agent_claude_gemini/telemetry.json"
+  }
+}

@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Custom gradient backgrounds for conspiracy levels */
+  .conspiracy-gradient-low {
+    @apply bg-gradient-to-r from-green-400 to-green-600;
+  }
+  
+  .conspiracy-gradient-medium {
+    @apply bg-gradient-to-r from-yellow-400 to-orange-500;
+  }
+  
+  .conspiracy-gradient-high {
+    @apply bg-gradient-to-r from-orange-500 to-red-600;
+  }
+  
+  .conspiracy-gradient-extreme {
+    @apply bg-gradient-to-r from-red-600 to-purple-700;
+  }
+
+  /* Animated paw print background */
+  .paw-pattern {
+    background-image: radial-gradient(circle at 20% 50%, rgba(139, 69, 19, 0.1) 2px, transparent 2px),
+                      radial-gradient(circle at 80% 50%, rgba(139, 69, 19, 0.1) 2px, transparent 2px);
+    background-size: 40px 40px;
+  }
+
+  /* Conspiracy level indicator animation */
+  @keyframes pulse-conspiracy {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+  }
+  
+  .conspiracy-pulse {
+    animation: pulse-conspiracy 2s ease-in-out infinite;
+  }
+
+  /* Cat-themed decorative elements */
+  .cat-whiskers::before,
+  .cat-whiskers::after {
+    content: '';
+    position: absolute;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.3;
+  }
+  
+  .cat-whiskers::before {
+    width: 20px;
+    left: -25px;
+    top: 50%;
+  }
+  
+  .cat-whiskers::after {
+    width: 20px;
+    right: -25px;
+    top: 50%;
+  }
+
+  /* Suspicious activity card hover effects */
+  .activity-card {
+    @apply transition-all duration-200 hover:shadow-lg hover:border-purple-300;
+  }
+  
+  .activity-card:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Custom scrollbar for better UX */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded-lg;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-purple-300 rounded-lg hover:bg-purple-400;
+  }
+
+  /* Loading animations */
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  .spin-slow {
+    animation: spin-slow 3s linear infinite;
+  }
+
+  /* Form validation styling */
+  .form-error {
+    @apply border-red-500 ring-1 ring-red-500;
+  }
+  
+  .form-success {
+    @apply border-green-500 ring-1 ring-green-500;
+  }
+}
+
+@layer base {
+  /* Improve font rendering */
+  body {
+    @apply font-sans antialiased;
+  }
+  
+  /* Better focus indicators */
+  *:focus {
+    outline: 2px solid theme('colors.purple.500');
+    outline-offset: 2px;
+  }
+  
+  /* Ensure good contrast for accessibility */
+  .dark-text {
+    @apply text-gray-900;
+  }
+  
+  .light-text {
+    @apply text-gray-600;
+  }
+}

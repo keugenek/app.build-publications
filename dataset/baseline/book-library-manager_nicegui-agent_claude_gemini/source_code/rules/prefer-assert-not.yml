@@ -1,0 +1,7 @@
+id: prefer-assert-not
+message: Use 'assert not func()' instead of 'assert func() == False' in tests
+severity: warning
+language: python
+rule:
+  pattern: assert $FUNC() == False
+fix: assert not $FUNC()

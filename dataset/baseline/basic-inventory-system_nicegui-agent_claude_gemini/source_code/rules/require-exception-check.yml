@@ -1,0 +1,11 @@
+id: require-exception-logging
+message: |
+  Exception handlers should check for exception type, e.g. except ValueError
+severity: error
+language: python
+rule:
+  pattern: |
+    try:
+      $$$
+    except:
+      $$$BODY

@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .card-hover {
+    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-xl;
+  }
+  
+  .gradient-bg {
+    background: linear-gradient(135deg, 
+      rgb(239, 246, 255) 0%, 
+      rgb(219, 234, 254) 25%, 
+      rgb(199, 210, 254) 50%, 
+      rgb(224, 231, 255) 100%);
+  }
+  
+  .glass-effect {
+    @apply bg-white/80 backdrop-blur-sm border border-white/20;
+  }
+  
+  .button-primary {
+    @apply bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300;
+  }
+  
+  .event-card-upcoming {
+    @apply bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-l-green-500;
+  }
+  
+  .event-card-past {
+    @apply bg-gradient-to-r from-gray-50 to-slate-50 border-l-4 border-l-gray-400;
+  }
+}
+
+/* Smooth animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Custom scrollbar for better aesthetics */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Focus styles */
+input:focus,
+textarea:focus,
+button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Prevent layout shift during loading */
+.loading-skeleton {
+  @apply animate-pulse bg-gray-200 rounded;
+}

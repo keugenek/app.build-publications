@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .gradient-border {
+    position: relative;
+    background: linear-gradient(white, white) padding-box, 
+                linear-gradient(45deg, #3b82f6, #8b5cf6) border-box;
+    border: 2px solid transparent;
+  }
+}
+
+@layer base {
+  body {
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}

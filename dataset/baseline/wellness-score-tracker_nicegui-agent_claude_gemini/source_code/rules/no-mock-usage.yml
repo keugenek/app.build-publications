@@ -1,0 +1,20 @@
+id: no-mock-usage
+message: Mock usage is not allowed in this codebase
+severity: error
+language: python
+rule:
+  any:
+    - pattern: from unittest.mock import $$$
+    - pattern: import unittest.mock
+    - pattern: from unittest import mock
+    - pattern: import mock
+    - pattern: from pytest_mock import $$$
+    - pattern: import pytest_mock
+    - pattern: Mock($$$)
+    - pattern: MagicMock($$$)
+    - pattern: patch($$$)
+    - pattern: mock.Mock($$$)
+    - pattern: mock.MagicMock($$$)
+    - pattern: mock.patch($$$)
+    - pattern: mocker.$$$
+    - pattern: monkeypatch.$$$

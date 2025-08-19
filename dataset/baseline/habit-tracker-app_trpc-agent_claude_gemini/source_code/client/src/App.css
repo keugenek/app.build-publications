@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+@layer base {
+  /* Smooth scrolling for better UX */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Custom selection color to match theme */
+  ::selection {
+    background-color: rgb(129 140 248 / 0.3);
+  }
+}

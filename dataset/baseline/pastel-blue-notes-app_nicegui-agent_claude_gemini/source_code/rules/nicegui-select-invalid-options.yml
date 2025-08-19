@@ -1,0 +1,25 @@
+id: nicegui-select-invalid-options
+language: python
+message: |
+  ui.select() has invalid options format. Use either:
+  - A simple list: options=['a', 'b', 'c']
+  - A dict with labels: options={'a': 'Label A', 'b': 'Label B'}
+severity: error
+rule:
+  pattern: ui.select($$$ARGS)
+  has:
+    any:
+      # List of dicts
+      - regex: 'options\s*=\s*\[\s*\{'
+      # List of tuples
+      - regex: 'options\s*=\s*\[\s*\('
+      # Set literal (curly braces without colons)
+      - all:
+          - regex: 'options\s*=\s*\{'
+          - not:
+              regex: 'options\s*=\s*\{[^}]*:'
+note: |
+  Common invalid patterns:
+  - List of dicts: options=[{"label": "A", "value": "a"}, ...]
+  - List of tuples: options=[("a", "Label A"), ...]  
+  - Sets: options={"a", "b", "c"}

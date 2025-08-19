@@ -1,0 +1,21 @@
+id: nicegui-display-exceptions
+message: UI exceptions should be displayed to users with ui.notify
+severity: error
+language: python
+rule:
+  all:
+    - any:
+        - pattern: "import nicegui"
+        - pattern: "from nicegui import $$$"
+    - pattern: |
+        try:
+          $$$
+        except $$$:
+          $$$BODY
+      not:
+        has:
+          pattern: $$$BODY
+          any:
+            - regex: ".*ui\\.notify.*"
+            - regex: ".*ui\\.notification.*"
+            - regex: ".*raise.*"

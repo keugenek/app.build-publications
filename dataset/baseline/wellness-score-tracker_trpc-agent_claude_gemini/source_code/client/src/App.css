@@ -1,0 +1,26 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer components {
+  /* Custom wellness-themed components */
+  .wellness-card {
+    @apply bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 shadow-sm hover:shadow-md transition-shadow;
+  }
+  
+  .wellness-score-excellent {
+    @apply bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border-green-200;
+  }
+  
+  .wellness-score-good {
+    @apply bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-800 border-yellow-200;
+  }
+  
+  .wellness-score-needs-improvement {
+    @apply bg-gradient-to-r from-red-100 to-rose-100 text-red-800 border-red-200;
+  }
+  
+  .metric-icon {
+    @apply text-2xl opacity-80;
+  }
+}

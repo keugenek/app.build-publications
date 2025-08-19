@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 452.072674,
+  "timestamp": "2025-08-19T13:24:59.156867",
+  "config": {
+    "prompt_name": "plant-care-tracker",
+    "template_id": "trpc_agent",
+    "coding_model_name": "claude",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "anthropic:claude-sonnet-4-20250514",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/plant-care-tracker_trpc-agent_claude_gemini/telemetry.json"
+  }
+}
