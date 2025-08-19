@@ -51,7 +51,7 @@ Our work makes three primary contributions to the field of AI-assisted software 
 
 **Methodological Insights**: We demonstrate that thoughtful environment design matters more than raw model capability for production reliability. Our findings challenge the dominant focus on model scaling and prompt engineering, suggesting that structured environments represent a more promising path to reliable AI-assisted software development.
 
-# 2. Background and Related Work (to be edited by @arsenyinfo)
+# 2. Background and Related Work (to be edited by @arsenyinfo) (@igor - to add more relevant stuff )
 
 ## 2.1 Agentic Software Engineering
 
@@ -84,6 +84,8 @@ Ensuring production-ready AI-generated code requires validation approaches beyon
 **Industry deployment** reveals gaps between offline performance and practical usage. **CodeAssist** [24] collected 2M completions from 1,200+ users over one year, revealing significant discrepancies between benchmark performance and real-world usage patterns. Platforms like SonarQube have implemented specialized quality gates for AI-generated code, integrating into CI/CD pipelines with customizable rules for different risk profiles.
 
 Our work builds on these validation approaches but addresses a fundamental limitation: existing methods focus on individual code artifacts rather than complete application systems. We demonstrate that production readiness requires validation pipelines specifically designed for end-to-end application generation, not just code correctness.
+
+#### 2.4. Tree search and test time and runtime isolation - @igor
 
 ## 3. Problem Setup and Method
 
