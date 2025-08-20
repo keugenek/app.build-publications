@@ -144,9 +144,6 @@ Configuration 2: Model Architecture Analysis. Using the tRPC stack, we evaluated
 
 Configuration 3: Testing Framework Ablation. We conducted three ablation studies on the tRPC stack: (3a) disabled isolated Playwright UI smoke tests; (3b) additionally disabled ESLint checks; and (3c) further removed handlers tests, eliminating backend validation.
 
-todo: add simple UI test or UI+backend
-Configuration 4: Edits performance. We implemented UI-only edit to add smiely faces to the app interface and measured success rate atomatically. We implemented harder edit prompt to assess frontend and backend edits performance with manual checks.
-
 These configurations enable systematic analysis of technological, architectural, and validation factors influencing automated app generation performance.
 
 #### 4.3 Prompt Dataset
@@ -163,7 +160,22 @@ The evaluation dataset comprises 30 prompts designed to assess system performanc
 
 *Human Evaluation Framework*. To systematically assess generated application quality, we implement a structured evaluation protocol comprising seven standardized functional checks executed by human assessors. Each generated application undergoes comprehensive testing across core functionality dimensions, with results recorded using a four-tier classification system (PASS/WARN/FAIL/NA) documented in Appendix Table A2.
 
-*Scoring Methodology*. The evaluation employs a weighted scoring system to quantify application functionality. Individual checks receive the following point allocations: PASS (1.0 points), WARN (0.75 points), and FAIL (-1.0 points). Applications demonstrating critical failures in initial smoke tests (checks 00-03) receive a penalty score of -10 to reflect fundamental non-functionality. An application is considered functional when the majority of checks achieve PASS or WARN status.
+*Scoring Methodology*. The evaluation employs a weighted scoring system to quantify application functionality at 0-10 scale. 0 score represents the complete absence of requested functionality in the applciation from user standpoint meaning application either completely broken, unusable or do not contain any required functionality. Score 10 means the applcation is working with no errors, requested functionality implemented completely and with no issues following best practices of software development.
+Scores between 0 and 10 reflect partially usable applications with gaps in the quality or requested features.
+Resulting score combines from the following individual checks of each application assigned manually by human assessors according to the procedure described in Appendix A.3 reflectiev relative significance of each check by the formula:
+
+foreach F: factor, 1/7*Sum(1/2*PassFw/100 * IPASS + 1/2*WarnFw/100 * IWARN) * Mul(Ffail * Fail)
+
+Factor | PASS Weight, % | WARN Weight, % | FAIL Multiplier |  
+--------
+AB‑01 Boot & Home | 10 | 8 | 0 |
+AB‑02 Prompt to app correspondence | 50 | 40 | 0 |
+AB‑03 Create | 10 | 5 | 1 |
+AB‑04 View/Edit | 10 | 5 | 1 |
+AB‑05 Clickable Sweep | 10 | 5 | 1 |
+AB‑06 Performance (quick) | 10 | 5 | 1 |
+
+Overall score is 0 if any of smoke checks A01-02 fail. Prompt correspondence is a major factor contributing at lest 50% to the overall result among of all other quality checks that have evenly distributed weights in the result. Minimal score that partially working app may get is 4 therefore, reflecting the state where the quality is not yet there but the app generally attempts to do what user asked for.
 
 *Evaluation Criteria*. The assessment protocol implements domain-specific checks designed for comprehensive coverage while maintaining evaluation efficiency. Each check targets a specific functional aspect with stable identifiers to ensure reproducibility. The complete evaluation suite comprises the following criteria:
 
@@ -296,15 +308,15 @@ This appendix section provides atomic, app.build‑specific methods, pass criter
   - Method: Quit Chrome. Relaunch with incognito mode. If present, run `./scripts/reset_env.sh` from the app `source_code` directory.
   - Notes: If you see common setup issues (Bind for 0.0.0.0:80 failed: port is already allocated; or The container name "/postgres" is already in use by container), re‑run the reset script once; do not report failure.
 
-- AB‑01 Boot & Home
+- AB‑01 Boot & Home 
   - Method: Navigate to `http://localhost`.
   - Criteria: PASS if page renders and Console shows 0 errors; WARN if page renders with Console errors (attach first error); FAIL if page does not render.
-  - Stop rule: If AB‑01 is FAIL, stop after recording AB‑00 - AB‑02 (smoke set). Mark remaining checks NA.
+  - Stop rule: If AB‑01 is FAIL, stop after recording AB‑01 - AB‑02 (smoke set). Mark remaining checks NA.
 
 - AB‑02 Prompt to app correspondence
   - Method: Navigate to `http://localhost`, find and execute main action.
   - Criteria: PASS if app reflects user prompt; WARN if no way to find and execute primary action in 30s, FAIL if application is generic or template with no correspondence to user prompt.
-  - Stop rule: If AB‑01 is FAIL, stop after recording AB‑00 - AB‑02 (smoke set). Mark remaining checks NA.
+  - Stop rule: If AB‑02 is FAIL, stop after recording AB‑01 - AB‑02 (smoke set). Mark remaining checks NA.
 
 - AB‑03 Create
   - Method: From the main entity form, fill valid fields; submit.
