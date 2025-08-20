@@ -108,7 +108,7 @@ Our framework exemplifies environment infrastructure design for software manipul
 
 #### 3.3.1 Meta-Components
 
-We developed following universal components that are reused for both stacks in the agent: 
+We developed following universal components that are reused for both stacks in the agent:
 
 **BaseActor**: A model-agnostic agent implementing core operations (file I/O, code editing, task completion) through tool calling. Stack-specific extensions augment functionality (e.g., dependency management via `uv add` for Python). The completion mechanism triggers stack-specific validation pipelines.
 
@@ -144,8 +144,8 @@ Configuration 2: Model Architecture Analysis. Using the tRPC stack, we evaluated
 
 Configuration 3: Testing Framework Ablation. We conducted three ablation studies on the tRPC stack: (3a) disabled isolated Playwright UI smoke tests; (3b) additionally disabled ESLint checks; and (3c) further removed handlers tests, eliminating backend validation.
 
-todo: add simple UI test or UI+backend 
-Configuration 4: Edits performance. We implemented UI-only edit to add smiely faces to the app interface and measured success rate atomatically. We implemented harder edit prompt to assess frontend and backend edits performance with manual checks. 
+todo: add simple UI test or UI+backend
+Configuration 4: Edits performance. We implemented UI-only edit to add smiely faces to the app interface and measured success rate atomatically. We implemented harder edit prompt to assess frontend and backend edits performance with manual checks.
 
 These configurations enable systematic analysis of technological, architectural, and validation factors influencing automated app generation performance.
 
@@ -153,7 +153,7 @@ These configurations enable systematic analysis of technological, architectural,
 
 The evaluation dataset comprises 30 prompts designed to assess system performance across diverse application development scenarios.
 
-*Dataset Construction*. Evaluation prompts were generated through a blind testing protocol involving independent human contributors with no prior exposure to the app.build system architecture or generated outputs. Contributors developed tasks reflecting authentic development workflows from their professional experience, ensuring general validity while minimizing selection bias. To maintain feasibility within the experimental constraints, core framework developers subsequently filtered prompts requiring advanced integrations or AI capabilities beyond the system's scope.
+*Dataset Construction*. Evaluation prompts were generated through a blind testing protocol involving independent human contributors with no prior exposure to the app.build system architecture or generated outputs. Contributors developed tasks reflecting authentic development workflows from their professional experience, ensuring general validity while minimizing selection bias. To maintain feasibility within the experimental constraints, core framework developers subsequently filtered prompts requiring advanced integrations or AI capabilities beyond the system's scope. The filering was performed prior to the evaluation phase.
 
 *Data Processing*. Raw prompts underwent automated post-processing using LLMs to anonymize sensitive information and standardize linguistic structure. This normalization process preserved semantic content and task complexity while ensuring consistent evaluation conditions across all test cases.
 
@@ -168,7 +168,7 @@ The evaluation dataset comprises 30 prompts designed to assess system performanc
 *Evaluation Criteria*. The assessment protocol implements domain-specific checks designed for comprehensive coverage while maintaining evaluation efficiency. Each check targets a specific functional aspect with stable identifiers to ensure reproducibility. The complete evaluation suite comprises the following criteria:
 
 1. Application initialization and clean boot sequence
-2. Prompt-to-implementation correspondence and primary action availability  
+2. Prompt-to-implementation correspondence and primary action availability
 3. Entity creation workflow functionality
 4. Entity viewing and editing capabilities
 5. User interface element responsiveness and error handling
@@ -182,14 +182,16 @@ Detailed evaluation procedures, pass/fail criteria, and reporting standards are 
 - Each validation layer contributes % improvement
 
 #### 6.2 Open vs Closed Model Performance
-- Closed models: 85% success with scaffolding
-- Open models: 61% success (71% relative) [16,40]
-- Key insight: Performance gap narrows significantly with more scaffolding
-- Open models are viable for production with proper environment design
+
+We evaluated Claude Sonnet 4 against two open-weights models using the TypeScript/tRPC stack with full validation pipelines. Claude achieved 86.7% success rate, establishing our closed-model baseline at $110.20 total cost. Qwen3-Coder-480B-A35B reached 70% success rate (80.8% relative performance) while GPT OSS 120B managed only 30% success rate. Both open models were accessed via OpenRouter, resulting in significantly lower costs: $12.68 for Qwen3 and $4.55 for GPT OSS.
+
+The performance gap reveals that environment scaffolding alone cannot eliminate the need for capable foundation models. However, leading open-weights models like Qwen3 demonstrate that structured environments can enable production-viable performance at substantially reduced costs. The 9x cost reduction for 19% performance loss represents a viable tradeoff for cost-sensitive deployments. GPT OSS's poor performance highlights the significant variance in open-weights model capabilities.
+
+Operational characteristics differed notably between model types. Open models required more validation retries, evidenced by higher LLM call counts (4,359 for Qwen3, 4,922 for GPT OSS vs 3,413 for Claude). Healthcheck pass rates (86.7% for Qwen3 vs 96.7% for Claude) indicate that open models generate syntactically correct code but struggle more with integration-level correctness, emphasizing the importance of comprehensive validation pipelines for open-weights deployments.
 
 #### 6.3 Edits Success Rate Analysis
 - TypeScript/tRPC: Edits performance [34,35]
-- Success rate between UI only edits and full stack ones 
+- Success rate between UI only edits and full stack ones
 
 #### 6.4 Failure Mode Analysis - if manual analysis allows
 - Context management (35% of failures)
