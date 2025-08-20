@@ -127,13 +127,14 @@ We developed following universal components that are reused for both stacks in t
 **Validation Pipeline**: Stack-specific validation implements hierarchical checks ordered by computational cost and diagnostic value. Compilation verification precedes integration testing; static analysis gates dynamic testing. This design minimizes computational overhead while maximizing error detection coverage.
 
 ### 4. Experimental Setup
-#### 4.1 Evaluation Framework  (todo @eugenek)
-- Dataset: N prompts across a complexity spectrum
+#### 4.1 Evaluation Framework
+- Dataset: 30 prompts spanning a complexity spectrum (low: static/single‑page UI; medium: single‑entity CRUD; high: multi‑entity/custom logic). Canonical texts are in Appendix A.1; complexity rubric in §6.5.
 - Metrics:
-  - Success rate (passes full validation)
-  - Token efficiency
-  - Validation pass rates by layer
-  - Human evaluation rubric (Table 1) [27,38]
+  - Success rate (score > 0) and zero‑score rate (score = 0)
+  - Perfect score rate (10/10) and score distribution (functional mean/median)
+  - Validation pass rates by check (AB‑01..AB‑06) and smoke‑test‑conditioned success (P(success | no smoke FAIL))
+  - Automated generation quality (0–10) using the rubric in §4.4
+  - Model/cost comparisons where applicable (reported in §6.2)
 
 #### 4.2 Experimental Configurations
 We designed four experimental configurations to systematically evaluate factors affecting app generation success rates:
@@ -262,7 +263,15 @@ We categorize prompts along a simple rubric and analyze success impacts:
 
 Empirically, medium‑complexity CRUD prompts achieve the highest reliability (9–10 typical), reflecting strong scaffolding for data models and handlers. Low‑complexity UI prompts are not uniformly “easy”: several failed prompt correspondence (AB‑02) by returning generic templates. High‑complexity prompts show lower success rates due to interaction wiring and state‑consistency issues surfaced by AB‑04/05. This suggests that environment scaffolding is most mature for CRUD‑centric tasks, while additional guardrails and exemplars are needed for multi‑step workflows and rich UI behaviors. todo: However this analysis needs further data to be evaluated.
 
-6.6 Analysis of the runs ^
+6.6 Analysis of the runs
+
+Across 30 tRPC runs, automated generation produced functional applications in 70% of cases, with strong quality once smoke tests passed. Failures concentrated in early stages (boot/prompt) and in a small set of interaction/state issues:
+
+- Early gates: 9/30 runs resulted in zero scores, traced to AB‑01/AB‑02 failures or missing artifacts/templates.
+- High‑quality plateau: among runs without smoke FAILs (n=22), 95.5% were functional and 77.3% scored ≥9; functional median score was 9.5.
+- Residual defects: interaction wiring (unbound buttons/links), minor state issues (refresh required, broken filters), and occasional CSP warnings for images/media.
+
+Prompt complexity correlated with outcomes. Medium‑complexity CRUD prompts achieved the highest reliability (9–10 typical). Low‑complexity UI prompts sometimes failed AB‑02 by yielding generic templates. High‑complexity prompts exhibited more interaction/state defects, reducing success rates. This suggests scaffolding is most mature for CRUD‑centric tasks; richer workflows benefit from additional guardrails and exemplars.
 
 ### 7. Summary
 
