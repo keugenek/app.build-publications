@@ -88,6 +88,12 @@ Our work builds on these validation approaches but addresses a fundamental limit
 
 #### 2.4. Tree search and test time and runtime isolation (todo: @igor)
 
+**Tree search** enhances LLM-based solutions and serves as a way to increase compute budget beyond internal model reasoning token budget. The closest approach is used by Li et al in [https://arxiv.org/abs/2502.14382](S* Scaling) by combining iterative feedback with parallel branches taking different path towards solving the problem.
+
+**Sampling** more trajectories increases success rate significantly which is evident by difference in pass@1 and pass@3 often by 30% or more, drawing more samples brought ARC success rate from 10 -> 35% [https://www.lesswrong.com/posts/Rdwui3wHxCeKb7feK/getting-50-sota-on-arc-agi-with-gpt-4o]
+
+**Sandboxing** is cornerstone due to web applications require much more elaborate testing than running unit tests. It includes set up and teardown of databases and browser emulation. To run that in parallel we opted for dagger.io for it's caching capabilities and compatibility with docker.
+
 ## 3. Problem Setup and Method
 
 ### 3.1 Problem Formulation
@@ -112,9 +118,9 @@ We developed following universal components that are reused for both stacks in t
 
 **BaseActor**: A model-agnostic agent implementing core operations (file I/O, code editing, task completion) through tool calling. Stack-specific extensions augment functionality (e.g., dependency management via `uv add` for Python). The completion mechanism triggers stack-specific validation pipelines.
 
-**Tree Search**: [Placeholder - to be added by Igor]
+**Tree Search**: General data structure of nodes containing LLM completions, performed actions and evaluation results, such as type and lint checks, tests pass rate, browser emulation and playwright checks. Search policy selects nodes for further expansion with configurable search width and optional branching criteria until maximum depth is reached or solution is found
 
-**Runtime Infrastructure**: [Placeholder - to be added by Igor]
+**Runtime Infrastructure**: Dagger engine is used to provide isolated sandboxes due to its caching mechanism naturally fitting tree searches since child node will share environment of the parent making backtracking essentially free. On top of sandbox workspaces we also use dagger to serve dependencies such as databases as well as run playwright tests.
 
 **AST-based Validation**: We employ `ast-grep` for pattern-based code analysis, identifying common anti-patterns in generated code (e.g., silent failures, improper error propagation) that distinguish superficially correct code from production-ready implementations.
 
@@ -368,7 +374,7 @@ This appendix section provides atomic, app.build‑specific methods, pass criter
   - Method: Quit Chrome. Relaunch with incognito mode. If present, run `./scripts/reset_env.sh` from the app `source_code` directory.
   - Notes: If you see common setup issues (Bind for 0.0.0.0:80 failed: port is already allocated; or The container name "/postgres" is already in use by container), re‑run the reset script once; do not report failure.
 
-- AB‑01 Boot & Home 
+- AB‑01 Boot & Home
   - Method: Navigate to `http://localhost`.
   - Criteria: PASS if page renders and Console shows 0 errors; WARN if page renders with Console errors (attach first error); FAIL if page does not render.
   - Stop rule: If AB‑01 is FAIL, stop after recording AB‑01 - AB‑02 (smoke set). Mark remaining checks NA.
