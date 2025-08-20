@@ -17,7 +17,7 @@ Correspondence: <contact@your-domain.example>
 Submission to: NeurIPS 2025 Workshop on Scaling Environments for Agents (SEA) — see website: [SEA Workshop @ NeurIPS 2025](https://sea-workshop.github.io/)
 
 ### Abstract
-We present app.build, an open-source framework that improves LLM-based application generation through systematic validation and structured environments. Our approach combines multi-layered validation pipelines, stack-specific orchestration, and model-agnostic architecture, implemented across two reference stacks (TypeScript/tRPC and Python/NiceGUI). Through evaluation on 30 generation tasks, we demonstrate that comprehensive validation improves success rates by X%, with open-weights models achieving X% of closed-model performance when provided structured environments. The open-source framework has been adopted by the community, with over 3,000 applications generated to date. This work demonstrates that scaling reliable AI agents requires scaling environments, not just models - providing empirical insights and complete reference implementations for production-oriented agent systems.
+We present app.build, an open-source framework that improves LLM-based application generation through systematic validation and structured environments. Our approach combines multi-layered validation pipelines, stack-specific orchestration, and model-agnostic architecture, implemented across reference stacks (TypeScript/tRPC, Python/NiceGUI (beta), Php/Laravel (beta)). Through evaluation on 30 generation tasks, we demonstrate that comprehensive validation improves success rates by X%, with open-weights models achieving X% of closed-model performance when provided structured environments. The open-source framework has been adopted by the community, with over 3,000 applications generated to date. This work demonstrates that scaling reliable AI agents requires scaling environments, not just models - providing empirical insights and complete reference implementations for production-oriented agent systems.
 
 ### Keywords
 AI agents; software environments; production systems; validation feedback; actor-critic architecture
@@ -38,15 +38,15 @@ We propose **environment scaffolding** as an environment-first approach compleme
 
 Our approach operates on three core principles. First, **structured environment design** provides explicit constraints and contextual information, reducing the generation search space while maintaining flexibility. Second, **multi-layered validation pipelines** implement deterministic quality gates with stack-specific checks, creating iterative validation cycles that catch errors early. Third, **model-agnostic architecture** decouples environment scaffolding from LLM choice, enabling consistent quality assurance across different foundation models.
 
-We implement this approach through app.build, an open-source framework featuring two production stacks (TypeScript/tRPC and Python/NiceGUI) with comprehensive validation pipelines. Our architecture combines BaseActor tool-calling patterns, AST-based anti-pattern detection, and finite state machine orchestration to ensure generated applications meet production standards.
+We implement this approach through app.build, an open-source framework featuring multiple production stacks (TypeScript/tRPC and beta stacks Python/NiceGUI, Php/NiceGUI) with comprehensive validation pipelines. Our architecture combines BaseActor tool-calling patterns, AST-based anti-pattern detection, and finite state machine orchestration to ensure generated applications meet production standards.
 
 ## 1.3 Contributions
 
 Our work contributes to scaling environments for agents through:
 
-*Environment Infrastructure*: Open-source framework with two production reference stacks (TypeScript/tRPC and Python/NiceGUI) demonstrating structured action-space design and tool integration for code generation agents.
+*Environment Infrastructure*: Open-source framework with reference web stacks demonstrating structured action-space design and tool integration for code generation agents.
 
-*Empirical Evaluation*: Analysis of 30 generation tasks showing specific validation layers impact on success rates, with ablation studies revealing environment scaffolding effects across model architectures.
+*Empirical Evaluation*: Analysis of 30 generation tasks showing specific validation layers impact on success rates for our most mature stack TypeScript/tRPC, with ablation studies revealing environment scaffolding effects across model architectures.
 
 *Methodological Insights*: We demonstrate that thoughtful environment design matters more than raw model capability for production reliability. Our findings challenge the dominant focus on model scaling and prompt engineering, suggesting that structured environments represent a more promising path to reliable AI-assisted software development.
 
@@ -98,7 +98,7 @@ LLM-based code generation enables rapid prototyping but often produces code that
 
 Our framework exemplifies environment infrastructure design for software manipulation agents, implementing:
 
-**Environment Scaffolding**: We provide structured environments with explicit constraints and contextual information for reliable code generation, demonstrated through two reference implementations (TypeScript/tRPC and Python/NiceGUI).
+**Environment Scaffolding**: We provide structured environments with explicit constraints and contextual information for reliable code generation, demonstrated through web stack reference implementations.
 
 **Multi-Layered Validation**: We implement deterministic quality gates with stack-specific validation pipelines, creating feedback loops that ensure generated code meets production standards.
 
@@ -120,7 +120,7 @@ We developed following universal components that are reused for both stacks in t
 
 #### 3.3.2 Stack-Specific Components (todo: describe complete set of checks for reference in experiments, refererred to Configuration 3, Configuration 4 below, need diagram)
 
-**Generation Flow**: Each stack implements a finite state machine orchestrating the generation process. The TypeScript/tRPC stack follows a sequential pipeline: data models → API interfaces → backend handlers and frontend. The Python/NiceGUI stack employs a two-phase approach: data models → API/UI implementation.
+**Generation Flow**: Each stack implements a finite state machine orchestrating the generation process. The TypeScript/tRPC stack follows a sequential pipeline: data models → API interfaces → backend handlers and frontend. The Python/NiceGUI and Php/Laravel stacks employs two-phase approach: data models → API/UI implementation.
 
 **Templates**: Stack-specific templates provide initial application scaffolding, reducing generation overhead while embedding universal smoke tests and health checks into the validation pipeline.
 
@@ -138,13 +138,14 @@ We developed following universal components that are reused for both stacks in t
 #### 4.2 Experimental Configurations
 We designed four experimental configurations to systematically evaluate factors affecting app generation success rates:
 
-Configuration 1: Technology Stack Comparison. We compared tRPC versus Python/NiceGUI stacks to establish baselines and assess scaffolding impact across different ecosystems.
+Configuration 1: Baseline. We generated baseline tRPC apps with default production setup and all checks ON to assess default generation success rate, cost and time.
 
 Configuration 2: Model Architecture Analysis. Using the tRPC stack, we evaluated open versus closed foundation models. Claude Sonnet 4 served as the baseline coding model, compared against Qwen3-Coder-480B-A35B and GPT OSS 120B as open alternatives.
 
 Configuration 3: Testing Framework Ablation. We conducted three ablation studies on the tRPC stack: (3a) disabled isolated Playwright UI smoke tests; (3b) additionally disabled ESLint checks; and (3c) further removed handlers tests, eliminating backend validation.
 
-Configuration 4: Type Checking Impact. For the Python/NiceGUI stack, we disabled type checks to test the hypothesis that arbitrary validation checks in the feedback loop may be counterproductive rather than beneficial.
+todo: add simple UI test or UI+backend 
+Configuration 4: Edits performance. We implemented UI-only edit to add smiely faces to the app interface and measured success rate atomatically. We implemented harder edit prompt to assess frontend and backend edits performance with manual checks. 
 
 These configurations enable systematic analysis of technological, architectural, and validation factors influencing automated app generation performance.
 
@@ -186,10 +187,9 @@ Detailed evaluation procedures, pass/fail criteria, and reporting standards are 
 - Key insight: Performance gap narrows significantly with more scaffolding
 - Open models are viable for production with proper environment design
 
-#### 6.3 Stack Analysis
-- TypeScript/tRPC: Higher success rate (type safety benefits) [34,35]
-- Python/NiceGUI: Lower token usage, more flexible [15]
-- Trade-off between reliability and development velocity
+#### 6.3 Edits Success Rate Analysis
+- TypeScript/tRPC: Edits performance [34,35]
+- Success rate between UI only edits and full stack ones 
 
 #### 6.4 Failure Mode Analysis - if manual analysis allows
 - Context management (35% of failures)
