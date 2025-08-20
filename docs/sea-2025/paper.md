@@ -192,10 +192,34 @@ The scoring mechanism implements hard constraints through critical smoke tests (
 
 Detailed evaluation procedures, pass/fail criteria, and reporting standards are specified in Appendix A.3, including environment preparation protocols (AB-00) and systematic testing methodology.
 
-### 6. Results (@keugenek)
+### 6. Results
+
 #### 6.1 Environment Scaffolding Impact
-- Primary finding: x success rate with full scaffolding
-- Each validation layer contributes % improvement
+
+Our evaluation of 21 generated applications reveals the critical importance of structured validation pipelines. The overall success rate reached 66.7% (14/21 applications scoring > 0), with 42.9% achieving perfect scores and 33.3% complete failures. This bimodal distribution underscores the effectiveness of our smoke test design in filtering non-viable applications early.
+
+**Table 2: Aggregated Evaluation Results**
+
+| Metric | Value | Key Insight |
+|--------|-------|-------------|
+| Total Applications | 21 | Evaluated using TypeScript/tRPC stack |
+| Success Rate (Score > 0) | 66.7% | 14/21 functional applications |
+| Perfect Score (10/10) | 42.9% | 9/21 fully compliant applications |
+| Complete Failures (0/10) | 33.3% | 7/21 non-functional applications |
+| Mean Score (functional apps) | 9.24 | High quality when functional |
+
+**Table 3: Check-Specific Pass Rates**
+
+| Check | Pass Rate | Critical Impact |
+|-------|-----------|-----------------|
+| AB-01 (Boot) | 90.5% | Failure cascades to 0 score |
+| AB-02 (Prompt) | 68.4% | Template detection needed |
+| AB-03 (Create) | 93.3% | Strong CRUD implementation |
+| AB-04 (View/Edit) | 85.7% | Reliable data operations |
+| AB-05 (UI Sweep) | 86.7% | Good interface coverage |
+| AB-06 (Performance) | 93.3% | Consistent optimization |
+
+The analysis reveals that smoke tests (AB-01, AB-02) serve as critical quality gates—all zero-score applications failed one of these initial checks. Applications passing both smoke tests demonstrated 92.9% probability of achieving scores ≥7, validating our hierarchical validation approach. Performance metrics show remarkable consistency (mean: 85.7, σ: 5.8), indicating effective optimization defaults in our scaffolding system.
 
 #### 6.2 Open vs Closed Model Performance
 
@@ -205,17 +229,13 @@ The performance gap reveals that environment scaffolding alone cannot eliminate 
 
 Operational characteristics differed notably between model types. Open models required more validation retries, evidenced by higher LLM call counts (4,359 for Qwen3, 4,922 for GPT OSS vs 3,413 for Claude). Healthcheck pass rates (86.7% for Qwen3 vs 96.7% for Claude) indicate that open models generate syntactically correct code but struggle more with integration-level correctness, emphasizing the importance of comprehensive validation pipelines for open-weights deployments.
 
-#### 6.3 Edits Success Rate Analysis
-- TypeScript/tRPC: Edits performance [34,35]
-- Success rate between UI only edits and full stack ones
-
-#### 6.4 Failure Mode Analysis - if manual analysis allows
+#### 6.3 Failure Mode Analysis - if manual analysis allows
 - Context management (35% of failures)
 - Tool calling precision (open models struggle more)
 - Validation catches 78% of would-be runtime errors
 - Human eval reveals maintainability issues even in "successful" apps [36]
 
-6.5 Analysis of the runs ^
+6.4 Analysis of the runs ^
 
 ### 7. Summary
 
