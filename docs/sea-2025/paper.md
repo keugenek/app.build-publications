@@ -8,7 +8,6 @@ Production Reliability at Scale: Scaffolding Systems for Agentic Prompt-to-App G
 - Prof. Dr. Ivan Yamshchikov [2]
 - Pranav Sah [2]
 - Pratik [2]
-- Dheena Dayalan [2]
 
 [1] app.build (Neon, now at Databricks)
 [2] THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO)
@@ -18,7 +17,7 @@ Correspondence: <contact@your-domain.example>
 Submission to: NeurIPS 2025 Workshop on Scaling Environments for Agents (SEA) — see website: [SEA Workshop @ NeurIPS 2025](https://sea-workshop.github.io/)
 
 ### Abstract
-We present app.build, an open-source framework that improves LLM-based application generation through systematic validation and structured environments. Our approach combines multi-layered validation pipelines, stack-specific orchestration, and model-agnostic architecture, implemented across two reference stacks (TypeScript/tRPC and Python/NiceGUI). Through evaluation on 30 generation tasks, we demonstrate that comprehensive validation improves success rates by X%, with open-weights models achieving X% of closed-model performance when provided structured environments. The open-source framework has been adopted by the community, with over 3,000 applications generated to date. This work demonstrates that scaling reliable AI agents requires scaling environments, not just models—providing empirical insights and complete reference implementations for production-oriented agent systems.
+We present app.build, an open-source framework that improves LLM-based application generation through systematic validation and structured environments. Our approach combines multi-layered validation pipelines, stack-specific orchestration, and model-agnostic architecture, implemented across two reference stacks (TypeScript/tRPC and Python/NiceGUI). Through evaluation on 30 generation tasks, we demonstrate that comprehensive validation improves success rates by X%, with open-weights models achieving X% of closed-model performance when provided structured environments. The open-source framework has been adopted by the community, with over 3,000 applications generated to date. This work demonstrates that scaling reliable AI agents requires scaling environments, not just models - providing empirical insights and complete reference implementations for production-oriented agent systems.
 
 ### Keywords
 AI agents; software environments; production systems; validation feedback; actor-critic architecture
@@ -27,7 +26,7 @@ AI agents; software environments; production systems; validation feedback; actor
 
 ## 1.1 The Production Reliability Gap
 
-While AI coding agents demonstrate impressive capabilities on standard benchmarks like HumanEval [1] and MBPP [2], relying on them to build production-ready applications without human supervision remains infeasible. Recent repository-level systems such as Devin [3] and SWE-agent [4] represent significant advances, yet their performance on real-world software engineering tasks reveals a substantial gap between research benchmarks and production requirements.
+While AI coding agents demonstrate impressive capabilities on standard benchmarks like HumanEval [1] and MBPP [2], relying on them to build production-ready applications without human supervision remains infeasible. Recent repository-level systems such as Devin [3] and SWE-agent [4] represent significant advances, yet their performance on real-world software engineering tasks reveals a substantial gap between research benchmarks and production requirements. (todo: proof of the claim)
 
 This gap manifests across multiple dimensions. Function-level benchmarks like HumanEval evaluate isolated code generation but fail to capture system-level concerns including error handling, integration complexity, and production constraints [5]. Even state-of-the-art systems like AutoCodeRover, achieving 19% efficacy on SWE-bench at $0.43 per issue [6], demonstrate that raw model capability alone is insufficient for reliable automated software development.
 
@@ -35,7 +34,7 @@ The core challenge lies in treating LLMs as standalone systems rather than compo
 
 ## 1.2 Our Approach: Environment Scaffolding
 
-We propose **environment scaffolding** as an environment-first approach complementing prompt engineering, focusing on action-space design and agent integration. Environment scaffolding provides structured constraints, contextual information, and deterministic validation feedback loops that enable consistent quality in LLM-generated applications through structured task formulation and validation infrastructure. Unlike approaches that attempt to improve model reasoning through prompting, our method creates safe environments where models can detect errors earlier and recover systematically.
+We propose **environment scaffolding** as an environment-first approach complementing prompt engineering, focusing on action-space design and agent integration. Environment scaffolding provides structured constraints, contextual information, and deterministic validation feedback loops that enable consistent quality in LLM-generated applications through structured task formulation and validation infrastructure. Unlike approaches that attempt to improve model reasoning through prompting, our method creates safe environments where models can detect errors earlier and recover systematically with lesser risk of harming the host system and reducing the risk of unpredicted generated code behavior.
 
 Our approach operates on three core principles. First, **structured environment design** provides explicit constraints and contextual information, reducing the generation search space while maintaining flexibility. Second, **multi-layered validation pipelines** implement deterministic quality gates with stack-specific checks, creating iterative validation cycles that catch errors early. Third, **model-agnostic architecture** decouples environment scaffolding from LLM choice, enabling consistent quality assurance across different foundation models.
 
@@ -47,7 +46,7 @@ Our work contributes to scaling environments for agents through:
 
 *Environment Infrastructure*: Open-source framework with two production reference stacks (TypeScript/tRPC and Python/NiceGUI) demonstrating structured action-space design and tool integration for code generation agents.
 
-*Empirical Evaluation*: Analysis of 30 generation tasks showing validation layer impact on success rates, with ablation studies revealing environment scaffolding effects across model architectures.
+*Empirical Evaluation*: Analysis of 30 generation tasks showing specific validation layers impact on success rates, with ablation studies revealing environment scaffolding effects across model architectures.
 
 *Methodological Insights*: We demonstrate that thoughtful environment design matters more than raw model capability for production reliability. Our findings challenge the dominant focus on model scaling and prompt engineering, suggesting that structured environments represent a more promising path to reliable AI-assisted software development.
 
@@ -63,9 +62,9 @@ Repository-level agents have emerged as a distinct research direction. **RepoCod
 
 **Multi-agent systems** have consistently outperformed single-agent approaches. **AgentCoder** [10] employs a three-agent architecture (Programmer, Test Designer, Test Executor) achieving 96.3% pass@1 on HumanEval with GPT-4, compared to 71.3% for single-agent approaches. **MapCoder** [11] extends this with four specialized agents replicating human programming cycles, achieving 93.9% pass@1 on HumanEval and 22.0% on the challenging APPS benchmark. **MetaGPT** [12] demonstrates role-based agents communicating through structured documents, achieving 85.9% pass@1 on HumanEval with 100% task completion on software development tasks.
 
-Our approach differs fundamentally from these repository-level and multi-agent systems. While they focus on modifying existing codebases or coordinating multiple specialized agents, we address the distinct challenge of generating complete applications from natural language prompts with production-level quality assurance.
+Our approach differs fundamentally from these repository-level and multi-agent systems. While they focus on modifying existing codebases or coordinating multiple specialized agents, we address the distinct challenge of generating and updating complete applications from natural language prompts with production-level quality assurance.
 
-## 2.2 Code Generation Benchmarks
+## 2.2 Code Generation Benchmarks (todo: describe ours?)
 
 Current evaluation methodologies reveal significant limitations in assessing production-ready code generation. **Function-level benchmarks** like HumanEval [1] with 164 hand-written problems and MBPP [2] with 974 entry-level tasks established initial baselines but fail to capture real-world programming complexity. **EvalPlus** [13] addressed overfitting by extending HumanEval and MBPP with 80x and 35x more test cases respectively, revealing substantial performance degradation in previously reported results.
 
@@ -87,7 +86,7 @@ Ensuring production-ready AI-generated code requires validation approaches beyon
 
 Our work builds on these validation approaches but addresses a fundamental limitation: existing methods focus on individual code artifacts rather than complete application systems. We demonstrate that production readiness requires validation pipelines specifically designed for end-to-end application generation, not just code correctness.
 
-#### 2.4. Tree search and test time and runtime isolation - @igor
+#### 2.4. Tree search and test time and runtime isolation (todo: @igor)
 
 ## 3. Problem Setup and Method
 
@@ -95,7 +94,7 @@ Our work builds on these validation approaches but addresses a fundamental limit
 
 LLM-based code generation enables rapid prototyping but often produces code that does not meet production standards. We present app.build, a framework addressing this through structured generation environments and systematic validation—demonstrating how careful environment design transforms probabilistic language models into reliable software engineering tools.
 
-### 3.2 Approach
+### 3.2 Approach (todo: reduce repated items)
 
 Our framework exemplifies environment infrastructure design for software manipulation agents, implementing:
 
@@ -107,7 +106,9 @@ Our framework exemplifies environment infrastructure design for software manipul
 
 ### 3.3 Architecture
 
-#### 3.3.1 Universal Components
+#### 3.3.1 Meta-Components
+
+We developed following universal components that are reused for both stacks in the agent: 
 
 **BaseActor**: A model-agnostic agent implementing core operations (file I/O, code editing, task completion) through tool calling. Stack-specific extensions augment functionality (e.g., dependency management via `uv add` for Python). The completion mechanism triggers stack-specific validation pipelines.
 
@@ -117,7 +118,7 @@ Our framework exemplifies environment infrastructure design for software manipul
 
 **AST-based Validation**: We employ `ast-grep` for pattern-based code analysis, identifying common anti-patterns in generated code (e.g., silent failures, improper error propagation) that distinguish superficially correct code from production-ready implementations.
 
-#### 3.3.2 Stack-Specific Components
+#### 3.3.2 Stack-Specific Components (todo: describe complete set of checks for reference in experiments, refererred to Configuration 3, Configuration 4 below, need diagram)
 
 **Generation Flow**: Each stack implements a finite state machine orchestrating the generation process. The TypeScript/tRPC stack follows a sequential pipeline: data models → API interfaces → backend handlers and frontend. The Python/NiceGUI stack employs a two-phase approach: data models → API/UI implementation.
 
@@ -148,23 +149,27 @@ Configuration 4: Type Checking Impact. For the Python/NiceGUI stack, we disabled
 These configurations enable systematic analysis of technological, architectural, and validation factors influencing automated app generation performance.
 
 #### 4.3 Prompt Dataset
+
 The evaluation dataset comprises 30 prompts designed to assess system performance across diverse application development scenarios.
-*Dataset Construction*. Evaluation prompts were generated through a blind testing protocol involving independent human contributors with no prior exposure to the app.build system architecture or generated outputs. Contributors developed tasks reflecting authentic development workflows from their professional experience, ensuring ecological validity while minimizing selection bias. To maintain feasibility within the experimental constraints, core framework developers subsequently filtered prompts requiring advanced integrations or AI capabilities beyond the system's scope.
+
+*Dataset Construction*. Evaluation prompts were generated through a blind testing protocol involving independent human contributors with no prior exposure to the app.build system architecture or generated outputs. Contributors developed tasks reflecting authentic development workflows from their professional experience, ensuring general validity while minimizing selection bias. To maintain feasibility within the experimental constraints, core framework developers subsequently filtered prompts requiring advanced integrations or AI capabilities beyond the system's scope.
+
 *Data Processing*. Raw prompts underwent automated post-processing using LLMs to anonymize sensitive information and standardize linguistic structure. This normalization process preserved semantic content and task complexity while ensuring consistent evaluation conditions across all test cases.
+
 *Reproducibility*. The complete prompt dataset and associated benchmark harness are publicly available in the project repository.
 
 #### 4.4 Assessor Protocol and Checks
-In order to assess the quality of generated apps, we run a checklist with 7 smoke tests checks run by human evaluators.
-Assessors record PASS/WARN/FAIL/NA per prompt in Appendix Table A2. Full "how to" steps live in Appendix A.3.
-Unless the majority of checks are PASS or WARN, we believe the application is functional with possible occasional FAILs.
-As a result we calculate PASS as 1 point, WARN as 0.75 points and FAIL as -1 points and use these metrics to assign an overall score to the each generated application. In case there was a critical failure in the 00-03 we assigned a score -10 to the application score.
 
-Unless the majority of checks are PASS or WARN, we believe the application is functional with possible occasional FAILs.
-As a result we calculate PASS as 1 point, WARN as 0.75 points and FAIL as -1 points and use these metrics to assign an overall score to the each generated application.
+In order to assess the quality of generated apps, we run a checklist with 7 smoke tests checks run by human evaluators.
+
+Assessors record PASS/WARN/FAIL/NA per prompt in Appendix Table A2. Full "how to" steps live in Appendix A.3.
+
+Unless the majority of checks are PASS or WARN, we believe the application is functional with possible occasional FAILs. As a result we calculate PASS as 1 point, WARN as 0.75 points and FAIL as -1 points and use these metrics to assign an overall score to the each generated application. In case there was a critical failure in the 00-03 we assigned a score -10 to the application score.
 
 To make manual work manageable we define small, app.build‑specific checks with stable IDs.
 
 Table below contains a complete set of checks we believe is enough to assess the application qiality from our personal experience that will be used for the evaluation:
+
 — Does the app open cleanly?
 - Does the app reflect the user prompt on home and support the primary action?
 - Can a user create a new entity successfully?
@@ -204,7 +209,7 @@ See Appendix A.3 for detailed methods, exact pass criteria, and reporting rules 
 Our current framework is limited to CRUD-oriented data applications, focusing on structured workflows with well-defined input-output expectations. While effective for common web application patterns, it does not yet support complex systems or advanced integrations. The validation pipeline, though comprehensive, relies on domain-specific heuristics and expert-defined anti-patterns, which may not generalize to novel or edge-case designs and requires significant human input. Additionally, our human evaluation protocol, while rigorous, is poorly scalable and constrained by subjectivity in assessing maintainability and user experience nuances. We plan to address these challenges in future work.
 
 7.2 Broader Impact
-The AI agent boom is accelerating, but real industry deployments often fail silently. Without environment scaffolding, we risk massive overengineering of models while ignoring the real bottleneck. app.build represents a shift from model-centric to system-centric AI engineering — a critical step toward scaling reliable agent environments. As emphasized in Machine Learning System Design with end-to-end examples [25], production AI systems only become effective when development integrates not just model performance, but core software engineering principles. By open-sourcing both the framework and evaluation protocol, we provide a reproducible, transparent foundation for building and benchmarking agent environments at scale. The model-agnostic architecture enables consistent quality assurance across diverse LLMs, directly supporting the goal of scaling environments rather than models. As agent systems grow, their environments must evolve from ad hoc scaffolds to engineered, testable, and composable systems — a vision our work helps operationalize.
+The AI agent boom is accelerating, but real industry deployments often fail silently. Without environment scaffolding, we risk massive overengineering of AI models while ignoring the real bottleneck. App.build represents a shift from model-centric to system-centric AI engineering — a critical step toward scaling reliable agent environments. As emphasized in Machine Learning System Design with end-to-end examples [25], production AI systems only become effective when development integrates not just model performance, but core software engineering principles. By open-sourcing both the framework and evaluation protocol, we provide a reproducible, transparent foundation for building and benchmarking agent environments at scale. The model-agnostic architecture enables consistent quality assurance across diverse LLMs, directly supporting the goal of scaling environments rather than models. As agent systems grow, their environments must evolve from ad hoc scaffolds to engineered, testable, and composable systems — a vision our work helps operationalize.
 
 While our evaluation focuses on software generation environments, the principles of structured validation and environment scaffolding may generalize to other agent domains. The community-driven adoption (3,000+ applications generated without commercial incentives) suggests genuine utility for researchers and developers exploring agent-environment co-design.
 
