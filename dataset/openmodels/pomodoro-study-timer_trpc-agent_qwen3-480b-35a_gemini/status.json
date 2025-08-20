@@ -1,0 +1,16 @@
+{
+  "success": false,
+  "exit_code": 1,
+  "docker_healthy": false,
+  "duration_seconds": 479.050699,
+  "timestamp": "2025-08-20T14:37:35.175974",
+  "config": {
+    "prompt_name": "pomodoro-study-timer",
+    "template_id": "trpc_agent",
+    "coding_model_name": "qwen3-480b-35a",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:qwen/qwen3-coder",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/pomodoro-study-timer_trpc-agent_qwen3-480b-35a_gemini/telemetry.json"
+  }
+}

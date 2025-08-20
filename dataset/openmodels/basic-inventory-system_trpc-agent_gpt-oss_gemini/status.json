@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 225.642807,
+  "timestamp": "2025-08-20T13:44:56.913936",
+  "config": {
+    "prompt_name": "basic-inventory-system",
+    "template_id": "trpc_agent",
+    "coding_model_name": "gpt-oss",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:openai/gpt-oss-120b",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/basic-inventory-system_trpc-agent_gpt-oss_gemini/telemetry.json"
+  }
+}

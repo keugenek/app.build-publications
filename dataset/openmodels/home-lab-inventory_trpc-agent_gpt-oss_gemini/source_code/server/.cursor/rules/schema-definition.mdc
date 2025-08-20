@@ -1,0 +1,18 @@
+---
+description: TypeScript Schema Definition with Zod
+globs: ["**/schema.ts"]
+alwaysApply: true
+---
+
+- Define all types using Zod in a single file `server/src/schema.ts`
+- Always export corresponding TypeScript types using `z.infer<typeof schemaName>`
+- For database columns that are nullable in Drizzle, use `.nullable()` in Zod (not `.nullish()`)
+- For database columns with `.notNull()` in Drizzle, do NOT use `.nullable()` in Zod
+- Use `z.number()` for ALL numeric database columns (including Drizzle `numeric()` types)
+- Use `z.number().int()` for integer validation
+- Use `z.coerce.date()` for timestamp fields from database
+- Create separate input and output schemas (e.g., `createProductInputSchema` and `productSchema`)
+- For optional fields in input schemas, use `.optional()` when field can be omitted
+- For nullable fields, use `.nullable()` when field can be explicitly null
+
+@base-schema.ts

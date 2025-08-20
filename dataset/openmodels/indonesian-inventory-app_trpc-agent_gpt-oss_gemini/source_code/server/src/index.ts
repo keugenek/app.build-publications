@@ -1,0 +1,57 @@
+import { initTRPC } from '@trpc/server';
+import { z } from 'zod';
+import { createItemInputSchema, updateItemInputSchema, createTransactionInputSchema } from './schema';
+import { getItems, createItem, updateItem, deleteItem } from './handlers/item';
+import { getTransactions, createTransaction } from './handlers/transaction';
+import { createHTTPServer } from '@trpc/server/adapters/standalone';
+import 'dotenv/config';
+import cors from 'cors';
+import superjson from 'superjson';
+
+const t = initTRPC.create({
+  transformer: superjson,
+});
+
+const publicProcedure = t.procedure;
+const router = t.router;
+
+const appRouter = router({
+  healthcheck: publicProcedure.query(() => {
+    return { status: 'ok', timestamp: new Date().toISOString() };
+  }),
+  // Item routes
+  getItems: publicProcedure.query(() => getItems()),
+  createItem: publicProcedure
+    .input(createItemInputSchema)
+    .mutation(({ input }) => createItem(input)),
+  updateItem: publicProcedure
+    .input(updateItemInputSchema)
+    .mutation(({ input }) => updateItem(input)),
+  deleteItem: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(({ input }) => deleteItem(input.id)),
+  // Transaction routes
+  getTransactions: publicProcedure.query(() => getTransactions()),
+  createTransaction: publicProcedure
+    .input(createTransactionInputSchema)
+    .mutation(({ input }) => createTransaction(input)),
+});
+
+export type AppRouter = typeof appRouter;
+
+async function start() {
+  const port = process.env['SERVER_PORT'] || 2022;
+  const server = createHTTPServer({
+    middleware: (req, res, next) => {
+      cors()(req, res, next);
+    },
+    router: appRouter,
+    createContext() {
+      return {};
+    },
+  });
+  server.listen(port);
+  console.log(`TRPC server listening at port: ${port}`);
+}
+
+start();

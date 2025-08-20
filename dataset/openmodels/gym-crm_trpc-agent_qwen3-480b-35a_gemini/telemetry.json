@@ -1,0 +1,26 @@
+{
+  "gemini-2.5-flash-preview-05-20": {
+    "total_calls": 2,
+    "total_input_tokens": 2773,
+    "total_output_tokens": 805,
+    "total_time_seconds": 8.667718172073364,
+    "total_cache_creation_tokens": 0,
+    "total_cache_read_tokens": 0
+  },
+  "qwen/qwen3-coder": {
+    "total_calls": 51,
+    "total_input_tokens": 435304,
+    "total_output_tokens": 8807,
+    "total_time_seconds": 172.93496870994568,
+    "total_cache_creation_tokens": 0,
+    "total_cache_read_tokens": 0
+  },
+  "gemini-2.5-flash-lite-preview-06-17": {
+    "total_calls": 1,
+    "total_input_tokens": 535,
+    "total_output_tokens": 3,
+    "total_time_seconds": 0.6877391338348389,
+    "total_cache_creation_tokens": 0,
+    "total_cache_read_tokens": 0
+  }
+}

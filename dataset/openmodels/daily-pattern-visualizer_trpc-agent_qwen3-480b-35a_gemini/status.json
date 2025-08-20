@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 794.494674,
+  "timestamp": "2025-08-20T13:47:43.146020",
+  "config": {
+    "prompt_name": "daily-pattern-visualizer",
+    "template_id": "trpc_agent",
+    "coding_model_name": "qwen3-480b-35a",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:qwen/qwen3-coder",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/daily-pattern-visualizer_trpc-agent_qwen3-480b-35a_gemini/telemetry.json"
+  }
+}

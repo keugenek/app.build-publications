@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 455.337416,
+  "timestamp": "2025-08-20T13:27:39.658818",
+  "config": {
+    "prompt_name": "plant-care-tracker",
+    "template_id": "trpc_agent",
+    "coding_model_name": "qwen3-480b-35a",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:qwen/qwen3-coder",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/plant-care-tracker_trpc-agent_qwen3-480b-35a_gemini/telemetry.json"
+  }
+}

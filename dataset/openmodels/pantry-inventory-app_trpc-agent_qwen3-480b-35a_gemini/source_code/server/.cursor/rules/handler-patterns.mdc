@@ -1,0 +1,19 @@
+---
+description: Handler Implementation Patterns
+globs: ["**/handlers/*.ts"]
+alwaysApply: true
+---
+
+- Create separate files for each handler in `server/src/handlers/`
+- Follow single responsibility principle - one handler per file
+- Always wrap database operations in try/catch blocks
+- For `numeric()` columns: use `parseFloat()` when selecting, `toString()` when inserting
+- Build queries step-by-step: initialize query, apply conditions, then pagination/ordering
+- Use `and(...conditions)` with spread operator, NEVER `and(conditions)`
+- Apply `.where()` before `.limit()`, `.offset()`, or `.orderBy()`
+- For conditional filters, collect conditions in array and spread: `and(...conditions)`
+- Handle joined results via nested properties: `result.table1.field`, `result.table2.field`
+- Log full error context: `console.error('Operation failed:', error)`
+- Rethrow original errors to preserve stack traces: `throw error`
+
+@base-handler.ts

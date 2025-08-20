@@ -1,0 +1,16 @@
+{
+  "success": false,
+  "exit_code": 124,
+  "docker_healthy": false,
+  "duration_seconds": 1500.169088,
+  "timestamp": "2025-08-20T14:28:55.010128",
+  "config": {
+    "prompt_name": "birthday-wish-app",
+    "template_id": "trpc_agent",
+    "coding_model_name": "qwen3-480b-35a",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:qwen/qwen3-coder",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/birthday-wish-app_trpc-agent_qwen3-480b-35a_gemini/telemetry.json"
+  }
+}

@@ -1,0 +1,20 @@
+---
+description: TRPC Router Configuration
+globs: ["**/index.ts"]
+alwaysApply: true
+---
+
+- Initialize tRPC with superjson transformer for proper Date/BigInt serialization
+- Import all handlers and input schemas at the top
+- Register procedures with proper input validation:
+  ```typescript
+  createProduct: publicProcedure
+    .input(createProductInputSchema)
+    .mutation(({ input }) => createProduct(input))
+  ```
+- Use `.query()` for read operations, `.mutation()` for write operations
+- Export `AppRouter` type for client-side type inference
+- Configure CORS middleware for cross-origin requests
+- Use environment variables for configuration (port, database URL)
+
+@base-server-index.ts

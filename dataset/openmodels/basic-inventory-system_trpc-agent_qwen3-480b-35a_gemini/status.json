@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 513.845214,
+  "timestamp": "2025-08-20T13:48:45.379509",
+  "config": {
+    "prompt_name": "basic-inventory-system",
+    "template_id": "trpc_agent",
+    "coding_model_name": "qwen3-480b-35a",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:qwen/qwen3-coder",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/basic-inventory-system_trpc-agent_qwen3-480b-35a_gemini/telemetry.json"
+  }
+}
