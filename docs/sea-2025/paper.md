@@ -160,24 +160,20 @@ The evaluation dataset comprises 30 prompts designed to assess system performanc
 
 #### 4.4 Assessor Protocol and Checks
 
-In order to assess the quality of generated apps, we run a checklist with 7 smoke tests checks run by human evaluators.
+*Human Evaluation Framework*. To systematically assess generated application quality, we implement a structured evaluation protocol comprising seven standardized functional checks executed by human assessors. Each generated application undergoes comprehensive testing across core functionality dimensions, with results recorded using a four-tier classification system (PASS/WARN/FAIL/NA) documented in Appendix Table A2.
 
-Assessors record PASS/WARN/FAIL/NA per prompt in Appendix Table A2. Full "how to" steps live in Appendix A.3.
+*Scoring Methodology*. The evaluation employs a weighted scoring system to quantify application functionality. Individual checks receive the following point allocations: PASS (1.0 points), WARN (0.75 points), and FAIL (-1.0 points). Applications demonstrating critical failures in initial smoke tests (checks 00-03) receive a penalty score of -10 to reflect fundamental non-functionality. An application is considered functional when the majority of checks achieve PASS or WARN status.
 
-Unless the majority of checks are PASS or WARN, we believe the application is functional with possible occasional FAILs. As a result we calculate PASS as 1 point, WARN as 0.75 points and FAIL as -1 points and use these metrics to assign an overall score to the each generated application. In case there was a critical failure in the 00-03 we assigned a score -10 to the application score.
+*Evaluation Criteria*. The assessment protocol implements domain-specific checks designed for comprehensive coverage while maintaining evaluation efficiency. Each check targets a specific functional aspect with stable identifiers to ensure reproducibility. The complete evaluation suite comprises the following criteria:
 
-To make manual work manageable we define small, app.build‑specific checks with stable IDs.
+1. Application initialization and clean boot sequence
+2. Prompt-to-implementation correspondence and primary action availability  
+3. Entity creation workflow functionality
+4. Entity viewing and editing capabilities
+5. User interface element responsiveness and error handling
+6. Performance characteristics under initial load conditions
 
-Table below contains a complete set of checks we believe is enough to assess the application qiality from our personal experience that will be used for the evaluation:
-
-— Does the app open cleanly?
-- Does the app reflect the user prompt on home and support the primary action?
-- Can a user create a new entity successfully?
-— Can a user open details and edit an entity?
-— Do all primary clickable elements work without errors?
-— Is the first load reasonably fast, with no obvious red flags?
-
-See Appendix A.3 for detailed methods, exact pass criteria, and reporting rules (including the AB‑00 “clean start” preparation).
+Detailed evaluation procedures, pass/fail criteria, and reporting standards are specified in Appendix A.3, including environment preparation protocols (AB-00) and systematic testing methodology.
 
 ### 6. Results (@keugenek)
 #### 6.1 Environment Scaffolding Impact
