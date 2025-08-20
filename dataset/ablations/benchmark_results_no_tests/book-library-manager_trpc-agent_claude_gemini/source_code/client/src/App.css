@@ -1,0 +1,74 @@
+/* Custom utility classes for book library */
+
+/* Line clamping for book titles */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Custom scrollbar for better UX */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Smooth transitions for interactive elements */
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Focus states for better accessibility */
+.focus-ring:focus {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* Card hover animations */
+@layer components {
+  .book-card {
+    @apply transition-all duration-200 ease-in-out;
+  }
+  
+  .book-card:hover {
+    @apply transform -translate-y-1 shadow-lg;
+  }
+}
+
+/* Loading animation */
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.pulse-subtle {
+  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Status badge animations */
+.status-badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors;
+}
+
+/* Custom form field styles */
+.form-field {
+  @apply transition-colors focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500;
+}

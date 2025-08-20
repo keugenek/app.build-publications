@@ -1,0 +1,31 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* Custom timer glow effect for focus mode */
+  .timer-glow {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  /* Minimalist focus styles */
+  .focus-mode {
+    @apply ring-2 ring-red-500 ring-opacity-50;
+  }
+  
+  /* Custom button pulse for active states */
+  .button-pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+}

@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Custom scrollbar for better aesthetics */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-purple-50 rounded-lg;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-purple-300 rounded-lg hover:bg-purple-400;
+  }
+
+  /* Animated conspiracy level badges */
+  .conspiracy-badge {
+    @apply transition-all duration-300 hover:scale-105 shadow-md;
+  }
+
+  /* Playful button hover effects */
+  .cat-button {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  /* Card hover effects for better interactivity */
+  .activity-card {
+    @apply transition-all duration-200 hover:shadow-md hover:border-purple-200;
+  }
+
+  /* Gradient text for headings */
+  .gradient-text {
+    @apply bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent;
+  }
+
+  /* Fun animation for activity logging */
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-1deg); }
+    75% { transform: rotate(1deg); }
+  }
+
+  .wiggle {
+    animation: wiggle 0.5s ease-in-out;
+  }
+
+  /* Pulsing animation for high conspiracy levels */
+  @keyframes pulse-red {
+    0%, 100% { 
+      background-color: rgb(254 242 242);
+      color: rgb(153 27 27);
+    }
+    50% { 
+      background-color: rgb(252 165 165);
+      color: rgb(127 29 29);
+    }
+  }
+
+  .pulse-danger {
+    animation: pulse-red 2s infinite;
+  }
+
+  /* Cat paw prints decoration */
+  .paw-print::before {
+    content: "🐾";
+    @apply absolute -top-1 -right-1 text-xs opacity-70;
+  }
+
+  /* Loading animations */
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow 3s linear infinite;
+  }
+
+  /* Subtle background pattern */
+  .cat-pattern {
+    background-image: 
+      radial-gradient(circle at 25px 25px, rgba(147, 51, 234, 0.1) 2px, transparent 2px),
+      radial-gradient(circle at 75px 75px, rgba(219, 39, 119, 0.1) 2px, transparent 2px);
+    background-size: 100px 100px;
+  }
+}
+
+/* Base styles for better readability */
+@layer base {
+  body {
+    @apply text-gray-900 antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
+  }
+  
+  /* Ensure form inputs have consistent styling */
+  input, textarea, select {
+    @apply transition-colors duration-200;
+  }
+  
+  /* Better focus states */
+  input:focus, textarea:focus, select:focus {
+    @apply ring-purple-300;
+  }
+}

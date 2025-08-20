@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.pastel-bg {
+  background-color: #f8fafc;
+}
+
+.pastel-card {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.pastel-primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.pastel-primary:hover {
+  background-color: #2563eb;
+}
+
+.pastel-secondary {
+  background-color: #f1f5f9;
+  color: #374151;
+}
+
+.pastel-secondary:hover {
+  background-color: #e2e8f0;
+}
+
+.pastel-accent {
+  color: #2563eb;
+}
+
+.pastel-muted {
+  color: #6b7280;
+}
+
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-4 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}

@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Custom gradient background for the app */
+  .plant-gradient {
+    background: linear-gradient(135deg, 
+      rgba(34, 197, 94, 0.1) 0%, 
+      rgba(59, 130, 246, 0.1) 50%, 
+      rgba(168, 85, 247, 0.1) 100%);
+  }
+  
+  /* Custom hover effects for plant cards */
+  .plant-card {
+    @apply transform transition-all duration-300 ease-in-out;
+  }
+  
+  .plant-card:hover {
+    @apply scale-105 shadow-xl;
+  }
+  
+  /* Animated plant emoji for empty state */
+  .plant-bounce {
+    animation: plantBounce 2s ease-in-out infinite;
+  }
+  
+  @keyframes plantBounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-10px);
+    }
+    60% {
+      transform: translateY(-5px);
+    }
+  }
+  
+  /* Custom mood badge styling */
+  .mood-happy {
+    @apply bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-200;
+  }
+  
+  .mood-thirsty {
+    @apply bg-gradient-to-r from-yellow-100 to-amber-200 text-amber-800 border border-amber-200;
+  }
+  
+  .mood-sun-deprived {
+    @apply bg-gradient-to-r from-blue-100 to-sky-200 text-sky-800 border border-sky-200;
+  }
+  
+  .mood-over-watered {
+    @apply bg-gradient-to-r from-purple-100 to-violet-200 text-violet-800 border border-violet-200;
+  }
+}

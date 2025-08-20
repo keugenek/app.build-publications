@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Line clamp utilities for text truncation */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Custom scroll area for long ingredient/instruction lists */
+  .recipe-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(251 146 60) rgb(254 249 195);
+  }
+  
+  .recipe-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .recipe-scroll::-webkit-scrollbar-track {
+    background: rgb(254 249 195);
+    border-radius: 3px;
+  }
+  
+  .recipe-scroll::-webkit-scrollbar-thumb {
+    background: rgb(251 146 60);
+    border-radius: 3px;
+  }
+  
+  .recipe-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgb(249 115 22);
+  }
+
+  /* Custom card hover effects */
+  .recipe-card-hover {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .recipe-card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(251, 146, 60, 0.1), 0 10px 10px -5px rgba(251, 146, 60, 0.04);
+  }
+
+  /* Custom badge styles for categories */
+  .category-badge {
+    background: linear-gradient(135deg, rgb(254 215 170) 0%, rgb(253 186 116) 100%);
+    color: rgb(154 52 18);
+    border: 1px solid rgb(251 146 60);
+  }
+
+  /* Custom button animations */
+  .favorite-btn {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .favorite-btn:hover {
+    transform: scale(1.05);
+  }
+
+  /* Custom form input focus styles */
+  .recipe-input:focus {
+    border-color: rgb(251 146 60);
+    box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.1);
+  }
+}

@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom animations and styles for the Kanji learning app */
+@layer components {
+  /* Flashcard reveal animation */
+  .flashcard-reveal {
+    animation: fadeInScale 0.3s ease-out;
+  }
+
+  /* Gradient text for headings */
+  .gradient-text {
+    @apply bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent;
+  }
+
+  /* Custom focus styles for better accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2;
+  }
+
+  /* Kanji character display styles */
+  .kanji-display {
+    font-family: 'Noto Sans CJK JP', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+    @apply text-center font-light select-none;
+  }
+
+  /* Progress bar custom styles */
+  .progress-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  /* Level badge styles */
+  .level-badge-n5 {
+    @apply bg-green-100 text-green-800 border-green-200;
+  }
+  
+  .level-badge-n4 {
+    @apply bg-blue-100 text-blue-800 border-blue-200;
+  }
+  
+  .level-badge-n3 {
+    @apply bg-yellow-100 text-yellow-800 border-yellow-200;
+  }
+  
+  .level-badge-n2 {
+    @apply bg-orange-100 text-orange-800 border-orange-200;
+  }
+  
+  .level-badge-n1 {
+    @apply bg-red-100 text-red-800 border-red-200;
+  }
+}
+
+/* Custom keyframes */
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Font loading for Japanese characters */
+@font-face {
+  font-family: 'Japanese';
+  src: url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+  font-display: swap;
+}
+
+/* Custom scrollbar for better UX */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .kanji-display {
+    font-size: 4rem !important;
+  }
+  
+  .mobile-padding {
+    @apply px-4 py-2;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card-hover {
+    @apply border-2 border-gray-900;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .flashcard-reveal,
+  .card-hover,
+  .progress-smooth {
+    animation: none !important;
+    transition: none !important;
+  }
+}

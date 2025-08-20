@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 262.1 83.3% 57.8%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 262.1 83.3% 57.8%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 262.1 83.3% 57.8%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 262.1 83.3% 57.8%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Custom conspiracy-themed animations */
+  .conspiracy-glow {
+    @apply animate-pulse;
+    box-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
+  }
+  
+  .suspicious-activity {
+    @apply transition-all duration-300 hover:shadow-lg hover:scale-105;
+  }
+  
+  /* Emoji animations for fun */
+  .emoji-bounce {
+    @apply inline-block animate-bounce;
+  }
+  
+  /* Cat eye tracking effect */
+  .cat-eyes::before {
+    content: "👁️👁️";
+    @apply absolute -top-2 -right-2 text-xs opacity-50;
+    animation: blink 3s infinite;
+  }
+  
+  @keyframes blink {
+    0%, 90%, 100% { opacity: 0.5; }
+    95% { opacity: 0; }
+  }
+  
+  /* Conspiracy level specific styles */
+  .threat-level-innocent {
+    @apply bg-gradient-to-r from-green-50 to-blue-50;
+  }
+  
+  .threat-level-suspicious {
+    @apply bg-gradient-to-r from-yellow-50 to-orange-50;
+  }
+  
+  .threat-level-plotting {
+    @apply bg-gradient-to-r from-orange-50 to-red-50;
+  }
+  
+  .threat-level-dangerous {
+    @apply bg-gradient-to-r from-red-50 to-pink-50;
+  }
+  
+  .threat-level-world-domination {
+    @apply bg-gradient-to-r from-purple-50 to-indigo-50;
+    animation: conspiracy-pulse 2s infinite;
+  }
+  
+  @keyframes conspiracy-pulse {
+    0%, 100% { 
+      background: linear-gradient(to right, rgb(250 245 255), rgb(238 242 255));
+    }
+    50% { 
+      background: linear-gradient(to right, rgb(243 232 255), rgb(224 231 255));
+    }
+  }
+}

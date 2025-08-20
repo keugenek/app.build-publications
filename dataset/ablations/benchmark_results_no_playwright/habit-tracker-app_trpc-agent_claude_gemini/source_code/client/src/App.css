@@ -1,0 +1,55 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer components {
+  /* Smooth animations for checkbox interactions */
+  .habit-checkbox {
+    @apply transition-all duration-200 ease-in-out;
+  }
+  
+  /* Gradient background for completed habits */
+  .habit-completed {
+    @apply bg-gradient-to-r from-green-50 to-emerald-50 border-green-200;
+  }
+  
+  /* Pulse animation for streaks */
+  .streak-pulse {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+  
+  /* Custom scrollbar for better UX */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-slate-100 rounded-full;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 rounded-full hover:bg-slate-400;
+  }
+}
+
+@layer base {
+  /* Custom focus styles for better accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  }
+}
+
+/* Keyframes for streak glow effect */
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 5px rgba(34, 197, 94, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+  }
+}

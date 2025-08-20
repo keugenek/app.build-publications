@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Custom animations for the cat conspiracy theme */
+  .conspiracy-glow {
+    @apply shadow-lg shadow-purple-200/50 hover:shadow-purple-300/50 transition-shadow duration-300;
+  }
+  
+  .cat-card {
+    @apply conspiracy-glow hover:scale-[1.02] transition-transform duration-200;
+  }
+  
+  .threat-pulse {
+    @apply animate-pulse bg-gradient-to-r from-red-100 to-orange-100;
+  }
+}
+
+@layer base {
+  /* Ensure proper font rendering for emojis */
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  /* Smooth scrolling for activity lists */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+}

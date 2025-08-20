@@ -1,0 +1,226 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Custom flashcard animations */
+  .flashcard-flip {
+    perspective: 1000px;
+  }
+  
+  .flashcard-front,
+  .flashcard-back {
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+  }
+  
+  .flashcard-flipped .flashcard-front {
+    transform: rotateY(-180deg);
+  }
+  
+  .flashcard-flipped .flashcard-back {
+    transform: rotateY(0deg);
+  }
+
+  /* Custom scrollbar for review history */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+
+  /* Kanji character styling */
+  .kanji-display {
+    font-family: 'Hiragino Sans', 'Yu Gothic', 'Meiryo', 'Noto Sans CJK JP', sans-serif;
+    font-feature-settings: "kern" 1;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Progress animation */
+  .progress-animate {
+    transition: width 0.5s ease-in-out;
+  }
+
+  /* Hover effects for interactive elements */
+  .interactive-hover {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .interactive-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Gradient backgrounds for level indicators */
+  .level-n5 {
+    background: linear-gradient(135deg, #10b981, #059669);
+  }
+  
+  .level-n4 {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  }
+  
+  .level-n3 {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+  
+  .level-n2 {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+  }
+  
+  .level-n1 {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+  }
+
+  /* SRS level styling */
+  .srs-apprentice {
+    background: linear-gradient(135deg, #ec4899, #db2777);
+  }
+  
+  .srs-guru {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  }
+  
+  .srs-master {
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+  }
+  
+  .srs-enlightened {
+    background: linear-gradient(135deg, #eab308, #ca8a04);
+  }
+  
+  .srs-burned {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+  }
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Utility classes */
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out;
+}
+
+/* Japanese font optimization */
+.japanese-text {
+  font-family: 'Hiragino Sans', 'Yu Gothic', 'Meiryo', 'Noto Sans CJK JP', 'Arial Unicode MS', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 640px) {
+  .kanji-display {
+    font-size: 4rem;
+  }
+  
+  .mobile-stack {
+    flex-direction: column;
+  }
+  
+  .mobile-full-width {
+    width: 100%;
+  }
+}

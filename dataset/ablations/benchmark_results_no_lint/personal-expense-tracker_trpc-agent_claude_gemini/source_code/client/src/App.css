@@ -1,0 +1,112 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer components {
+  /* Custom scrollbar for better UX */
+  .custom-scrollbar {
+    @apply scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100;
+  }
+  
+  /* Smooth transitions for interactive elements */
+  .transition-all {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Enhanced card hover effects */
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+  
+  /* Gradient backgrounds for financial data */
+  .income-gradient {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  }
+  
+  .expense-gradient {
+    background: linear-gradient(135deg, #fee2e2 0%, #fca5a5 100%);
+  }
+  
+  .neutral-gradient {
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  }
+}
+
+/* Global styles for better accessibility and UX */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Focus styles for better accessibility */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  @apply ring-2 ring-blue-500 ring-offset-2 outline-none;
+}
+
+/* Loading animation */
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.pulse-subtle {
+  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Ensure proper spacing and readability */
+body {
+  @apply antialiased;
+  font-feature-settings: 'kern' 1;
+  text-rendering: optimizeLegibility;
+}
+
+/* Custom color picker styling */
+input[type="color"] {
+  @apply border-0 rounded cursor-pointer;
+  -webkit-appearance: none;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  @apply p-0 rounded;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  @apply border-0 rounded;
+}
+
+/* Enhanced mobile responsiveness */
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+  
+  .grid-cols-4 {
+    @apply grid-cols-2;
+  }
+  
+  .text-4xl {
+    @apply text-3xl;
+  }
+}
+
+/* Print styles for financial reports */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    @apply text-black bg-white;
+  }
+  
+  .shadow-xl,
+  .shadow-lg {
+    box-shadow: none !important;
+  }
+}

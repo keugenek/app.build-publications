@@ -1,0 +1,265 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Custom recipe card animations */
+  .recipe-card-hover {
+    @apply transition-all duration-200 ease-in-out hover:scale-[1.02] hover:shadow-lg;
+  }
+
+  /* Custom scrollbar for ingredient/instruction lists */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #f97316 #f3f4f6;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-orange-500 rounded;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-orange-600;
+  }
+
+  /* Line clamp utility */
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  /* Orange theme colors for consistency */
+  .orange-gradient {
+    @apply bg-gradient-to-r from-orange-400 to-red-400;
+  }
+
+  .orange-gradient-subtle {
+    @apply bg-gradient-to-br from-orange-50 to-red-50;
+  }
+
+  /* Custom focus styles for better accessibility */
+  .focus-orange {
+    @apply focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50;
+  }
+
+  /* Recipe category badge styles */
+  .category-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800;
+  }
+
+  /* Custom button variants */
+  .btn-orange {
+    @apply bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 py-2 rounded-md transition-colors focus-orange;
+  }
+
+  .btn-orange-outline {
+    @apply border border-orange-500 text-orange-500 hover:bg-orange-50 font-medium px-4 py-2 rounded-md transition-colors focus-orange;
+  }
+}
+
+/* Animation for loading states */
+@keyframes pulse-orange {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.pulse-orange {
+  animation: pulse-orange 1s ease-in-out infinite;
+}
+
+/* Custom placeholder colors for recipe theme */
+.placeholder-orange::placeholder {
+  @apply text-orange-300;
+}
+
+/* Custom selection colors */
+::selection {
+  @apply bg-orange-200 text-orange-900;
+}
+
+/* Smooth transitions for interactive elements */
+.smooth-transition {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+/* Recipe card content styles */
+.recipe-content {
+  @apply space-y-3;
+}
+
+.recipe-meta {
+  @apply flex flex-wrap gap-2 text-xs text-gray-500;
+}
+
+.recipe-time-badge {
+  @apply flex items-center space-x-1 px-2 py-1 bg-orange-50 text-orange-700 rounded-md font-medium;
+}
+
+/* Ingredient and instruction list styles */
+.ingredient-list {
+  @apply text-xs text-gray-600 space-y-1 max-h-24 overflow-y-auto custom-scrollbar;
+}
+
+.instruction-list {
+  @apply text-xs text-gray-600 space-y-2 max-h-32 overflow-y-auto custom-scrollbar;
+}
+
+.ingredient-item {
+  @apply flex items-start;
+}
+
+.instruction-item {
+  @apply flex items-start;
+}
+
+.step-number {
+  @apply text-orange-500 font-medium mr-2 min-w-[1rem];
+}
+
+/* Form styling improvements */
+.form-section {
+  @apply space-y-4 p-4 bg-gray-50 rounded-lg;
+}
+
+.form-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+/* Search form specific styles */
+.search-filter-section {
+  @apply space-y-2;
+}
+
+.active-filters {
+  @apply text-sm text-gray-600 bg-orange-50 p-3 rounded-md border border-orange-200;
+}
+
+/* Authentication form styles */
+.auth-container {
+  @apply min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center p-4;
+}
+
+.auth-card {
+  @apply w-full max-w-md;
+}
+
+.auth-header {
+  @apply text-center mb-8;
+}
+
+.auth-title {
+  @apply text-4xl font-bold text-gray-900 mb-2;
+}
+
+.auth-subtitle {
+  @apply text-gray-600;
+}
+
+/* Tab navigation styles */
+.recipe-tabs {
+  @apply w-full;
+}
+
+.tab-content {
+  @apply space-y-6;
+}
+
+/* Empty state styles */
+.empty-state {
+  @apply text-center py-12;
+}
+
+.empty-state-text {
+  @apply text-gray-500 text-lg;
+}
+
+.empty-state-action {
+  @apply mt-4 bg-orange-500 hover:bg-orange-600;
+}

@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .currency-converter-gradient {
+    @apply bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50;
+  }
+  
+  .conversion-result-card {
+    @apply bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 shadow-sm;
+  }
+  
+  .currency-swap-button {
+    @apply hover:rotate-180 transition-transform duration-300 ease-in-out;
+  }
+}

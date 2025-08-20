@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom gym-themed styles */
+@layer components {
+  .gym-gradient {
+    @apply bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50;
+  }
+  
+  .gym-card {
+    @apply border-2 border-orange-200 bg-white shadow-lg hover:shadow-xl transition-all duration-300;
+  }
+  
+  .gym-button {
+    @apply bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-200 hover:scale-105;
+  }
+  
+  .gym-badge {
+    @apply bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold;
+  }
+  
+  .fitness-icon {
+    @apply text-2xl filter drop-shadow-sm;
+  }
+  
+  /* Calendar styling for better gym theme */
+  .rbc-calendar {
+    @apply bg-white rounded-lg shadow-lg border-2 border-orange-200;
+  }
+  
+  .rbc-toolbar {
+    @apply bg-orange-50 p-4 rounded-t-lg border-b-2 border-orange-200;
+  }
+  
+  .rbc-toolbar button {
+    @apply bg-white border-orange-300 text-orange-700 hover:bg-orange-100 px-4 py-2 rounded-md font-medium transition-all duration-200;
+  }
+  
+  .rbc-toolbar button.rbc-active {
+    @apply bg-orange-500 text-white border-orange-500;
+  }
+  
+  .rbc-event {
+    @apply bg-orange-500 border-orange-600 rounded-md shadow-sm;
+  }
+  
+  .rbc-event:hover {
+    @apply bg-orange-600 transform scale-105 transition-all duration-200;
+  }
+  
+  /* Animations */
+  @keyframes pulse-orange {
+    0%, 100% {
+      @apply bg-orange-400;
+    }
+    50% {
+      @apply bg-orange-600;
+    }
+  }
+  
+  .pulse-orange {
+    animation: pulse-orange 2s ease-in-out infinite;
+  }
+  
+  /* Responsive design helpers */
+  .gym-grid {
+    @apply grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
+  }
+  
+  .gym-flex-center {
+    @apply flex items-center justify-center;
+  }
+  
+  /* Custom scrollbar */
+  .gym-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .gym-scroll::-webkit-scrollbar-track {
+    @apply bg-orange-100 rounded-lg;
+  }
+  
+  .gym-scroll::-webkit-scrollbar-thumb {
+    @apply bg-orange-400 rounded-lg;
+  }
+  
+  .gym-scroll::-webkit-scrollbar-thumb:hover {
+    @apply bg-orange-500;
+  }
+}
+
+/* Loading animations */
+.loading-spinner {
+  @apply animate-spin inline-block w-4 h-4 border-2 border-current border-t-transparent text-orange-500 rounded-full;
+}
+
+/* Success animations */
+.success-bounce {
+  animation: bounce 0.5s ease-in-out;
+}
+
+/* Hover effects for cards */
+.hover-lift {
+  @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+}
+
+/* Text gradients */
+.text-gym-gradient {
+  @apply bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent;
+}
+
+/* Custom focus states */
+.gym-focus {
+  @apply focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:outline-none;
+}

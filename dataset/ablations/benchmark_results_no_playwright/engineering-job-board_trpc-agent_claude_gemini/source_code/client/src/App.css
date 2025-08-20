@@ -1,0 +1,223 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* Custom scrollbar for the nerd aesthetic */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(34, 197, 94, 0.3) rgba(15, 23, 42, 0.8);
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-slate-900;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-green-400/30 rounded;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-green-400/50;
+  }
+
+  /* Terminal cursor animation */
+  .terminal-cursor::after {
+    content: '_';
+    animation: blink 1s infinite;
+    @apply text-green-400;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  /* Glitch effect for headings */
+  .glitch {
+    position: relative;
+    @apply text-green-400;
+  }
+
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .glitch::before {
+    animation: glitch-1 0.3s infinite;
+    color: #ff0040;
+    z-index: -1;
+  }
+
+  .glitch::after {
+    animation: glitch-2 0.3s infinite;
+    color: #00ff40;
+    z-index: -2;
+  }
+
+  @keyframes glitch-1 {
+    0%, 14%, 15%, 49%, 50%, 99%, 100% {
+      transform: translate(0, 0) skew(0deg);
+    }
+    1%, 13% {
+      transform: translate(-2px, 1px) skew(-2deg);
+    }
+    16%, 48% {
+      transform: translate(1px, -1px) skew(1deg);
+    }
+  }
+
+  @keyframes glitch-2 {
+    0%, 20%, 21%, 62%, 63%, 99%, 100% {
+      transform: translate(0, 0) skew(0deg);
+    }
+    1%, 19% {
+      transform: translate(2px, -1px) skew(2deg);
+    }
+    22%, 61% {
+      transform: translate(-1px, 2px) skew(-1deg);
+    }
+  }
+
+  /* Code-like syntax highlighting for specific text */
+  .syntax-comment {
+    @apply text-green-400/60 italic;
+  }
+
+  .syntax-string {
+    @apply text-yellow-400;
+  }
+
+  .syntax-keyword {
+    @apply text-blue-400 font-semibold;
+  }
+
+  .syntax-function {
+    @apply text-purple-400;
+  }
+
+  .syntax-variable {
+    @apply text-cyan-400;
+  }
+
+  /* Matrix-style background animation (subtle) */
+  .matrix-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.03;
+    overflow: hidden;
+  }
+
+  .matrix-bg::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 0;
+    width: 100%;
+    height: 200%;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 98px,
+      rgba(34, 197, 94, 0.1) 100px
+    );
+    animation: matrix-scroll 20s linear infinite;
+  }
+
+  @keyframes matrix-scroll {
+    0% {
+      transform: translateY(-50%);
+    }
+    100% {
+      transform: translateY(0%);
+    }
+  }
+
+  /* Enhanced form styling */
+  .nerd-form input[type="text"],
+  .nerd-form input[type="number"],
+  .nerd-form textarea,
+  .nerd-form select {
+    @apply bg-slate-800 border-green-400/30 text-green-400;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  }
+
+  .nerd-form input[type="text"]:focus,
+  .nerd-form input[type="number"]:focus,
+  .nerd-form textarea:focus,
+  .nerd-form select:focus {
+    @apply border-green-400/60 ring-2 ring-green-400/20;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
+  }
+
+  /* Custom button hover effects */
+  .nerd-button {
+    position: relative;
+    overflow: hidden;
+    @apply bg-green-400/20 border border-green-400/30 text-green-400;
+    transition: all 0.3s ease;
+  }
+
+  .nerd-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .nerd-button:hover::before {
+    left: 100%;
+  }
+
+  .nerd-button:hover {
+    @apply bg-green-400/30 text-green-300 border-green-400/50;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+  }
+}
+
+/* Ensure monospace font for the entire application */
+body, html {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Courier New', monospace;
+}
+
+/* Custom focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid rgba(34, 197, 94, 0.6);
+  outline-offset: 2px;
+}
+
+/* Selection styles */
+::selection {
+  background: rgba(34, 197, 94, 0.3);
+  color: rgb(34, 197, 94);
+}

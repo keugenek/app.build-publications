@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 222.777486,
+  "timestamp": "2025-08-20T13:14:29.232721",
+  "config": {
+    "prompt_name": "pomodoro-study-timer",
+    "template_id": "trpc_agent",
+    "coding_model_name": "claude",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "anthropic:claude-sonnet-4-20250514",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/pomodoro-study-timer_trpc-agent_claude_gemini/telemetry.json"
+  }
+}

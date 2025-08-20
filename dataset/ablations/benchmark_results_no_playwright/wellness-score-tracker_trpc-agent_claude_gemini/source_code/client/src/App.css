@@ -1,0 +1,101 @@
+/* Custom styles for Wellness Tracker */
+.wellness-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.wellness-card {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+/* Smooth animations for interactive elements */
+.wellness-button {
+  transition: all 0.3s ease;
+  transform: translateY(0);
+}
+
+.wellness-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Custom scrollbar for better UX */
+.wellness-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.wellness-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.wellness-scroll::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.wellness-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Responsive typography */
+@media (max-width: 768px) {
+  .wellness-title {
+    font-size: 2rem;
+  }
+  
+  .wellness-card-title {
+    font-size: 1.25rem;
+  }
+}
+
+/* Wellness score color indicators */
+.score-excellent {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.score-good {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.score-fair {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+}
+
+.score-poor {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+/* Animation for wellness score badges */
+.wellness-badge {
+  animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Focus styles for accessibility */
+input:focus, button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Loading state animations */
+.loading-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}

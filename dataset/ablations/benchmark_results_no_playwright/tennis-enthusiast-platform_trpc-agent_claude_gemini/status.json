@@ -1,0 +1,16 @@
+{
+  "success": false,
+  "exit_code": 1,
+  "docker_healthy": false,
+  "duration_seconds": 367.612641,
+  "timestamp": "2025-08-20T12:18:32.933453",
+  "config": {
+    "prompt_name": "tennis-enthusiast-platform",
+    "template_id": "trpc_agent",
+    "coding_model_name": "claude",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "anthropic:claude-sonnet-4-20250514",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/tennis-enthusiast-platform_trpc-agent_claude_gemini/telemetry.json"
+  }
+}

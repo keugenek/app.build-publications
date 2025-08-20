@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 354.876639,
+  "timestamp": "2025-08-20T12:08:29.498187",
+  "config": {
+    "prompt_name": "plumbing-business-landing-page",
+    "template_id": "trpc_agent",
+    "coding_model_name": "claude",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "anthropic:claude-sonnet-4-20250514",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/plumbing-business-landing-page_trpc-agent_claude_gemini/telemetry.json"
+  }
+}

@@ -1,0 +1,117 @@
+/* Custom styles for the Chore Manager app */
+
+/* Smooth animations for interactive elements */
+.transition-colors {
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+/* Custom gradient background animation */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.min-h-screen {
+  background: linear-gradient(-45deg, #e0e7ff, #f0f9ff, #dbeafe, #e0e7ff);
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+/* Custom checkbox styles for better interaction feedback */
+@layer components {
+  .checkbox-custom {
+    @apply transition-all duration-200 ease-in-out;
+  }
+  
+  .checkbox-custom:hover {
+    @apply scale-110;
+  }
+  
+  .chore-card {
+    @apply transition-all duration-200 ease-in-out;
+  }
+  
+  .chore-card:hover {
+    @apply transform translate-y-[-2px] shadow-lg;
+  }
+  
+  /* Progress indicator styles */
+  .progress-complete {
+    @apply bg-green-500;
+  }
+  
+  .progress-incomplete {
+    @apply bg-gray-300;
+  }
+}
+
+/* Custom button hover effects */
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom scrollbar for better aesthetics */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Loading animation for buttons */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom focus styles for accessibility */
+.focus-ring:focus {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* Emoji hover effects */
+.emoji-hover {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.emoji-hover:hover {
+  transform: scale(1.1) rotate(5deg);
+}

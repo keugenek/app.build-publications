@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Custom gradient background for cards */
+  .gradient-card {
+    @apply bg-gradient-to-br from-white to-gray-50 shadow-lg border-0;
+  }
+
+  /* Custom badge styles for expiry status */
+  .expiry-badge-expired {
+    @apply bg-red-100 border-red-300 text-red-700;
+  }
+  
+  .expiry-badge-warning {
+    @apply bg-yellow-100 border-yellow-300 text-yellow-700;
+  }
+  
+  .expiry-badge-fresh {
+    @apply bg-green-100 border-green-300 text-green-700;
+  }
+
+  /* Enhanced hover effects */
+  .pantry-card {
+    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-xl;
+  }
+
+  /* Custom scrollbar for better UX */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full hover:bg-gray-400;
+  }
+}
+
+/* Global styles */
+html, body {
+  height: 100%;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

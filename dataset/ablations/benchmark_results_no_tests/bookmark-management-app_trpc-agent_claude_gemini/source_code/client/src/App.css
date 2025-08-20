@@ -1,0 +1,198 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Custom scrollbar for better UX */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f8fafc;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-slate-100 rounded-full;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 rounded-full hover:bg-slate-400;
+  }
+
+  /* Enhanced bookmark card animations */
+  .bookmark-card {
+    @apply transition-all duration-200 ease-in-out;
+    @apply hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  /* Tag color preview in forms */
+  .tag-preview {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply transition-colors duration-150 ease-in-out;
+  }
+
+  /* Collection and tag management grids */
+  .management-grid {
+    @apply grid gap-4;
+    @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  /* Search results highlighting */
+  .search-highlight {
+    @apply bg-yellow-100 px-1 py-0.5 rounded;
+  }
+
+  /* Empty state styling */
+  .empty-state {
+    @apply flex flex-col items-center justify-center py-12;
+    @apply text-center space-y-3;
+  }
+
+  .empty-state-icon {
+    @apply text-4xl md:text-6xl opacity-60;
+  }
+
+  .empty-state-title {
+    @apply text-lg font-semibold text-gray-700;
+  }
+
+  .empty-state-description {
+    @apply text-sm text-gray-500 max-w-sm;
+  }
+
+  /* Responsive improvements for mobile */
+  .mobile-stack {
+    @apply flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2;
+  }
+
+  /* Loading states */
+  .loading-pulse {
+    @apply animate-pulse bg-gray-200 rounded;
+  }
+
+  /* Focus improvements for accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+  }
+
+  /* Bookmark URL display */
+  .bookmark-url {
+    @apply text-xs text-gray-500 font-mono truncate;
+    @apply hover:text-blue-600 transition-colors;
+  }
+
+  /* Collection badge styling */
+  .collection-badge {
+    @apply inline-flex items-center px-2 py-1 text-xs;
+    @apply bg-blue-50 text-blue-700 rounded-md border border-blue-200;
+  }
+
+  /* Tag cloud styling */
+  .tag-cloud {
+    @apply flex flex-wrap gap-2 p-4 bg-gray-50 rounded-lg;
+  }
+
+  /* Advanced search panel */
+  .search-panel {
+    @apply bg-white border rounded-lg shadow-sm p-4 space-y-4;
+  }
+}
+
+/* Custom animations for better user experience */
+@keyframes slideIn {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.2s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Print styles for bookmarks */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .bookmark-card {
+    @apply shadow-none border border-gray-300 mb-4;
+    break-inside: avoid;
+  }
+}

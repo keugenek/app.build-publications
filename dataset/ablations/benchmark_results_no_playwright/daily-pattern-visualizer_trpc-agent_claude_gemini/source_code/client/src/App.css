@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom component styles */
+@layer components {
+  /* Smooth transitions for interactive elements */
+  .activity-card {
+    @apply transition-all duration-200 hover:shadow-md;
+  }
+
+  /* Custom progress bar styling */
+  .progress-bar {
+    @apply transition-all duration-500 ease-out;
+  }
+
+  /* Gradient backgrounds for cards */
+  .gradient-card {
+    @apply bg-gradient-to-br from-white to-gray-50;
+  }
+
+  /* Energy level indicators */
+  .energy-low {
+    @apply bg-red-100 text-red-700 border-red-200;
+  }
+
+  .energy-medium {
+    @apply bg-yellow-100 text-yellow-700 border-yellow-200;
+  }
+
+  .energy-high {
+    @apply bg-green-100 text-green-700 border-green-200;
+  }
+
+  /* Activity type colors */
+  .activity-sleep {
+    @apply bg-blue-100 text-blue-700;
+  }
+
+  .activity-work {
+    @apply bg-purple-100 text-purple-700;
+  }
+
+  .activity-social {
+    @apply bg-green-100 text-green-700;
+  }
+
+  .activity-screen {
+    @apply bg-orange-100 text-orange-700;
+  }
+}
+
+/* Smooth animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Custom scrollbar for better UX */
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

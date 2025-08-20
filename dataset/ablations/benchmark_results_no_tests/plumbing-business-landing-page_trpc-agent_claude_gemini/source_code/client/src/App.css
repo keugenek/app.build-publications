@@ -1,0 +1,131 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer components {
+  /* Custom scrollbar for better visual appeal */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-blue-400 rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-blue-500;
+  }
+
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom focus styles for better accessibility */
+  .focus-ring:focus {
+    @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+  }
+
+  /* Animation for form submission feedback */
+  .pulse-success {
+    animation: pulse-green 0.6s ease-in-out;
+  }
+
+  @keyframes pulse-green {
+    0% {
+      @apply bg-green-50;
+    }
+    50% {
+      @apply bg-green-100;
+    }
+    100% {
+      @apply bg-green-50;
+    }
+  }
+
+  /* Card hover effects */
+  .card-hover {
+    transition: all 0.3s ease;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Gradient text effect for headings */
+  .gradient-text {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Professional button styles */
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl;
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-blue-600 font-semibold py-3 px-6 rounded-lg border border-blue-600 transition-colors duration-200;
+  }
+
+  /* Loading spinner */
+  .spinner {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+/* Mobile-first responsive design adjustments */
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+  
+  h1 {
+    @apply text-xl;
+  }
+  
+  h2 {
+    @apply text-3xl;
+  }
+  
+  h3 {
+    @apply text-2xl;
+  }
+}
+
+/* Ensure proper spacing and readability on mobile */
+@media (max-width: 768px) {
+  .hero-section {
+    @apply py-12;
+  }
+  
+  .section-padding {
+    @apply py-12;
+  }
+  
+  .card-grid {
+    @apply grid-cols-1 gap-6;
+  }
+  
+  .testimonial-grid {
+    @apply grid-cols-1 gap-6;
+  }
+  
+  .contact-grid {
+    @apply grid-cols-1 gap-8;
+  }
+}

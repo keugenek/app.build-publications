@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Plant-themed custom animations */
+  .plant-bounce {
+    animation: gentle-bounce 2s ease-in-out infinite;
+  }
+  
+  .water-drop {
+    animation: water-drop 1.5s ease-in-out infinite;
+  }
+}
+
+@layer base {
+  /* Custom animations */
+  @keyframes gentle-bounce {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+  
+  @keyframes water-drop {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  /* Custom plant-themed gradient backgrounds */
+  .bg-plant-gradient {
+    background: linear-gradient(135deg, #f0f9ff 0%, #dcfce7 50%, #ecfdf5 100%);
+  }
+  
+  /* Custom plant mood colors */
+  .mood-happy {
+    background-color: #dcfce7;
+    color: #166534;
+    border-color: #bbf7d0;
+  }
+  
+  .mood-thirsty {
+    background-color: #fed7aa;
+    color: #ea580c;
+    border-color: #fdba74;
+  }
+}

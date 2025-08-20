@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer components {
+  /* Custom scrollbar for the application */
+  .scroll-smooth::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scroll-smooth::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded-full;
+  }
+  
+  .scroll-smooth::-webkit-scrollbar-thumb {
+    @apply bg-blue-300 rounded-full hover:bg-blue-400;
+  }
+
+  /* Enhanced focus styles for better accessibility */
+  .focus-enhanced:focus {
+    @apply outline-none ring-2 ring-blue-500 ring-offset-2 ring-offset-white;
+  }
+
+  /* Smooth transitions for interactive elements */
+  .transition-smooth {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  /* Custom badge hover effects */
+  .badge-hover {
+    @apply transition-colors duration-150 ease-in-out cursor-default;
+  }
+
+  /* Loading animation for better UX */
+  .loading-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Custom card hover effects */
+  .card-hover {
+    @apply transition-all duration-200 ease-in-out hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  /* Engineering discipline specific styling */
+  .engineering-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors duration-150;
+  }
+}
+
+/* Ensure proper contrast for readability */
+body {
+  font-feature-settings: "cv03", "cv04", "cv11";
+  scroll-behavior: smooth;
+}
+
+/* Enhanced focus indicators for keyboard navigation */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Smooth animations for dialog/modal transitions */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+[data-state="open"] {
+  animation: slideIn 0.2s ease-out;
+}
+
+/* Custom gradient background */
+.gradient-bg {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  min-height: 100vh;
+}
+
+/* Print styles for job listings */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-break {
+    page-break-inside: avoid;
+  }
+}

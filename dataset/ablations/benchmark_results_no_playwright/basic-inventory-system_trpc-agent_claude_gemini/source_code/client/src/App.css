@@ -1,0 +1,214 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer components {
+  /* Custom loading spinner */
+  .loading-spinner {
+    @apply animate-spin h-8 w-8 border-b-2 border-gray-900;
+  }
+
+  /* Enhanced card hover effects for inventory items */
+  .inventory-card {
+    @apply transition-all duration-200 hover:shadow-lg hover:scale-[1.02] cursor-pointer;
+  }
+
+  /* Status indicators for stock levels */
+  .stock-indicator-low {
+    @apply bg-orange-50 border-orange-200 text-orange-700;
+  }
+
+  .stock-indicator-out {
+    @apply bg-red-50 border-red-200 text-red-700;
+  }
+
+  .stock-indicator-good {
+    @apply bg-green-50 border-green-200 text-green-700;
+  }
+
+  /* Transaction type indicators */
+  .transaction-in {
+    @apply bg-green-100 text-green-800 border-green-300;
+  }
+
+  .transaction-out {
+    @apply bg-red-100 text-red-800 border-red-300;
+  }
+
+  /* Dashboard metrics cards */
+  .metric-card {
+    @apply bg-gradient-to-br from-white to-gray-50 shadow-sm hover:shadow-md transition-shadow;
+  }
+
+  /* Enhanced table styling for inventory */
+  .inventory-table {
+    @apply rounded-lg overflow-hidden border border-gray-200;
+  }
+
+  .inventory-table th {
+    @apply bg-gray-50 text-gray-700 font-semibold;
+  }
+
+  .inventory-table td {
+    @apply border-t border-gray-100;
+  }
+
+  /* Form styling improvements */
+  .inventory-form {
+    @apply space-y-4 p-6 bg-white rounded-lg;
+  }
+
+  .inventory-form .form-group {
+    @apply space-y-2;
+  }
+
+  .inventory-form label {
+    @apply text-sm font-medium text-gray-700;
+  }
+
+  /* Alert styling for low stock warnings */
+  .low-stock-alert {
+    @apply bg-orange-50 border-l-4 border-orange-400 p-4 rounded;
+  }
+
+  .out-of-stock-alert {
+    @apply bg-red-50 border-l-4 border-red-400 p-4 rounded;
+  }
+}
+
+/* Custom scrollbar for tables */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f7fafc;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Animation for successful operations */
+@keyframes success-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.success-animation {
+  animation: success-pulse 0.6s ease-in-out;
+}
+
+/* Responsive table container */
+.table-container {
+  @apply overflow-x-auto custom-scrollbar;
+  min-height: 200px;
+}
+
+/* Enhanced button styles for inventory actions */
+.inventory-action-btn {
+  @apply transition-all duration-200 hover:scale-105 active:scale-95;
+}
+
+/* Status badge styles */
+.status-badge-low {
+  @apply bg-orange-100 text-orange-800 hover:bg-orange-200;
+}
+
+.status-badge-out {
+  @apply bg-red-100 text-red-800 hover:bg-red-200;
+}
+
+.status-badge-good {
+  @apply bg-green-100 text-green-800 hover:bg-green-200;
+}
+
+/* Dashboard header styling */
+.dashboard-header {
+  @apply bg-gradient-to-r from-blue-600 to-blue-800 text-white;
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 640px) {
+  .mobile-stack {
+    @apply flex-col space-y-2 space-x-0;
+  }
+  
+  .mobile-full-width {
+    @apply w-full;
+  }
+  
+  .mobile-text-sm {
+    @apply text-sm;
+  }
+}
+
+/* Print styles for inventory reports */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-only {
+    display: block !important;
+  }
+  
+  body {
+    background: white !important;
+  }
+  
+  .inventory-card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+}
+
+/* Focus styles for accessibility */
+.focus-visible:focus-visible {
+  @apply ring-2 ring-blue-500 ring-offset-2 outline-none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .inventory-card {
+    @apply border-2 border-gray-800;
+  }
+  
+  .stock-indicator-low,
+  .stock-indicator-out,
+  .stock-indicator-good {
+    @apply border-2;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .inventory-card,
+  .loading-spinner,
+  .inventory-action-btn {
+    animation: none !important;
+    transition: none !important;
+  }
+}

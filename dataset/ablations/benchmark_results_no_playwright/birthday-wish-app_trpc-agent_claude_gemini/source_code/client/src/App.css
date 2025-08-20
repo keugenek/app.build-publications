@@ -1,0 +1,278 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&display=swap');
+
+/* Global styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Comic Neue', 'Comic Sans MS', cursive;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Celebration animations */
+.celebration-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.confetti-piece {
+  position: absolute;
+  font-size: 2rem;
+  animation: confetti-fall 3s ease-in-out infinite;
+}
+
+.confetti-1 { left: 10%; animation-delay: 0s; }
+.confetti-2 { left: 20%; animation-delay: 0.5s; }
+.confetti-3 { left: 30%; animation-delay: 1s; }
+.confetti-4 { left: 40%; animation-delay: 0.3s; }
+.confetti-5 { left: 60%; animation-delay: 0.8s; }
+.confetti-6 { left: 70%; animation-delay: 1.2s; }
+.confetti-7 { left: 80%; animation-delay: 0.2s; }
+.confetti-8 { left: 90%; animation-delay: 1.5s; }
+
+@keyframes confetti-fall {
+  0% {
+    top: -10%;
+    transform: rotateZ(0deg) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: rotateZ(180deg) scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    top: 100%;
+    transform: rotateZ(360deg) scale(0.8);
+    opacity: 0.3;
+  }
+}
+
+/* Floating hearts */
+.floating-heart {
+  position: absolute;
+  font-size: 1.5rem;
+  animation: float-up 4s ease-in-out infinite;
+}
+
+.floating-heart-1 { left: 25%; animation-delay: 1s; }
+.floating-heart-2 { left: 50%; animation-delay: 2s; }
+.floating-heart-3 { left: 75%; animation-delay: 3s; }
+
+@keyframes float-up {
+  0% {
+    bottom: -10%;
+    transform: translateX(0) scale(0.5);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateX(20px) scale(1);
+    opacity: 1;
+  }
+  100% {
+    bottom: 100%;
+    transform: translateX(-10px) scale(0.3);
+    opacity: 0.2;
+  }
+}
+
+/* Title glow effect */
+.birthday-title-glow {
+  filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.5));
+  animation: title-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes title-glow {
+  0% {
+    filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.5));
+  }
+  100% {
+    filter: drop-shadow(0 0 20px rgba(236, 72, 153, 0.8));
+  }
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.photo-card {
+  transition: all 0.3s ease;
+}
+
+.photo-card:hover {
+  transform: scale(1.02) translateY(-5px);
+}
+
+/* Celebration button */
+.celebration-button {
+  animation: button-pulse 2s ease-in-out infinite;
+}
+
+@keyframes button-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 14px 0 rgba(236, 72, 153, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px 0 rgba(236, 72, 153, 0.6);
+  }
+}
+
+/* Floating decorations */
+.floating-decorations {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.floating-balloon {
+  position: absolute;
+  font-size: 3rem;
+  animation: balloon-float 6s ease-in-out infinite;
+}
+
+.floating-balloon-1 {
+  top: 20%;
+  left: 5%;
+  animation-delay: 0s;
+}
+
+.floating-balloon-2 {
+  top: 60%;
+  right: 5%;
+  animation-delay: 2s;
+}
+
+.floating-balloon-3 {
+  top: 40%;
+  left: 2%;
+  animation-delay: 4s;
+}
+
+@keyframes balloon-float {
+  0%, 100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(2deg);
+  }
+}
+
+.floating-gift {
+  position: absolute;
+  font-size: 2rem;
+  animation: gift-bounce 4s ease-in-out infinite;
+}
+
+.floating-gift-1 {
+  bottom: 20%;
+  right: 10%;
+  animation-delay: 1s;
+}
+
+.floating-gift-2 {
+  bottom: 40%;
+  left: 8%;
+  animation-delay: 3s;
+}
+
+@keyframes gift-bounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  25% {
+    transform: translateY(-15px) scale(1.1);
+  }
+  50% {
+    transform: translateY(0) scale(1);
+  }
+  75% {
+    transform: translateY(-10px) scale(0.95);
+  }
+}
+
+/* Candles animation */
+.candles {
+  animation: candle-flicker 2s ease-in-out infinite alternate;
+}
+
+@keyframes candle-flicker {
+  0% {
+    filter: brightness(1) hue-rotate(0deg);
+  }
+  50% {
+    filter: brightness(1.2) hue-rotate(10deg);
+  }
+  100% {
+    filter: brightness(1.1) hue-rotate(-10deg);
+  }
+}
+
+/* Background sparkle effect */
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle, #fff 0%, rgba(255,255,255,0) 70%);
+  border-radius: 50%;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .confetti-piece {
+    font-size: 1.5rem;
+  }
+  
+  .floating-heart {
+    font-size: 1rem;
+  }
+  
+  .floating-balloon {
+    font-size: 2rem;
+  }
+  
+  .floating-gift {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .celebration-container .confetti-piece {
+    font-size: 1.2rem;
+  }
+  
+  .floating-decorations .floating-balloon,
+  .floating-decorations .floating-gift {
+    display: none; /* Hide some decorations on very small screens */
+  }
+}

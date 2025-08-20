@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .wellness-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  .wellness-card {
+    @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg;
+  }
+  
+  .wellness-metric {
+    @apply flex items-center gap-2 text-sm font-medium;
+  }
+  
+  .wellness-score-excellent {
+    @apply text-green-600 bg-green-50 border-green-200;
+  }
+  
+  .wellness-score-good {
+    @apply text-blue-600 bg-blue-50 border-blue-200;
+  }
+  
+  .wellness-score-fair {
+    @apply text-yellow-600 bg-yellow-50 border-yellow-200;
+  }
+  
+  .wellness-score-poor {
+    @apply text-red-600 bg-red-50 border-red-200;
+  }
+}

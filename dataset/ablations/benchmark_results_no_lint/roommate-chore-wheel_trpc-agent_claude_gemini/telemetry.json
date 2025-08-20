@@ -1,0 +1,26 @@
+{
+  "gemini-2.5-flash-preview-05-20": {
+    "total_calls": 4,
+    "total_input_tokens": 6329,
+    "total_output_tokens": 350,
+    "total_time_seconds": 10.207782506942749,
+    "total_cache_creation_tokens": 0,
+    "total_cache_read_tokens": 0
+  },
+  "claude-sonnet-4-20250514": {
+    "total_calls": 77,
+    "total_input_tokens": 339758,
+    "total_output_tokens": 39941,
+    "total_time_seconds": 600.0315253734589,
+    "total_cache_creation_tokens": 0,
+    "total_cache_read_tokens": 263966
+  },
+  "gemini-2.5-flash-lite-preview-06-17": {
+    "total_calls": 2,
+    "total_input_tokens": 271,
+    "total_output_tokens": 8,
+    "total_time_seconds": 3.5589489936828613,
+    "total_cache_creation_tokens": 0,
+    "total_cache_read_tokens": 0
+  }
+}
