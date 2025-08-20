@@ -18,7 +18,7 @@ Correspondence: <contact@your-domain.example>
 Submission to: NeurIPS 2025 Workshop on Scaling Environments for Agents (SEA) — see website: [SEA Workshop @ NeurIPS 2025](https://sea-workshop.github.io/)
 
 ### Abstract
-While AI coding agents demonstrate impressive capabilities, relying on them to build even simple production-ready applications without human supervision remains infeasible. We present app.build, an open-source prompt-to-app generator that demonstrates how extensive environment scaffolding transforms unreliable LLMs into production-ready software engineering agents. Our approach combines: (1) structured environment scaffolding with explicit constraints and contextual information, (2) multi-layered validation pipelines with deterministic quality gates, and (3) model-agnostic architecture decoupling environment design from LLM choice. We implement two reference stacks (TypeScript/tRPC and Python/NiceGUI) with stack-specific validation pipelines, AST-based anti-pattern detection, and finite state machine orchestration. Through evaluation on 30 application generation tasks across four experimental configurations, we show that environment scaffolding is crucial for production readiness. Our ablation studies reveal that comprehensive validation (UI tests, linting, type checking) improves success rates by up to X%, with open-weights models achieving X% of closed-model performance when provided structured environments. This work demonstrates that scaling reliable AI agents requires scaling environments, not just models. Our work bridges the gap between AI potential and production reality, providing both empirical insights and a complete reference implementation for the community.
+We present app.build, an open-source framework that improves LLM-based application generation through systematic validation and structured environments. Our approach combines multi-layered validation pipelines, stack-specific orchestration, and model-agnostic architecture, implemented across two reference stacks (TypeScript/tRPC and Python/NiceGUI). Through evaluation on 30 generation tasks, we demonstrate that comprehensive validation improves success rates by X%, with open-weights models achieving X% of closed-model performance when provided structured environments. The open-source framework has been adopted by the community, with over 3,000 applications generated to date. This work demonstrates that scaling reliable AI agents requires scaling environments, not just models—providing empirical insights and complete reference implementations for production-oriented agent systems.
 
 ### Keywords
 AI agents; software environments; production systems; validation feedback; actor-critic architecture
@@ -31,11 +31,11 @@ While AI coding agents demonstrate impressive capabilities on standard benchmark
 
 This gap manifests across multiple dimensions. Function-level benchmarks like HumanEval evaluate isolated code generation but fail to capture system-level concerns including error handling, integration complexity, and production constraints [5]. Even state-of-the-art systems like AutoCodeRover, achieving 19% efficacy on SWE-bench at $0.43 per issue [6], demonstrate that raw model capability alone is insufficient for reliable automated software development.
 
-The core challenge lies in treating LLMs as omniscient oracles rather than unreliable workers requiring structured guidance. Current approaches predominantly focus on making models "smarter" via either training or prompt engineering, but this paradigm fails to address fundamental reliability issues inherent in probabilistic generation.
+The core challenge lies in treating LLMs as standalone systems rather than components requiring structured environments. Current approaches predominantly focus on making models "smarter" via either training or prompt engineering, but this paradigm fails to address fundamental reliability issues inherent in probabilistic generation.
 
 ## 1.2 Our Approach: Environment Scaffolding
 
-We propose **environment scaffolding** as a systematic alternative to prompt engineering. Environment scaffolding provides structured constraints, contextual information, and deterministic validation feedback loops that transform unreliable LLMs into production-ready software engineering agents. Unlike approaches that attempt to improve model reasoning through prompting, our method creates safe environments where models can fail fast and recover systematically.
+We propose **environment scaffolding** as an environment-first approach complementing prompt engineering, focusing on action-space design and agent integration. Environment scaffolding provides structured constraints, contextual information, and deterministic validation feedback loops that enable consistent quality in LLM-generated applications through structured task formulation and validation infrastructure. Unlike approaches that attempt to improve model reasoning through prompting, our method creates safe environments where models can fail fast and recover systematically.
 
 Our approach operates on three core principles. First, **structured environment design** provides explicit constraints and contextual information, reducing the generation search space while maintaining flexibility. Second, **multi-layered validation pipelines** implement deterministic quality gates with stack-specific checks, creating tight feedback loops that catch errors early. Third, **model-agnostic architecture** decouples environment scaffolding from LLM choice, enabling consistent quality assurance across different foundation models.
 
@@ -43,13 +43,15 @@ We implement this approach through app.build, an open-source framework featuring
 
 ## 1.3 Contributions
 
-Our work makes three primary contributions to the field of scalable AI-assisted software engineering:
+Our work contributes to scaling environments for agents through:
 
-**Empirical Analysis**: We present systematic evaluation across 30 application generation tasks and four experimental configurations, demonstrating that environment scaffolding significantly improves success rates compared to unstructured generation. Our ablation studies reveal that comprehensive validation layers improve success rates by up to X%, with open-weights models achieving X% of closed-model performance when provided structured environments.
+*Environment Infrastructure*: Open-source framework with two production reference stacks (TypeScript/tRPC and Python/NiceGUI) demonstrating structured action-space design and tool integration for code generation agents.
 
-**Open-Source Framework**: We release a complete reference implementation with two production technology stacks, addressing the gap between toy research prototypes and real-world deployment. Our framework has generated thousands of applications in community usage, providing empirical evidence of practical utility beyond controlled evaluation.
+*Empirical Evaluation*: Analysis of 30 generation tasks showing validation layer impact on success rates, with ablation studies revealing environment scaffolding effects across model architectures.
 
-**Methodological Insights**: We demonstrate that thoughtful environment design matters more than raw model capability for production reliability. Our findings challenge the dominant focus on model scaling and prompt engineering, suggesting that structured environments represent a more promising path to reliable AI-assisted software development.
+*Methodological Insights*: We demonstrate that thoughtful environment design matters more than raw model capability for production reliability. Our findings challenge the dominant focus on model scaling and prompt engineering, suggesting that structured environments represent a more promising path to reliable AI-assisted software development.
+
+*Community Adoption*: The framework has been adopted by the open-source community, validating the practical utility of environment-first design for AI agents, with over 3,000 applications generated by independent users.
 
 # 2. Background and Related Work (to be edited by @arsenyinfo) (@igor - to add more relevant stuff )
 
@@ -91,11 +93,11 @@ Our work builds on these validation approaches but addresses a fundamental limit
 
 ### 3.1 Problem Formulation
 
-While LLM-based code generation offers rapid prototyping, its outputs often fail production standards. We address this gap through app.build, an open-source framework that bridges AI-driven generation and production requirements via systematic environment scaffolding and multi-layered validation.
+LLM-based code generation enables rapid prototyping but often produces code that does not meet production standards. We present app.build, a framework addressing this through structured generation environments and systematic validation—demonstrating how careful environment design transforms probabilistic language models into reliable software engineering tools.
 
 ### 3.2 Approach
 
-Our framework operates on three core principles:
+Our framework exemplifies environment infrastructure design for software manipulation agents, implementing:
 
 **Environment Scaffolding**: We provide structured environments with explicit constraints and contextual information for reliable code generation, demonstrated through two reference implementations (TypeScript/tRPC and Python/NiceGUI).
 
@@ -117,8 +119,7 @@ Our framework operates on three core principles:
 
 #### 3.3.2 Stack-Specific Components
 
-**Generation Flow**: Each stack implements a finite state machine orchestrating the generation process. The TypeScript/tRPC stack follows a sequential pipeline: data models → API interfaces → frontend → backend handlers. The Python/NiceGUI stack employs a two-phase approach: data models → API/UI implementation.
-# FixME: AI got wrong
+**Generation Flow**: Each stack implements a finite state machine orchestrating the generation process. The TypeScript/tRPC stack follows a sequential pipeline: data models → API interfaces → backend handlers and frontend. The Python/NiceGUI stack employs a two-phase approach: data models → API/UI implementation.
 
 **Templates**: Stack-specific templates provide initial application scaffolding, reducing generation overhead while embedding universal smoke tests and health checks into the validation pipeline.
 
@@ -204,6 +205,8 @@ Our current framework is limited to CRUD-oriented data applications, focusing on
 
 7.2 Broader Impact
 The AI agent boom is accelerating, but real industry deployments often fail silently. Without environment scaffolding, we risk massive overengineering of models while ignoring the real bottleneck. app.build represents a shift from model-centric to system-centric AI engineering — a critical step toward scaling reliable agent environments. As emphasized in Machine Learning System Design with end-to-end examples [25], production AI systems only become effective when development integrates not just model performance, but core software engineering principles. By open-sourcing both the framework and evaluation protocol, we provide a reproducible, transparent foundation for building and benchmarking agent environments at scale. The model-agnostic architecture enables consistent quality assurance across diverse LLMs, directly supporting the goal of scaling environments rather than models. As agent systems grow, their environments must evolve from ad hoc scaffolds to engineered, testable, and composable systems — a vision our work helps operationalize.
+
+While our evaluation focuses on software generation environments, the principles of structured validation and environment scaffolding may generalize to other agent domains. The community-driven adoption (3,000+ applications generated without commercial incentives) suggests genuine utility for researchers and developers exploring agent-environment co-design.
 
 7.3 Conclusion
 Our results demonstrate that raw model capability alone cannot bridge the gap between AI potential and production reality. Through systematic environment scaffolding, multi-layered validation, and stack-specific orchestration, app.build transforms unreliable LLMs into dependable software engineering agents. Ablation studies show that comprehensive validation layers improve success rates by up to X%, with open-weights models achieving X% of closed-model performance when provided structured environments — confirming that thoughtful environment design matters more than model scale. We conclude that the path to reliable, production-ready AI agents lies not in better prompts or bigger models, but in principled, scalable environment engineering.
