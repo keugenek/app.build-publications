@@ -194,32 +194,32 @@ Detailed evaluation procedures, pass/fail criteria, and reporting standards are 
 
 ### 6. Results
 
-#### 6.1 Environment Scaffolding Impact
+#### 6.1 Environment Scaffolding Impact (tRPC only)
 
-Our evaluation of 21 generated applications reveals the critical importance of structured validation pipelines. The overall success rate reached 66.7% (14/21 applications scoring > 0), with 42.9% achieving perfect scores and 33.3% complete failures. This bimodal distribution underscores the effectiveness of our smoke test design in filtering non-viable applications early.
+Evaluating 30 TypeScript/tRPC applications, we observe that automated generation reliability reached 70.0% (21/30), with 30.0% perfect scores and 30.0% zero-scores. Once initial quality gates are passed, generated applications exhibit consistently high quality with 30% of apps that were either not generated or suffered from critical errors.
 
-**Table 2: Aggregated Evaluation Results**
+**Table 2: Aggregated Evaluation Results (tRPC)**
 
 | Metric | Value | Key Insight |
 |--------|-------|-------------|
-| Total Applications | 21 | Evaluated using TypeScript/tRPC stack |
-| Success Rate (Score > 0) | 66.7% | 14/21 functional applications |
-| Perfect Score (10/10) | 42.9% | 9/21 fully compliant applications |
-| Complete Failures (0/10) | 33.3% | 7/21 non-functional applications |
-| Mean Score (functional apps) | 9.24 | High quality when functional |
+| Total Applications | 30 | TypeScript/tRPC stack only |
+| Success Rate (Score > 0) | 70.0% | 21/30 functional applications |
+| Perfect Score (10/10) | 30.0% | 9/30 fully compliant applications |
+| Complete Failures (0/10) | 30.0% | 9/30 non-functional applications |
+| Mean Score (functional apps) | ≈ 8.78 | High quality when functional |
 
-**Table 3: Check-Specific Pass Rates**
+**Table 3: Check-Specific Pass Rates (tRPC)**
 
-| Check | Pass Rate | Critical Impact |
-|-------|-----------|-----------------|
-| AB-01 (Boot) | 90.5% | Failure cascades to 0 score |
-| AB-02 (Prompt) | 68.4% | Template detection needed |
-| AB-03 (Create) | 93.3% | Strong CRUD implementation |
-| AB-04 (View/Edit) | 85.7% | Reliable data operations |
-| AB-05 (UI Sweep) | 86.7% | Good interface coverage |
-| AB-06 (Performance) | 93.3% | Consistent optimization |
+| Check | Pass | Warn | Fail | NA | Pass Rate (excl. NA) |
+|-------|------|------|------|----|-----------------------|
+| AB-01 (Boot) | 25 | 2 | 3 | 0 | 83.3% |
+| AB-02 (Prompt) | 19 | 3 | 5 | 3 | 70.4% |
+| AB-03 (Create) | 22 | 2 | 0 | 6 | 91.7% |
+| AB-04 (View/Edit) | 17 | 1 | 1 | 11 | 89.5% |
+| AB-05 (UI Sweep) | 20 | 4 | 1 | 5 | 80.0% |
+| AB-06 (Performance) | 23 | 3 | 0 | 4 | 88.5% |
 
-The analysis reveals that smoke tests (AB-01, AB-02) serve as critical quality gates—all zero-score applications failed one of these initial checks. Applications passing both smoke tests demonstrated 92.9% probability of achieving scores ≥7, validating our hierarchical validation approach. Performance metrics show remarkable consistency (mean: 85.7, σ: 5.8), indicating effective optimization defaults in our scaffolding system.
+Smoke tests (AB‑01, AB‑02) act as strong early quality gates. Among apps that did not fail smoke tests (n=22), 95.5% were functional (score > 0) and 77.3% scored ≥9. Zero scores arise from smoke test failures, missing artifacts.
 
 #### 6.2 Open vs Closed Model Performance
 
@@ -229,13 +229,40 @@ The performance gap reveals that environment scaffolding alone cannot eliminate 
 
 Operational characteristics differed notably between model types. Open models required more validation retries, evidenced by higher LLM call counts (4,359 for Qwen3, 4,922 for GPT OSS vs 3,413 for Claude). Healthcheck pass rates (86.7% for Qwen3 vs 96.7% for Claude) indicate that open models generate syntactically correct code but struggle more with integration-level correctness, emphasizing the importance of comprehensive validation pipelines for open-weights deployments.
 
-#### 6.3 Failure Mode Analysis - if manual analysis allows
-- Context management (35% of failures)
-- Tool calling precision (open models struggle more)
-- Validation catches 78% of would-be runtime errors
-- Human eval reveals maintainability issues even in "successful" apps [36]
+#### 6.3 Automated Generation Quality
 
-6.4 Analysis of the runs ^
+Automated outputs demonstrate strong quality once the environment scaffolding clears initial risks. Functional apps averaged ≈8.78/10 (median 9.5), and 81% of functional apps scored ≥9. Typical residual defects are localized rather than systemic:
+
+- Minor UI wiring gaps (e.g., a single non‑responsive button)
+- Light state/integration inconsistencies (e.g., refresh required after create)
+- Occasional content‑security policy warnings for media/images
+
+This profile indicates that current app.build solution with deterministic gates plus stack‑specific templates reliably produce maintainable, production‑style apps with occasional need of small, actionable fixes.
+
+#### 6.4 Failure Mode Analysis (from assessor notes)
+
+Observed failure modes in tRPC runs cluster into a small set of categories:
+
+- Boot/Load failures: template placeholders or incomplete artifacts
+- Prompt correspondence failures: generic template likely because of generation failure
+- CSP/security policy restrictions: blocked images or media by default policies
+- UI interaction defects: unbound handlers, non‑working controls
+- State/integration defects: data not persisting across refresh; broken filters; login issues
+- Component misuse: runtime exception due to incorrect component composition
+
+These defects align with our layered pipeline design: early gates catch non‑viable builds, while later gates expose interaction/state issues before human evaluation.
+
+#### 6.5 Prompt Complexity and Success Rate
+
+We categorize prompts along a simple rubric and analyze success impacts:
+
+- Low complexity: static or single‑page UI tasks (e.g., landing pages, counters)
+- Medium complexity: single‑entity CRUD without advanced flows or auth
+- High complexity: multi‑entity workflows, custom logic, or complex UI interactions
+
+Empirically, medium‑complexity CRUD prompts achieve the highest reliability (9–10 typical), reflecting strong scaffolding for data models and handlers. Low‑complexity UI prompts are not uniformly “easy”: several failed prompt correspondence (AB‑02) by returning generic templates. High‑complexity prompts show lower success rates due to interaction wiring and state‑consistency issues surfaced by AB‑04/05. This suggests that environment scaffolding is most mature for CRUD‑centric tasks, while additional guardrails and exemplars are needed for multi‑step workflows and rich UI behaviors. todo: However this analysis needs further data to be evaluated.
+
+6.6 Analysis of the runs ^
 
 ### 7. Summary
 
