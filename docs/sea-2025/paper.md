@@ -160,22 +160,26 @@ The evaluation dataset comprises 30 prompts designed to assess system performanc
 
 *Human Evaluation Framework*. To systematically assess generated application quality, we implement a structured evaluation protocol comprising seven standardized functional checks executed by human assessors. Each generated application undergoes comprehensive testing across core functionality dimensions, with results recorded using a four-tier classification system (PASS/WARN/FAIL/NA) documented in Appendix Table A2.
 
-*Scoring Methodology*. The evaluation employs a weighted scoring system to quantify application functionality at 0-10 scale. 0 score represents the complete absence of requested functionality in the applciation from user standpoint meaning application either completely broken, unusable or do not contain any required functionality. Score 10 means the applcation is working with no errors, requested functionality implemented completely and with no issues following best practices of software development.
-Scores between 0 and 10 reflect partially usable applications with gaps in the quality or requested features.
-Resulting score combines from the following individual checks of each application assigned manually by human assessors according to the procedure described in Appendix A.3 reflectiev relative significance of each check by the formula:
+*Scoring Methodology*. The evaluation employs a weighted scoring system to quantify application functionality on a normalized 0-10 scale. A score of 0 indicates complete absence of requested functionality - representing applications that are either non-functional, unusable, or devoid of required features. Conversely, a score of 10 denotes full functional implementation with error-free operation and adherence to software engineering best practices. Intermediate scores reflect applications with partial functionality or quality deficiencies.
 
-foreach F: factor, 1/7*Sum(1/2*PassFw/100 * IPASS + 1/2*WarnFw/100 * IWARN) * Mul(Ffail * Fail)
+The composite score S is calculated using a weighted aggregation of individual check results, where each check c ∈ {1,...,6} is assigned specific weights for PASS (w^p_c) and WARN (w^w_c) outcomes, with FAIL multipliers (m_c) applied to critical checks. The scoring function is defined as:
 
-Factor | PASS Weight, % | WARN Weight, % | FAIL Multiplier |  
---------
-AB‑01 Boot & Home | 10 | 8 | 0 |
-AB‑02 Prompt to app correspondence | 50 | 40 | 0 |
-AB‑03 Create | 10 | 5 | 1 |
-AB‑04 View/Edit | 10 | 5 | 1 |
-AB‑05 Clickable Sweep | 10 | 5 | 1 |
-AB‑06 Performance (quick) | 10 | 5 | 1 |
+S = ∏_{c∈{1,2}} (1 - I_{FAIL,c}) × ∑_{c=1}^{6} [w^p_c × I_{PASS,c} + w^w_c × I_{WARN,c}] × ∏_{c=3}^{6} (1 - m_c × I_{FAIL,c})
 
-Overall score is 0 if any of smoke checks A01-02 fail. Prompt correspondence is a major factor contributing at lest 50% to the overall result among of all other quality checks that have evenly distributed weights in the result. Minimal score that partially working app may get is 4 therefore, reflecting the state where the quality is not yet there but the app generally attempts to do what user asked for.
+where I_{state,c} represents indicator functions for check outcomes (PASS/WARN/FAIL) and weights are normalized such that ∑_c w^p_c = 100.
+
+**Table 1: Check Weight Distribution**
+
+| Check ID | Check Description | PASS Weight (%) | WARN Weight (%) | FAIL Multiplier |
+|----------|-------------------|-----------------|-----------------|-----------------|
+| AB-01 | Boot & Home | 10 | 8 | 0 |
+| AB-02 | Prompt Correspondence | 50 | 40 | 0 |
+| AB-03 | Create Functionality | 10 | 5 | 1 |
+| AB-04 | View/Edit Operations | 10 | 5 | 1 |
+| AB-05 | UI Element Sweep | 10 | 5 | 1 |
+| AB-06 | Performance Metrics | 10 | 5 | 1 |
+
+The scoring mechanism implements hard constraints through critical smoke tests (AB-01, AB-02), where failure results in immediate zero scoring, reflecting complete application non-viability. Prompt correspondence dominates the evaluation at 50% weight, reflecting its fundamental importance to functional adequacy. The remaining quality checks contribute equally (10% each), ensuring balanced assessment across operational dimensions. This design ensures a minimum viable score of 4.0 for applications demonstrating basic prompt adherence despite quality deficiencies.
 
 *Evaluation Criteria*. The assessment protocol implements domain-specific checks designed for comprehensive coverage while maintaining evaluation efficiency. Each check targets a specific functional aspect with stable identifiers to ensure reproducibility. The complete evaluation suite comprises the following criteria:
 
