@@ -1,0 +1,37 @@
+,,,Assignee,AB-01 Boot,AB-02 Prompt,AB-03 Create,AB-04 View/Edit,AB‑06 Clickable Sweep,AB‑07 Performance >75,Notes,PASS#,WARN#,FAIL#,PTS
+basic-inventory-system_trpc-agent_claude_gemini,,,A2,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 87, Best Practices: 93",6,0,0,6
+beer-counter-app_trpc-agent_claude_gemini,,,A2,FAIL,NA,NA,NA,NA,NA,template: Under Construction  ,0,0,1,-1
+birthday-wish-app_trpc-agent_claude_gemini,,,A2,WARN,FAIL,NA,NA,FAIL,PASS,"Refused to load the stylesheet and Refused to load the image
+Performance: 91, Best Practices: 86",1,1,2,-0.25
+book-library-manager_trpc-agent_claude_gemini,,,A2,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 86, Best Practices: 93",6,0,0,6
+bookmark-management-app_trpc-agent_claude_gemini,,,A2,WARN,WARN,FAIL,NA,PASS,PASS,"Failed to load resource: the server, Failed to create bookmark: TRPCClientError
+Performance: 85, Best Practices: 93",2,2,1,2.5
+car-maintenance-dashboard_trpc-agent_claude_gemini,,,A2,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 87, Best Practices: 93",6,0,0,6
+cat-conspiracy-tracker_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,NA,PASS,PASS,"Performance: 87, Best Practices: 93",5,0,0,5
+city-trip-advisor_trpc-agent_claude_gemini,,,A2,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 93, Best Practices: 93",6,0,0,6
+currency-converter_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,NA,PASS,PASS,"bonus function: preserves history; Performance: 85, Best Practices: 93",5,0,0,5
+daily-pattern-visualizer_trpc-agent_claude_gemini,,,A2,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 90, Best Practices: 93",6,0,0,6
+engineering-job-board_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,NA,WARN,PASS,"APPLY button does nothing, Performance: 89, Best Practices: 93",4,1,0,4.75
+event-tracker_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 91, Best Practices: 93",6,0,0,6
+gym-crm_trpc-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,-1
+habit-tracker-app_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 92, Best Practices: 93",6,0,0,6
+home-lab-inventory_trpc-agent_claude_gemini,,,A2,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 87, Best Practices: 93",6,0,0,6
+indonesian-inventory-app_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 86, Best Practices: 93",6,0,0,6
+kanji-flashcards_trpc-agent_claude_gemini,,,A1,PASS,WARN,WARN,NA,PASS,PASS,"user login does not work (but signup works), user session is not persistent, empty data (could not perform required actions within 30s); Performance: 87, Best Practices: 93",3,2,0,4.5
+pantry-inventory-app_trpc-agent_claude_gemini,,,A2,PASS,WARN,PASS,PASS,PASS,PASS,"recipe suggestion with AI does not work (optional feature)
+Performance: 89, Best Practices: 93",5,1,0,5.75
+pastel-blue-notes-app_trpc-agent_claude_gemini,,,A2,WARN,PASS,PASS,PASS,PASS,PASS,"Refused to load the stylesheet
+Performance: 82, Best Practices: 86",5,1,0,5.75
+pc-gaming-niche-site_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 87, Best Practices: 93",6,0,0,6
+personal-expense-tracker_trpc-agent_claude_gemini,,,A2,PASS,PASS,PASS,PASS,WARN,PASS,"When clicked on Budget: Uncaught TypeError: Cannot read properties of undefined
+Performance: 85, Best Practices: 93",5,1,0,5.75
+plant-care-tracker_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 91, Best Practices: 93",6,0,0,6
+plumbing-business-landing-page_trpc-agent_claude_gemini,,,A2,PASS,,,,,,,1,0,0,1
+pomodoro-study-timer_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,"bonus: {sessions and settings are persistent, settings can be modified}; Performance: 92, Best Practices: 93",6,0,0,6
+recipe-sharing-platform_trpc-agent_claude_gemini,,,A2,PASS,PASS,PASS,PASS,PASS,PASS,"once logout user login gives invalid with same email and password earlier created(but signup works for new one and existing create data is there)
+Performance: 87, Best Practices: 93",6,0,0,6
+roommate-chore-wheel_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 91, Best Practices: 93",6,0,0,6
+teacher-question-bank_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,"impressive; Performance: 83, Best Practices: 93",6,0,0,6
+tennis-enthusiast-platform_trpc-agent_claude_gemini,,,A1,PASS,WARN,PASS,WARN,PASS,PASS,"user login sessions are not persistend, updating profile creates new user; Performance: 87, Best Practices: 93",4,2,0,5.5
+todo-list-with-mood_trpc-agent_claude_gemini,,,A2,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 92, Best Practices: 93",6,0,0,6
+wellness-score-tracker_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 91, Best Practices: 93",6,0,0,6
