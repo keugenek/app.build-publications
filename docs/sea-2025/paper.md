@@ -64,17 +64,7 @@ Repository-level agents have emerged as a distinct research direction. **RepoCod
 
 Our approach differs fundamentally from these repository-level and multi-agent systems. While they focus on modifying existing codebases or coordinating multiple specialized agents, we address the distinct challenge of generating and updating complete applications from natural language prompts with production-level quality assurance.
 
-## 2.2 Code Generation Benchmarks (todo: describe ours?)
-
-Current evaluation methodologies reveal significant limitations in assessing production-ready code generation. **Function-level benchmarks** like HumanEval [1] with 164 hand-written problems and MBPP [2] with 974 entry-level tasks established initial baselines but fail to capture real-world programming complexity. **EvalPlus** [13] addressed overfitting by extending HumanEval and MBPP with 80x and 35x more test cases respectively, revealing substantial performance degradation in previously reported results.
-
-**Class-level evaluation** emerged with **ClassEval** [14], the first benchmark for class-level code generation with 100 Python classes and average 33.1 test cases per class. **BigCodeBench** [15] pushed further with 1,140 function-level tasks requiring multiple function calls from 139 libraries. These benchmarks consistently show 30-50% performance drops compared to simple function generation, highlighting the complexity gap between isolated tasks and integrated systems.
-
-**Application-level assessment** remains limited. **WebArena** [16] provides 812 realistic web environment tasks for UI automation but focuses on interaction rather than generation. Our work addresses this gap by evaluating complete application generation across diverse domains with human assessors using production-quality criteria.
-
-The limitations of test-based evaluation have driven alternative approaches. **CodeJudge** [17] demonstrates semantic correctness evaluation without test cases using LLMs, while metamorphic testing approaches [18] validate consistency across prompt variations. However, these methods remain primarily research tools rather than production validation systems.
-
-## 2.3 Production Quality in Generated Code
+## 2.2 Production Quality in Generated Code
 
 Ensuring production-ready AI-generated code requires validation approaches beyond simple correctness testing. **Static analysis integration** has shown promise, with intelligent code analysis agents [19] combining GPT-3/4 with traditional static analysis to reduce false-positive rates from 85% to 66%. However, token consumption costs remain prohibitive for widespread adoption.
 
@@ -86,7 +76,7 @@ Ensuring production-ready AI-generated code requires validation approaches beyon
 
 Our work builds on these validation approaches but addresses a fundamental limitation: existing methods focus on individual code artifacts rather than complete application systems. We demonstrate that production readiness requires validation pipelines specifically designed for end-to-end application generation, not just code correctness.
 
-#### 2.4. Tree search and test time and runtime isolation (todo: @igor)
+#### 2.3. Tree search and test time and runtime isolation (todo: @igor)
 
 **Tree search** enhances LLM-based solutions and serves as a way to increase compute budget beyond internal model reasoning token budget. The closest approach is used by Li et al in [https://arxiv.org/abs/2502.14382](S* Scaling) by combining iterative feedback with parallel branches taking different path towards solving the problem.
 
