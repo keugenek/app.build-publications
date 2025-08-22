@@ -1,0 +1,37 @@
+Case,Assignee,AB-01 Boot,AB-02 Prompt,AB-03 Create,AB-04 View/Edit,AB‑06 Clickable Sweep,AB‑07 Performance >75,Notes,PASS#,WARN#,FAIL#,PTS
+basic-inventory-system_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 87, Best Practices: 93",6,0,0,10
+beer-counter-app_trpc-agent_claude_gemini,A1,PASS,PASS,NA,PASS,PASS,PASS,"Performance: 96, Best Practices: 93",5,0,0,9
+birthday-wish-app_trpc-agent_claude_gemini,A1,WARN,PASS,NA,NA,PASS,WARN,"initial console error: Refused to load the image '<URL>' because it violates the following Content Security Policy directive: ""img-src 'self' data:""; Performance: 67, Best Practices: 86",2,2,0,7.3
+book-library-manager_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 87, Best Practices: 93",6,0,0,10
+bookmark-management-app_trpc-agent_claude_gemini,A2,FAIL,NA,NA,NA,NA,NA,"user login doesnot work, signup open the dashboard however redirects to login page when refresh or click in any filed ",0,0,1,0
+car-maintenance-dashboard_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 86, Best Practices: 93",6,0,0,10
+cat-conspiracy-tracker_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,NA,PASS,PASS,"Performance: 89, Best Practices: 93",5,0,0,9
+city-trip-advisor_trpc-agent_claude_gemini,A2,PASS,PASS,PASS,WARN,PASS,PASS,"History are not dispalyed in UI
+Performance: 94, Best Practices: 93",5,1,0,9.5
+currency-converter_trpc-agent_claude_gemini,A2,PASS,PASS,WARN,PASS,PASS,PASS,"Limited options fro convertion
+Performance: 89, Best Practices: 93",5,1,0,9.5
+daily-pattern-visualizer_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,WARN,PASS,PASS,"updating today's metric fails (unhandled case); bonus function: work session tracker; Performance: 89, Best Practices: 93",5,1,0,9.5
+engineering-job-board_trpc-agent_claude_gemini,A2,PASS,PASS,PASS,WARN,PASS,WARN,"Unable to edit and delete job post
+Performance: 64, Best Practices: 93",4,2,0,9
+event-tracker_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 92, Best Practices: 93",6,0,0,10
+gym-crm_trpc-agent_claude_gemini,A2,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 84, Best Practices: 93",6,0,0,10
+habit-tracker-app_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 92, Best Practices: 93",6,0,0,10
+home-lab-inventory_trpc-agent_claude_gemini,A2,PASS,PASS,PASS,WARN,PASS,PASS,"Total added assets and ip are not displaying 
+Performance: 86, Best Practices: 93",5,1,0,9.5
+indonesian-inventory-app_trpc-agent_claude_gemini,A1,PASS,WARN,PASS,WARN,PASS,PASS,"deleted stocks come back on refresh, update works only once per dialog session; Performance: 85, Best Practices: 93",4,2,0,8.5
+kanji-flashcards_trpc-agent_claude_gemini,A1,PASS,WARN,NA,NA,WARN,PASS,"prepopulated user data, inability to add or edit kanji, disabled review button, required actions cannot be performed in 30s; Performance: 92, Best Practices: 93",2,2,0,6.5
+pantry-inventory-app_trpc-agent_claude_gemini,A1,PASS,WARN,PASS,PASS,PASS,PASS,"recipe generation with AI does not work (optional feature); Performance: 90, Best Practices: 93",5,1,0,9
+pastel-blue-notes-app_trpc-agent_claude_gemini,A2,FAIL,NA,NA,NA,NA,NA,template: Under Construction ,0,0,1,0
+pc-gaming-niche-site_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 86, Best Practices: 93",6,0,0,10
+personal-expense-tracker_trpc-agent_claude_gemini,A2,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 86, Best Practices: 93",6,0,0,10
+plant-care-tracker_trpc-agent_claude_gemini,A2,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 93, Best Practices: 93",6,0,0,10
+plumbing-business-landing-page_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,NA,PASS,PASS,"Performance: 94, Best Practices: 93",5,0,0,9
+pomodoro-study-timer_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,NA,PASS,PASS,"Performance: 93, Best Practices: 93",5,0,0,9
+recipe-sharing-platform_trpc-agent_claude_gemini,A1,PASS,FAIL,FAIL,FAIL,WARN,PASS,"user signup is missing, user account is required to perform main functionalities to add and edit recipes; Performance: 87, Best Practices: 93",2,1,3,0
+roommate-chore-wheel_trpc-agent_claude_gemini,A2,PASS,FAIL,NA,NA,WARN,PASS,"no action to add users, only to add chore, when clicked on assigned chores it replicates all existing chroes 
+Performance: 91, Best Practices: 93",2,1,1,0
+teacher-question-bank_trpc-agent_claude_gemini,A2,PASS,WARN,PASS,WARN,WARN,WARN,"unable to edit quiz questions, when clicked on quiz Generator tab: ReferenceError: Cannot access 'w' before initialization
+Performance: 67, Best Practices: 93",2,4,0,7.5
+tennis-enthusiast-platform_trpc-agent_claude_gemini,A2,FAIL,NA,NA,NA,NA,NA,UI: Blank ,0,0,1,0
+todo-list-with-mood_trpc-agent_claude_gemini,A2,FAIL,NA,NA,NA,NA,NA,UI: Loading your journal,0,0,1,0
+wellness-score-tracker_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,WARN,PASS,PASS,"updating today's entry creates new entry; Performance: 85, Best Practices: 93",5,1,0,9.5

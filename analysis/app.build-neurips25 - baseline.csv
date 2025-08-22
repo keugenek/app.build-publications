@@ -1,185 +1,37 @@
-,,,Assignee,AB-01 Boot,AB-02 Prompt,AB-03 Create,AB-04 View/Edit,AB‑06 Clickable Sweep,AB‑07 Performance >75,Notes,PASS#,WARN#,FAIL#,PTS
-basic-inventory-system_nicegui-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,Fails to load the app,0,0,1,-1
-basic-inventory-system_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 86; Best Practices: 93,6,0,0,6
-beer-counter-app_nicegui-agent_claude_gemini,,,A1,WARN,FAIL,NA,NA,FAIL,PASS,"Performance: 87; Best Practices: 93
-
-Uncaught (in promise) EvalError: Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source of script in the following Content Security Policy directive: ""default-src 'self' http: https: data: blob: 'unsafe-inline'"".
-
-    at nicegui.js:245:41
-    at new Promise (<anonymous>)
-    at runJavascript (nicegui.js:245:3)
-    at run_javascript (nicegui.js:404:34)
-    at nicegui.js:423:41
-    at a.<anonymous> (nicegui.js:429:23)
-    at a.<anonymous> (index.mjs:136:20)
-    at a.value (socket.js:538:20)
-    at a.value (socket.js:525:18)
-    at a.value (socket.js:495:22)
-(anonymous) @ nicegui.js:245
-runJavascript @ nicegui.js:245
-run_javascript @ nicegui.js:404
-(anonymous) @ nicegui.js:423
-(anonymous) @ nicegui.js:429
-(anonymous) @ index.mjs:136
-value @ socket.js:538
-value @ socket.js:525
-value @ socket.js:495
-(anonymous) @ index.mjs:136
-(anonymous) @ manager.js:204
-Promise.then
-(anonymous) @ websocket-constructor.browser.js:5
-value @ manager.js:203
-(anonymous) @ index.mjs:136
-value @ index.js:146
-value @ manager.js:190
-(anonymous) @ index.mjs:136
-value @ socket.js:341
-(anonymous) @ index.mjs:136
-value @ transport.js:98
-value @ transport.js:90
-(anonymous) @ websocket.js:68",1,1,2,-0.25
-beer-counter-app_trpc-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,Incomplete / No Source Code,0,0,1,0
-birthday-wish-app_nicegui-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,Fails to load the app,0,0,1,-1
-birthday-wish-app_trpc-agent_claude_gemini,,,A1,WARN,PASS,NA,NA,PASS,PASS,"Performance: 94; Best Practices: 86
+Case,Assignee,AB-01 Boot,AB-02 Prompt,AB-03 Create,AB-04 View/Edit,AB‑06 Clickable Sweep,AB‑07 Performance >75,Notes,PASS#,WARN#,FAIL#,PTS
+basic-inventory-system_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 86; Best Practices: 93,6,0,0,10
+beer-counter-app_trpc-agent_claude_gemini,A1,FAIL,NA,NA,NA,NA,NA,Incomplete / No Source Code,0,0,1,0
+birthday-wish-app_trpc-agent_claude_gemini,A1,WARN,PASS,NA,NA,PASS,PASS,"Performance: 94; Best Practices: 86
 
 Refused to load the image '<URL>' because it violates the following Content Security Policy directive: ""img-src 'self' data:"".",3,1,0,7.8
-book-library-manager_nicegui-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,Fails to load the app,0,0,1,-1
-book-library-manager_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 86; Best Practices: 93,6,0,0,10
-bookmark-management-app_nicegui-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,Incomplete / No Source Code,0,0,1,-1
-bookmark-management-app_trpc-agent_claude_gemini,,,A1,PASS,WARN,PASS,FAIL,PASS,PASS,"User login failure
+book-library-manager_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 86; Best Practices: 93,6,0,0,10
+bookmark-management-app_trpc-agent_claude_gemini,A1,PASS,WARN,PASS,FAIL,PASS,PASS,"User login failure
 
 Performance: 86; Best Practices: 93",4,1,1,0
-car-maintenance-dashboard_nicegui-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,Fails to load the app,0,0,1,-1
-car-maintenance-dashboard_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 87; Best Practices: 93,6,0,0,10
-cat-conspiracy-tracker_nicegui-agent_claude_gemini,,,A1,PASS,PASS,FAIL,WARN,FAIL,PASS,Performance: 86; Best Practices: 100,3,1,2,1.75
-cat-conspiracy-tracker_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 75; Best Practices: 93,6,0,0,10
-city-trip-advisor_nicegui-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,Fails to load the app,0,0,1,-1
-city-trip-advisor_trpc-agent_claude_gemini,,,A1,PASS,PASS,NA,PASS,PASS,PASS,Performance: 94; Best Practices: 93,5,0,0,9
-currency-converter_nicegui-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,Fails to load the app,0,0,1,-1
-currency-converter_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 90; Best Practices: 93,6,0,0,10
-daily-pattern-visualizer_nicegui-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,Incomplete / No Source Code,0,0,1,-1
-daily-pattern-visualizer_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 89; Best Practices: 93,6,0,0,10
-engineering-job-board_nicegui-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,"Fails to load the app, ValidationError: 5 validation errors for JobPostingCreate job_title String should have at least 1 character [type=string_too_short, input_value='', input_type=str",0,0,1,-1
-engineering-job-board_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 85; Best Practices: 93,6,0,0,10
-event-tracker_nicegui-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,"Fails to load the app; Uncaught EvalError: Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source of script in the following Content Security Policy directive: ""default-src 'self' http: https: data: blob: 'unsafe-inline'"".
-
-    at Function (<anonymous>)
-    at aP (vue.global.prod.js:9:318)
-    at iR (vue.global.prod.js:5:57544)
-    at vue.global.prod.js:5:39276
-    at vue.global.prod.js:5:39284
-    at K (vue.global.prod.js:5:39299)
-    at W (vue.global.prod.js:5:36667)
-    at T (vue.global.prod.js:5:33681)
-    at D (vue.global.prod.js:5:35048)
-    at $ (vue.global.prod.js:5:34458)",0,0,1,-1
-event-tracker_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 91; Best Practices: 93,6,0,0,10
-gym-crm_nicegui-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,Incomplete / No Source Code,0,0,1,-1
-gym-crm_trpc-agent_claude_gemini,,,A1,PASS,FAIL,NA,NA,NA,NA,Template: Under Construction,1,0,1,0
-habit-tracker-app_nicegui-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,"Fails to load the app; Uncaught EvalError: Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source of script in the following Content Security Policy directive: ""default-src 'self' http: https: data: blob: 'unsafe-inline'"".
-
-    at Function (<anonymous>)
-    at aP (vue.global.prod.js:9:318)
-    at iR (vue.global.prod.js:5:57544)
-    at vue.global.prod.js:5:39276
-    at vue.global.prod.js:5:39284
-    at K (vue.global.prod.js:5:39299)
-    at W (vue.global.prod.js:5:36667)
-    at T (vue.global.prod.js:5:33681)
-    at D (vue.global.prod.js:5:35048)
-    at $ (vue.global.prod.js:5:34458)
-aP @ vue.global.prod.js:9
-iR @ vue.global.prod.js:5
-(anonymous) @ vue.global.prod.js:5
-(anonymous) @ vue.global.prod.js:5
-K @ vue.global.prod.js:5
-W @ vue.global.prod.js:5
-T @ vue.global.prod.js:5
-D @ vue.global.prod.js:5
-$ @ vue.global.prod.js:5
-M @ vue.global.prod.js:5
-T @ vue.global.prod.js:5
-D @ vue.global.prod.js:5
-$ @ vue.global.prod.js:5
-M @ vue.global.prod.js:5
-T @ vue.global.prod.js:5
-a @ vue.global.prod.js:5
-run @ vue.global.prod.js:5
-J.e.update @ vue.global.prod.js:5
-J @ vue.global.prod.js:5
-K @ vue.global.prod.js:5
-W @ vue.global.prod.js:5
-T @ vue.global.prod.js:5
-D @ vue.global.prod.js:5
-$ @ vue.global.prod.js:5
-M @ vue.global.prod.js:5
-T @ vue.global.prod.js:5
-a @ vue.global.prod.js:5
-run @ vue.global.prod.js:5
-J.e.update @ vue.global.prod.js:5
-J @ vue.global.prod.js:5
-K @ vue.global.prod.js:5
-W @ vue.global.prod.js:5
-T @ vue.global.prod.js:5
-D @ vue.global.prod.js:5
-$ @ vue.global.prod.js:5
-M @ vue.global.prod.js:5
-T @ vue.global.prod.js:5
-a @ vue.global.prod.js:5
-run @ vue.global.prod.js:5
-J.e.update @ vue.global.prod.js:5
-J @ vue.global.prod.js:5
-K @ vue.global.prod.js:5
-W @ vue.global.prod.js:5
-T @ vue.global.prod.js:5
-a @ vue.global.prod.js:5
-run @ vue.global.prod.js:5
-J.e.update @ vue.global.prod.js:5
-J @ vue.global.prod.js:5
-K @ vue.global.prod.js:5
-W @ vue.global.prod.js:5
-T @ vue.global.prod.js:5
-ec @ vue.global.prod.js:5
-mount @ vue.global.prod.js:5
-t.mount @ vue.global.prod.js:9
-(anonymous) @ (index):167Understand this error
-nicegui.js:276 Uncaught TypeError: Cannot read properties of undefined (reading 'emit')
-    at ack (nicegui.js:276:17)
-    at nicegui.js:324:21
-ack @ nicegui.js:276
-(anonymous) @ nicegui.js:324
-setInterval
-createApp @ nicegui.js:324
-(anonymous) @ (index):50Understand this error",0,0,1,-1
-habit-tracker-app_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 83; Best Practices: 93,6,0,0,10
-home-lab-inventory_nicegui-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,Incomplete / No Source Code,0,0,1,-1
-home-lab-inventory_trpc-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,Template: Under Construction,0,0,1,0
-indonesian-inventory-app_nicegui-agent_claude_gemini,,,,,,,,,,,0,0,0,0
-indonesian-inventory-app_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,PASS,"All main features are working fine, Performance: 81; Best Practices: 93",6,0,0,10
-kanji-flashcards_nicegui-agent_claude_gemini,,,,,,,,,,,0,0,0,0
-kanji-flashcards_trpc-agent_claude_gemini,,,A1,PASS,FAIL,WARN,PASS,FAIL,PASS,"faulty input field during flash-cards session, 40% of the buttons don't work, unhandled errors in console; Performance: 85, Best Practices: 93",3,1,2,0
-pantry-inventory-app_nicegui-agent_claude_gemini,,,,,,,,,,,0,0,0,0
-pantry-inventory-app_trpc-agent_claude_gemini,,,A1,PASS,FAIL,PASS,NA,WARN,PASS,"pantry items component does not render, no notifications for expiry; Performance: 88, Best Practices: 93",3,1,1,0
-pastel-blue-notes-app_nicegui-agent_claude_gemini,,,,,,,,,,,0,0,0,0
-pastel-blue-notes-app_trpc-agent_claude_gemini,,,A1,PASS,WARN,PASS,PASS,PASS,PASS,"User login failure
+car-maintenance-dashboard_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 87; Best Practices: 93,6,0,0,10
+cat-conspiracy-tracker_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 75; Best Practices: 93,6,0,0,10
+city-trip-advisor_trpc-agent_claude_gemini,A1,PASS,PASS,NA,PASS,PASS,PASS,Performance: 94; Best Practices: 93,5,0,0,9
+currency-converter_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 90; Best Practices: 93,6,0,0,10
+daily-pattern-visualizer_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 89; Best Practices: 93,6,0,0,10
+engineering-job-board_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 85; Best Practices: 93,6,0,0,10
+event-tracker_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 91; Best Practices: 93,6,0,0,10
+gym-crm_trpc-agent_claude_gemini,A1,PASS,FAIL,NA,NA,NA,NA,Template: Under Construction,1,0,1,0
+habit-tracker-app_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,Performance: 83; Best Practices: 93,6,0,0,10
+home-lab-inventory_trpc-agent_claude_gemini,A1,FAIL,NA,NA,NA,NA,NA,Template: Under Construction,0,0,1,0
+indonesian-inventory-app_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,"All main features are working fine, Performance: 81; Best Practices: 93",6,0,0,10
+kanji-flashcards_trpc-agent_claude_gemini,A1,PASS,FAIL,WARN,PASS,FAIL,PASS,"faulty input field during flash-cards session, 40% of the buttons don't work, unhandled errors in console; Performance: 85, Best Practices: 93",3,1,2,0
+pantry-inventory-app_trpc-agent_claude_gemini,A1,PASS,FAIL,PASS,NA,WARN,PASS,"pantry items component does not render, no notifications for expiry; Performance: 88, Best Practices: 93",3,1,1,0
+pastel-blue-notes-app_trpc-agent_claude_gemini,A1,PASS,WARN,PASS,PASS,PASS,PASS,"User login failure
 
 Performance: 86; Best Practices: 93",5,1,0,9
-pc-gaming-niche-site_nicegui-agent_claude_gemini,,,,,,,,,,,0,0,0,0
-pc-gaming-niche-site_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,WARN,PASS,"red full review button does not work; Performance: 86, Best Practices: 93",5,1,0,9.5
-personal-expense-tracker_nicegui-agent_claude_gemini,,,,,,,,,,,0,0,0,0
-personal-expense-tracker_trpc-agent_claude_gemini,,,A1,PASS,WARN,PASS,PASS,PASS,WARN,"no visualizations; Performance: 71, Best Practices: 93",4,2,0,8.5
-plant-care-tracker_nicegui-agent_claude_gemini,,,,,,,,,,,0,0,0,0
-plant-care-tracker_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,WARN,PASS,PASS,"updating entry brakes the filter plants function; Performance: 89, Best Practices: 93",5,1,0,9.5
-plumbing-business-landing-page_nicegui-agent_claude_gemini,,,,,,,,,,,0,0,0,0
-plumbing-business-landing-page_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,NA,WARN,PASS,"one button and policy, t&c links do not work; Performance: 86, Best Practices: 93",4,1,0,8.5
-pomodoro-study-timer_nicegui-agent_claude_gemini,,,,,,,,,,,0,0,0,0
-pomodoro-study-timer_trpc-agent_claude_gemini,,,A1,WARN,FAIL,PASS,NA,PASS,PASS,"no audio alert, initial console error: Refused to load media from 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUcBzaJ0fLV' because it violates the following Content Security Policy directive: ""default-src 'self'"". Note that 'media-src' was not explicitly set, so 'default-src' is used as a fallback.; Performance: 94, Best Practices: 86",3,1,1,0
-recipe-sharing-platform_nicegui-agent_claude_gemini,,,,,,,,,,,0,0,0,0
-recipe-sharing-platform_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,NA,PASS,"needs refresh after creating account; Performance: 86, Best Practices: 93",5,0,0,9
-roommate-chore-wheel_nicegui-agent_claude_gemini,,,,,,,,,,,0,0,0,0
-roommate-chore-wheel_trpc-agent_claude_gemini,,,A1,FAIL,NA,NA,NA,NA,NA,Template: Under Construction,0,0,1,0
-teacher-question-bank_nicegui-agent_claude_gemini,,,,,,,,,,,0,0,0,0
-teacher-question-bank_trpc-agent_claude_gemini,,,A1,PASS,FAIL,WARN,PASS,WARN,PASS,"generate quiz fails, add question button fails: Uncaught Error: `RadioGroupItem` must be used within `RadioGroup`
+pc-gaming-niche-site_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,WARN,PASS,"red full review button does not work; Performance: 86, Best Practices: 93",5,1,0,9.5
+personal-expense-tracker_trpc-agent_claude_gemini,A1,PASS,WARN,PASS,PASS,PASS,WARN,"no visualizations; Performance: 71, Best Practices: 93",4,2,0,8.5
+plant-care-tracker_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,WARN,PASS,PASS,"updating entry brakes the filter plants function; Performance: 89, Best Practices: 93",5,1,0,9.5
+plumbing-business-landing-page_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,NA,WARN,PASS,"one button and policy, t&c links do not work; Performance: 86, Best Practices: 93",4,1,0,8.5
+pomodoro-study-timer_trpc-agent_claude_gemini,A1,WARN,FAIL,PASS,NA,PASS,PASS,"no audio alert, initial console error: Refused to load media from 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUcBzaJ0fLV' because it violates the following Content Security Policy directive: ""default-src 'self'"". Note that 'media-src' was not explicitly set, so 'default-src' is used as a fallback.; Performance: 94, Best Practices: 86",3,1,1,0
+recipe-sharing-platform_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,NA,PASS,"needs refresh after creating account; Performance: 86, Best Practices: 93",5,0,0,9
+roommate-chore-wheel_trpc-agent_claude_gemini,A1,FAIL,NA,NA,NA,NA,NA,Template: Under Construction,0,0,1,0
+teacher-question-bank_trpc-agent_claude_gemini,A1,PASS,FAIL,WARN,PASS,WARN,PASS,"generate quiz fails, add question button fails: Uncaught Error: `RadioGroupItem` must be used within `RadioGroup`
     at b (index-CFQLRKRr.js:49:34919)
     at index-CFQLRKRr.js:238:26757
     at gc (index-CFQLRKRr.js:48:42595)
@@ -205,9 +57,6 @@ bS @ index-CFQLRKRr.js:48
 (anonymous) @ index-CFQLRKRr.js:48; 
 
 Performance: 82, Best Practices: 93",3,2,1,0
-tennis-enthusiast-platform_nicegui-agent_claude_gemini,,,,,,,,,,,0,0,0,0
-tennis-enthusiast-platform_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,NA,PASS,PASS,"Performance: 90, Best Practices: 93",5,0,0,9
-todo-list-with-mood_nicegui-agent_claude_gemini,,,,,,,,,,,0,0,0,0
-todo-list-with-mood_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,PASS,PASS,WARN,"Performance: 72, Best Practices: 93",5,1,0,9.5
-wellness-score-tracker_nicegui-agent_claude_gemini,,,,,,,,,,,0,0,0,0
-wellness-score-tracker_trpc-agent_claude_gemini,,,A1,PASS,PASS,PASS,NA,PASS,PASS,"Performance: 91, Best Practices: 93",5,0,0,9
+tennis-enthusiast-platform_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,NA,PASS,PASS,"Performance: 90, Best Practices: 93",5,0,0,9
+todo-list-with-mood_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,WARN,"Performance: 72, Best Practices: 93",5,1,0,9.5
+wellness-score-tracker_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,NA,PASS,PASS,"Performance: 91, Best Practices: 93",5,0,0,9
