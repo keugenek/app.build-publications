@@ -1,0 +1,16 @@
+{
+  "success": false,
+  "exit_code": 124,
+  "docker_healthy": false,
+  "duration_seconds": 1500.096308,
+  "timestamp": "2025-08-22T21:13:02.056791",
+  "config": {
+    "prompt_name": "plumbing-business-landing-page",
+    "template_id": "trpc_agent",
+    "coding_model_name": "qwen3-480b-35a-3",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:qwen/qwen3-coder",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/plumbing-business-landing-page_trpc-agent_qwen3-480b-35a-3_gemini/telemetry.json"
+  }
+}

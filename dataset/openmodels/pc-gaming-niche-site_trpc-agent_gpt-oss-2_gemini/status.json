@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 418.479758,
+  "timestamp": "2025-08-22T21:41:10.413036",
+  "config": {
+    "prompt_name": "pc-gaming-niche-site",
+    "template_id": "trpc_agent",
+    "coding_model_name": "gpt-oss-2",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:openai/gpt-oss-120b",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/pc-gaming-niche-site_trpc-agent_gpt-oss-2_gemini/telemetry.json"
+  }
+}

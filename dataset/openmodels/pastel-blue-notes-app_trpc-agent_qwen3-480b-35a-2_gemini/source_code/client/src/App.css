@@ -1,0 +1,210 @@
+:root {
+  --background: #f0f9ff;
+  --text: #0c4a6e;
+  --text-secondary: #38bdf8;
+  --spinner-border: #0c4a6e;
+  --spinner-border-top: transparent;
+  --dot-color: #38bdf8;
+  --grid-color: rgba(179, 229, 252, 0.2);
+  --gradient-color: rgba(179, 229, 252, 0.1);
+  --primary: #38bdf8;
+  --primary-dark: #0ea5e9;
+  --secondary: #7dd3fc;
+  --accent: #bae6fd;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0c4a6e;
+    --text: #f0f9ff;
+    --text-secondary: #bae6fd;
+    --spinner-border: #f0f9ff;
+    --spinner-border-top: transparent;
+    --dot-color: #bae6fd;
+    --grid-color: rgba(179, 229, 252, 0.1);
+    --gradient-color: rgba(179, 229, 252, 0.05);
+    --primary: #38bdf8;
+    --primary-dark: #0ea5e9;
+    --secondary: #7dd3fc;
+    --accent: #bae6fd;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--text);
+  padding: 0;
+  line-height: 1.5;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container {
+  text-align: center;
+  max-width: 600px;
+}
+
+h1.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+p.description {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  margin: 2rem auto;
+  position: relative;
+}
+
+.spinner::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--spinner-border);
+  border-top-color: var(--spinner-border-top);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 2rem;
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  background: var(--dot-color);
+  border-radius: 50%;
+  animation: fade 1.4s infinite ease-in-out;
+}
+
+.dot:nth-child(1) { animation-delay: -0.32s; }
+.dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fade {
+  0%, 80%, 100% { opacity: 0; }
+  40% { opacity: 1; }
+}
+
+.grid {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-image: 
+      linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background-size: 24px 24px;
+  transition: background-image 0.3s ease;
+}
+
+.gradient {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  background: radial-gradient(circle at center, var(--gradient-color) 0%, transparent 50%);
+  transition: background 0.3s ease;
+}
+
+.footer {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.footer-link {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Custom styles for the notes app */
+.bg-blue-50 {
+  background-color: #f0f9ff;
+}
+
+.text-blue-800 {
+  color: #0c4a6e;
+}
+
+.text-blue-600 {
+  color: #0284c7;
+}
+
+.text-blue-900 {
+  color: #083344;
+}
+
+.text-blue-500 {
+  color: #38bdf8;
+}
+
+.bg-blue-500 {
+  background-color: #38bdf8;
+}
+
+.hover\:bg-blue-600:hover {
+  background-color: #0ea5e9;
+}
+
+.bg-blue-400 {
+  background-color: #7dd3fc;
+}
+
+.hover\:bg-blue-500:hover {
+  background-color: #38bdf8;
+}
+
+.border-blue-100 {
+  border-color: #dbeafe;
+}
+
+.shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.hover\:shadow-md:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.transition-shadow {
+  transition-property: box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.text-blue-300 {
+  color: #7dd3fc;
+}

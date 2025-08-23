@@ -1,0 +1,26 @@
+{
+  "gemini-2.5-flash-preview-05-20": {
+    "total_calls": 6,
+    "total_input_tokens": 9617,
+    "total_output_tokens": 365,
+    "total_time_seconds": 6.75916600227356,
+    "total_cache_creation_tokens": 0,
+    "total_cache_read_tokens": 0
+  },
+  "openai/gpt-oss-120b": {
+    "total_calls": 46,
+    "total_input_tokens": 244128,
+    "total_output_tokens": 19192,
+    "total_time_seconds": 114.10398697853088,
+    "total_cache_creation_tokens": 0,
+    "total_cache_read_tokens": 0
+  },
+  "gemini-2.5-flash-lite-preview-06-17": {
+    "total_calls": 3,
+    "total_input_tokens": 1113,
+    "total_output_tokens": 94,
+    "total_time_seconds": 2.6903958320617676,
+    "total_cache_creation_tokens": 0,
+    "total_cache_read_tokens": 0
+  }
+}

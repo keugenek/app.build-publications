@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 634.946105,
+  "timestamp": "2025-08-22T20:10:48.578748",
+  "config": {
+    "prompt_name": "book-library-manager",
+    "template_id": "trpc_agent",
+    "coding_model_name": "qwen3-480b-35a-2",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:qwen/qwen3-coder",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/book-library-manager_trpc-agent_qwen3-480b-35a-2_gemini/telemetry.json"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "success": false,
+  "exit_code": 124,
+  "docker_healthy": false,
+  "duration_seconds": 1500.129476,
+  "timestamp": "2025-08-22T21:13:41.408386",
+  "config": {
+    "prompt_name": "kanji-flashcards",
+    "template_id": "trpc_agent",
+    "coding_model_name": "qwen3-480b-35a-2",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:qwen/qwen3-coder",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/kanji-flashcards_trpc-agent_qwen3-480b-35a-2_gemini/telemetry.json"
+  }
+}

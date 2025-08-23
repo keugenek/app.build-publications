@@ -1,0 +1,29 @@
+---
+description: Database Query Best Practices
+globs: ["**/handlers/*.ts", "**/db/*.ts"]
+alwaysApply: true
+---
+
+- Use proper Drizzle operators: `eq()`, `gte()`, `isNull()`, `desc()` from 'drizzle-orm'
+- Never use direct comparisons like `table.column === value`
+- For conditional queries, build step-by-step:
+  ```typescript
+  let query = db.select().from(table);
+  const conditions: SQL<unknown>[] = [];
+  
+  if (filter) {
+    conditions.push(eq(table.field, filter));
+  }
+  
+  if (conditions.length > 0) {
+    query = query.where(and(...conditions)); // SPREAD the array
+  }
+  ```
+- Apply pagination LAST: `query.limit(limit).offset(offset)`
+- For numeric conversions in results:
+  ```typescript
+  return results.map(item => ({
+    ...item,
+    price: parseFloat(item.price) // Convert ALL numeric fields
+  }));
+  ```

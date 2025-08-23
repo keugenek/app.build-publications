@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 441.042304,
+  "timestamp": "2025-08-22T21:50:42.591205",
+  "config": {
+    "prompt_name": "tennis-enthusiast-platform",
+    "template_id": "trpc_agent",
+    "coding_model_name": "gpt-oss-3",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:openai/gpt-oss-120b",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/tennis-enthusiast-platform_trpc-agent_gpt-oss-3_gemini/telemetry.json"
+  }
+}

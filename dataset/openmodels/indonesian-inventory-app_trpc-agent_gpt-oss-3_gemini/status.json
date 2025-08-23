@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 531.844113,
+  "timestamp": "2025-08-22T22:01:29.303777",
+  "config": {
+    "prompt_name": "indonesian-inventory-app",
+    "template_id": "trpc_agent",
+    "coding_model_name": "gpt-oss-3",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:openai/gpt-oss-120b",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/indonesian-inventory-app_trpc-agent_gpt-oss-3_gemini/telemetry.json"
+  }
+}

@@ -1,0 +1,17 @@
+---
+description: Handler Testing Patterns
+globs: ["**/tests/*.test.ts"]
+alwaysApply: true
+---
+
+- Use `beforeEach(createDB)` and `afterEach(resetDB)` for reliable test setup
+- Create prerequisite data first (users, categories) before dependent records
+- Include ALL fields in test inputs, even those with Zod defaults
+- Test numeric conversions: verify `typeof result.price === 'number'`
+- Use flexible error assertions: `expect().rejects.toThrow(/pattern/i)`
+- NEVER use mocks - always test against real database operations
+- Keep handlers fully isolated - don't use other handlers in tests
+- For foreign key tests, verify referenced entities exist first
+- Test both success and error cases for database constraints
+
+@base-handler-test.ts

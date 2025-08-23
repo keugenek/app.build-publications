@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 547.139082,
+  "timestamp": "2025-08-22T21:56:13.243115",
+  "config": {
+    "prompt_name": "engineering-job-board",
+    "template_id": "trpc_agent",
+    "coding_model_name": "qwen3-480b-35a-3",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:qwen/qwen3-coder",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/engineering-job-board_trpc-agent_qwen3-480b-35a-3_gemini/telemetry.json"
+  }
+}

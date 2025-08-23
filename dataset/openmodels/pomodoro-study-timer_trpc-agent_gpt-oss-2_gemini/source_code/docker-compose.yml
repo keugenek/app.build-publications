@@ -1,0 +1,59 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${HOST_PORT:-80}:80"
+      - "${HOST_PORT_TRPC:-2022}:2022"
+    environment:
+      - APP_DATABASE_URL=${APP_DATABASE_URL:-postgres://postgres:postgres@postgres:5432/postgres}
+    container_name: ${BACKEND_CONTAINER_NAME:-app}
+    depends_on:
+      db-push:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2022/healthcheck"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  db-push:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${DB_PUSH_CONTAINER_NAME:-app-db-push}
+    command: ["bun", "run", "drizzle-kit", "push", "--force"]
+    working_dir: /app/server
+    environment:
+      - APP_DATABASE_URL=${APP_DATABASE_URL:-postgres://postgres:postgres@postgres:5432/postgres}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    container_name: ${POSTGRES_CONTAINER_NAME:-postgres}
+    image: postgres:17-alpine3.21
+    hostname: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 1s
+      timeout: 20s
+      retries: 5
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    name: ${NETWORK_NAME:-app_network}
+    driver: bridge

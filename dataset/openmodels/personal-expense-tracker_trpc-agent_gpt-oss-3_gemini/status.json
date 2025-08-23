@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 503.560026,
+  "timestamp": "2025-08-22T21:24:54.187178",
+  "config": {
+    "prompt_name": "personal-expense-tracker",
+    "template_id": "trpc_agent",
+    "coding_model_name": "gpt-oss-3",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:openai/gpt-oss-120b",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/personal-expense-tracker_trpc-agent_gpt-oss-3_gemini/telemetry.json"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "gemini-2.5-flash-preview-05-20": {
+    "total_calls": 1,
+    "total_input_tokens": 1232,
+    "total_output_tokens": 102,
+    "total_time_seconds": 1.9506781101226807,
+    "total_cache_creation_tokens": 0,
+    "total_cache_read_tokens": 0
+  }
+}

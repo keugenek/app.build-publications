@@ -1,0 +1,16 @@
+{
+  "success": false,
+  "exit_code": 124,
+  "docker_healthy": false,
+  "duration_seconds": 1500.041302,
+  "timestamp": "2025-08-22T21:08:36.513263",
+  "config": {
+    "prompt_name": "beer-counter-app",
+    "template_id": "trpc_agent",
+    "coding_model_name": "gpt-oss-3",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:openai/gpt-oss-120b",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/beer-counter-app_trpc-agent_gpt-oss-3_gemini/telemetry.json"
+  }
+}

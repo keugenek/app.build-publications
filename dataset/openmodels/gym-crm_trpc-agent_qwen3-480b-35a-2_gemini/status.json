@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "exit_code": 0,
+  "docker_healthy": true,
+  "duration_seconds": 760.215498,
+  "timestamp": "2025-08-22T21:29:43.964868",
+  "config": {
+    "prompt_name": "gym-crm",
+    "template_id": "trpc_agent",
+    "coding_model_name": "qwen3-480b-35a-2",
+    "universal_model_name": "gemini",
+    "LLM_BEST_CODING_MODEL": "openrouter:qwen/qwen3-coder",
+    "LLM_UNIVERSAL_MODEL": "gemini:gemini-2.5-flash-preview-05-20",
+    "CUMULATIVE_TELEMETRY_LOG": "benchmark_results/gym-crm_trpc-agent_qwen3-480b-35a-2_gemini/telemetry.json"
+  }
+}
