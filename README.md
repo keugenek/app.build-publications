@@ -30,7 +30,7 @@ This submission is a collaborative research effort between **app.build** and **T
 **THWS CAIRO Lab**
 - Prof. Dr. Ivan Yamshchikov
 - Pranav Sah
-- Pratik
+- Pratik Nichite
 - Dheena Dayalan
 
 Lab website: [https://www.thws.de/en/research/institutes/cairo](https://www.thws.de/en/research/institutes/cairo)
@@ -40,6 +40,6 @@ Lab website: [https://www.thws.de/en/research/institutes/cairo](https://www.thws
 **SEA Workshop @ NeurIPS 2025**  
 - Date: December 6, 2025 (San Diego Convention Center)
 - Website: [https://sea-workshop.github.io/](https://sea-workshop.github.io/)
-- Submission deadline: August 22, 2025
+- Submission deadline: September 1, 2025
 - Contact: sea-workshop-neurips2025@googlegroups.com
 
