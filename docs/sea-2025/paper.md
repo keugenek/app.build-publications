@@ -7,7 +7,7 @@ Production Reliability at Scale: Scaffolding Systems for Agentic Prompt-to-App G
 - Igor Rekun [1]
 - Prof. Dr. Ivan Yamshchikov [2]
 - Pranav Sah [2]
-- Pratik [2]
+- Pratik Nichite [2]
 
 [1] app.build (Neon, now at Databricks)
 [2] THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO)
