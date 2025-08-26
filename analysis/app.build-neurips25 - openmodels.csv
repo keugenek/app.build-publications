@@ -1,0 +1,78 @@
+Case,Assignee,AB-01 Boot,AB-02 Prompt,AB-03 Create,AB-04 View/Edit,AB‑06 Clickable Sweep,AB‑07 Performance >75,Notes,PASS#,WARN#,FAIL#,PTS
+tennis-enthusiast-platform_trpc-agent_claude_gemini (TEST),A2,PASS,PASS,PASS,PASS,WARN,PASS,"When clicked on find player:  Uncaught Error: A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder.
+Performance: 84, Best Practices: 93",5,1,0,9.5
+gym-crm_trpc-agent_gpt-oss_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+tennis-enthusiast-platform_trpc-agent_qwen3-480b-35a_gemini,A2,PASS,FAIL,WARN,WARN,PASS,,"creation doesnot contains all fileds,  Cannot edit existing one
+Performance: 88, Best Practices: 93",2,2,1,0
+home-lab-inventory_trpc-agent_qwen3-480b-35a_gemini,A1,PASS,FAIL,NA,NA,NA,PASS,"immature UI and incomplete features; Performance: 90, Best Practices: 93",2,0,1,0
+pastel-blue-notes-app_trpc-agent_qwen3-480b-35a_gemini,A1,PASS,FAIL,PASS,PASS,PASS,PASS,"edit note is not implemented (important feature); Performance:  90, Best Practices: 93",5,0,1,0
+birthday-wish-app_trpc-agent_gpt-oss_gemini,A2,FAIL,NA,NA,NA,NA,NA,incomplete / no source code,0,0,1,0
+home-lab-inventory_trpc-agent_gpt-oss_gemini,A2,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+tennis-enthusiast-platform_trpc-agent_gpt-oss_gemini,A1,PASS,FAIL,PASS,NA,PASS,PASS,"users cannot set skill level (important), unable to connect / contact other players (important); Performance: 91, Best Practices: 93",4,0,1,0
+cat-conspiracy-tracker_trpc-agent_gpt-oss_gemini,A2,PASS,FAIL,WARN,NA ,FAIL,PASS,"TRPCClientError: No procedure found on path ""trpc/getCats""
+Performance: 90, Best Practices: 89",2,1,2,0
+personal-expense-tracker_trpc-agent_qwen3-480b-35a_gemini,A1,PASS,PASS,PASS,PASS,WARN,PASS,"no visualizations - just plain numbers, export data button does not work (was a bonus feature); Performance: 89, Best Practices: 93",5,1,0,9.5
+kanji-flashcards_trpc-agent_qwen3-480b-35a_gemini,A1,PASS,FAIL,NA,NA,NA,PASS,"no features implemented; Performance: 93, Best Practices: 93",2,0,1,0
+recipe-sharing-platform_trpc-agent_qwen3-480b-35a_gemini,A2,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+todo-list-with-mood_trpc-agent_gpt-oss_gemini,A2,PASS,FAIL,PASS,NA,NA,PASS,"Ugly UI and incomplete features
+Performance: 91, Best Practices: 93",3,0,1,0
+book-library-manager_trpc-agent_gpt-oss_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+pc-gaming-niche-site_trpc-agent_gpt-oss_gemini,A2,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+wellness-score-tracker_trpc-agent_qwen3-480b-35a_gemini,A1,PASS,PASS,PASS,NA,PASS,PASS,"Performance: 93, Best Practices: 93",5,0,0,9
+bookmark-management-app_trpc-agent_qwen3-480b-35a_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+gym-crm_trpc-agent_qwen3-480b-35a_gemini,A2,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+daily-pattern-visualizer_trpc-agent_qwen3-480b-35a_gemini,A1,PASS,WARN,PASS,NA,PASS,PASS,"alcohol / caffeine input absent (important), visualizations are broken (optional); Performance: 90, Best Practices: 93",4,1,0,8
+engineering-job-board_trpc-agent_qwen3-480b-35a_gemini,A1,FAIL,NA,NA,NA,NA,NA,no / incomplete source code,0,0,1,0
+event-tracker_trpc-agent_qwen3-480b-35a_gemini,A2,PASS,WARN,PASS,WARN,PASS,PASS,"Doesnot have time option to set,  Cannot edit events
+Performance: 92, Best Practices: 93",4,2,0,8.5
+plumbing-business-landing-page_trpc-agent_gpt-oss_gemini,A2,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+personal-expense-tracker_trpc-agent_gpt-oss_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+pc-gaming-niche-site_trpc-agent_qwen3-480b-35a_gemini,A2,PASS,PASS,PASS,PASS,WARN,PASS,"edit present for products, categories, reveiws but cannot be clickable
+Performance: 88, Best Practices: 93",5,1,0,9.5
+event-tracker_trpc-agent_gpt-oss_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+teacher-question-bank_trpc-agent_gpt-oss_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+habit-tracker-app_trpc-agent_gpt-oss_gemini,A2,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+car-maintenance-dashboard_trpc-agent_gpt-oss_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+engineering-job-board_trpc-agent_gpt-oss_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+plumbing-business-landing-page_trpc-agent_qwen3-480b-35a_gemini,A2,PASS,PASS,PASS,NA,FAIL,PASS,"most of click like like email, call are not redirecting to correctly. Limited information and functions in UI.
+Performance: 91, Best Practices: 93",4,0,1,8
+plant-care-tracker_trpc-agent_qwen3-480b-35a_gemini,A2,PASS,FAIL,WARN,NA,WARN,PASS,"not implemented completely, no date option while creation, cannot water plant
+Performance: 93, Best Practices: 93",2,2,1,0
+beer-counter-app_trpc-agent_gpt-oss_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+currency-converter_trpc-agent_qwen3-480b-35a_gemini,A2,PASS,FAIL,NA,NA,NA,NA,Cannot performed any actions,1,0,1,0
+roommate-chore-wheel_trpc-agent_gpt-oss_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+pantry-inventory-app_trpc-agent_gpt-oss_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+kanji-flashcards_trpc-agent_gpt-oss_gemini,A2,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+plant-care-tracker_trpc-agent_gpt-oss_gemini,A2,FAIL,NA,NA,NA,NA,NA,incomplete / no source code,0,0,1,0
+daily-pattern-visualizer_trpc-agent_gpt-oss_gemini,A1,PASS,FAIL,FAIL,NA,FAIL,PASS,"immature UI and incomplete features; Performance: 93, Best Practices: 93",2,0,3,0
+roommate-chore-wheel_trpc-agent_qwen3-480b-35a_gemini,A2,PASS,WARN,PASS,FAIL,FAIL,PASS,"Unable to assign chores to members
+Performance: 93, Best Practices: 93",3,1,2,7
+indonesian-inventory-app_trpc-agent_gpt-oss_gemini,A1,PASS,FAIL,FAIL,NA,PASS,PASS,"add product does not work (important), add trasaction forms throw errors (important): Uncaught (in promise) TRPCClientError: insert or update on table ""transactions"" violates foreign key constraint ""transactions_item_id_items_id_fk""
+    at tl.from (index-Ubhl7Paj.js:49:37825)
+    at index-Ubhl7Paj.js:49:44561; Performance: 90, Best Practices: 93",3,0,2,0
+teacher-question-bank_trpc-agent_qwen3-480b-35a_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+wellness-score-tracker_trpc-agent_gpt-oss_gemini,A2,WARN,NA,NA,NA,NA,NA,"Failed to fetch wellness entries: TRPCClientError: No procedure found on path ""trpc/getWellnessEntries""",0,1,0,0.8
+car-maintenance-dashboard_trpc-agent_qwen3-480b-35a_gemini,A1,PASS,PASS,PASS,FAIL,PASS,PASS,"refresh cleans up the data; Performance: 92, Best Practices: 93",5,0,1,9
+indonesian-inventory-app_trpc-agent_qwen3-480b-35a_gemini,A1,FAIL,NA,NA,NA,NA,NA,incomplete / no source code,0,0,1,0
+book-library-manager_trpc-agent_qwen3-480b-35a_gemini,A2,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 88, Best Practices: 93",6,0,0,10
+habit-tracker-app_trpc-agent_qwen3-480b-35a_gemini,A2,PASS,WARN,PASS,NA,PASS,PASS,"Not included all functionality/features from prompt
+Performance: 93, Best Practices: 93",4,1,0,8
+beer-counter-app_trpc-agent_qwen3-480b-35a_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 93, Best Practices: 93",6,0,0,10
+bookmark-management-app_trpc-agent_gpt-oss_gemini,A2,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+city-trip-advisor_trpc-agent_qwen3-480b-35a_gemini,A1,PASS,FAIL,NA,NA,PASS,PASS,"fetching data fails: Error fetching weather forecast: TRPCClientError: Weather forecast not available for tomorrow
+    at Te.from (index-CQ82CVFB.js:49:37803)
+    at index-CQ82CVFB.js:49:44567; Performance: 95, Best Practices: 93",3,0,1,0
+pomodoro-study-timer_trpc-agent_qwen3-480b-35a_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+basic-inventory-system_trpc-agent_qwen3-480b-35a_gemini,A2,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+recipe-sharing-platform_trpc-agent_gpt-oss_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+basic-inventory-system_trpc-agent_gpt-oss_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+cat-conspiracy-tracker_trpc-agent_qwen3-480b-35a_gemini,A2,PASS,PASS,PASS,NA,PASS,PASS,"Performance: 87, Best Practices: 93",5,0,0,9
+todo-list-with-mood_trpc-agent_qwen3-480b-35a_gemini,A1,PASS,PASS,PASS,FAIL,PASS,PASS,"mood tracking is faulty and refresh cleans up the mood related data; Performance: 86, Best Practices: 93",5,0,1,9
+birthday-wish-app_trpc-agent_qwen3-480b-35a_gemini,A1,FAIL,NA,NA,NA,NA,NA,incomplete / no source code,0,0,1,0
+pantry-inventory-app_trpc-agent_qwen3-480b-35a_gemini,A2,PASS,FAIL,WARN,FAIL,FAIL,PASS,"ugly UI, Failed to load expiring items: TRPCClientError: relation ""pantry_items"" does not exist
+Performance: 86, Best Practices: 89",2,1,3,0
+currency-converter_trpc-agent_gpt-oss_gemini,A2,PASS,WARN,WARN,PASS,PASS,PASS,"UI is ugly, Limited options fro convertion
+Performance: 90, Best Practices: 93",4,2,0,8.5
+pomodoro-study-timer_trpc-agent_gpt-oss_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+pastel-blue-notes-app_trpc-agent_gpt-oss_gemini,A2,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
+city-trip-advisor_trpc-agent_gpt-oss_gemini,A1,PASS,FAIL,PASS,NA,PASS,PASS,"mocked / wrong data; Performance: 94, Best Practices: 93",4,0,1,0
