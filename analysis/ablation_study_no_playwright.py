@@ -31,6 +31,24 @@ no_playwright_df.columns = no_playwright_df.columns.str.strip()
 print("Dataset loaded: baseline vs no_playwright")
 print(f"Rows: baseline={len(baseline_df)}, no_playwright={len(no_playwright_df)}")
 
+# Align cohorts on common cases to ensure like-for-like comparisons
+key_col = "Case"
+base_df = baseline_df
+npw_df = no_playwright_df
+if key_col in baseline_df.columns and key_col in no_playwright_df.columns:
+    common_cases = sorted(set(baseline_df[key_col].astype(str)) & set(no_playwright_df[key_col].astype(str)))
+    if common_cases:
+        base_df = baseline_df[baseline_df[key_col].astype(str).isin(common_cases)].copy()
+        npw_df = no_playwright_df[no_playwright_df[key_col].astype(str).isin(common_cases)].copy()
+        # Optional: keep stable ordering by Case
+        base_df = base_df.sort_values(by=key_col)
+        npw_df = npw_df.sort_values(by=key_col)
+        print(f"Aligned on {len(common_cases)} common cases for fair comparison")
+    else:
+        print("Warning: No common cases found; using full cohorts")
+else:
+    print("Warning: 'Case' column not found in one or both datasets; using full cohorts")
+
 # %% [markdown]
 # ## 2. Viability Analysis
 #
@@ -42,8 +60,8 @@ print(f"Rows: baseline={len(baseline_df)}, no_playwright={len(no_playwright_df)}
 def compute_viability_flags(df: pd.DataFrame) -> pd.Series:
     return ~((df["AB-01 Boot"].astype(str) == "FAIL") | (df["AB-02 Prompt"].astype(str) == "FAIL"))
 
-base_viable = compute_viability_flags(baseline_df)
-npw_viable = compute_viability_flags(no_playwright_df)
+base_viable = compute_viability_flags(base_df)
+npw_viable = compute_viability_flags(npw_df)
 
 base_v_rate = base_viable.mean()
 npw_v_rate = npw_viable.mean()
@@ -67,8 +85,8 @@ def count_fail(df: pd.DataFrame, col: str) -> int:
     return int((df[col].astype(str) == "FAIL").sum())
 
 print("\nCritical gate fails (counts):")
-print(f"AB-01 Boot   FAIL: baseline={count_fail(baseline_df, 'AB-01 Boot')}  no_playwright={count_fail(no_playwright_df, 'AB-01 Boot')}")
-print(f"AB-02 Prompt FAIL: baseline={count_fail(baseline_df, 'AB-02 Prompt')}  no_playwright={count_fail(no_playwright_df, 'AB-02 Prompt')}")
+print(f"AB-01 Boot   FAIL: baseline={count_fail(base_df, 'AB-01 Boot')}  no_playwright={count_fail(npw_df, 'AB-01 Boot')}")
+print(f"AB-02 Prompt FAIL: baseline={count_fail(base_df, 'AB-02 Prompt')}  no_playwright={count_fail(npw_df, 'AB-02 Prompt')}")
 
 # %% [markdown]
 # ## 3. Complementary Quality Summary (Optional)
@@ -100,11 +118,11 @@ def quality_score_row(row: pd.Series, cols: list[str]) -> float | None:
             continue
     return (sum(scores) / len(scores) * 10.0) if scores else None
 
-baseline_df["quality_score"] = baseline_df.apply(lambda r: quality_score_row(r, AB_COLUMNS), axis=1)
-no_playwright_df["quality_score"] = no_playwright_df.apply(lambda r: quality_score_row(r, AB_COLUMNS), axis=1)
+base_df["quality_score"] = base_df.apply(lambda r: quality_score_row(r, AB_COLUMNS), axis=1)
+npw_df["quality_score"] = npw_df.apply(lambda r: quality_score_row(r, AB_COLUMNS), axis=1)
 
-base_q = float(pd.to_numeric(baseline_df["quality_score"]).mean())
-npw_q = float(pd.to_numeric(no_playwright_df["quality_score"]).mean())
+base_q = float(pd.to_numeric(base_df["quality_score"]).mean())
+npw_q = float(pd.to_numeric(npw_df["quality_score"]).mean())
 q_delta = npw_q - base_q
 
 print("\n=== Aggregate Quality (0-10) ===")
@@ -116,19 +134,22 @@ print(f"Δ Quality:                  {q_delta:+.2f}")
 # ## 4. Dimension Pass-Rate Deltas (Non-NA denominators)
 
 # %%
-def pass_rate_non_na(df: pd.DataFrame, col: str) -> tuple[float, int]:
+def pass_rate_non_na_counts(df: pd.DataFrame, col: str) -> tuple[float, int, int]:
     non_na = df[col].astype(str).isin(["PASS", "WARN", "FAIL"]).sum()
     if non_na == 0:
-        return 0.0, 0
+        return 0.0, 0, 0
     passed = (df[col].astype(str) == "PASS").sum()
-    return passed / non_na, non_na
+    return passed / non_na, non_na, passed
 
 print("\n=== Per-Dimension Pass Rates (Baseline vs No Playwright) ===")
 for col in AB_COLUMNS:
-    b_rate, b_n = pass_rate_non_na(baseline_df, col)
-    n_rate, n_n = pass_rate_non_na(no_playwright_df, col)
+    b_rate, b_n, b_pass = pass_rate_non_na_counts(base_df, col)
+    n_rate, n_n, n_pass = pass_rate_non_na_counts(npw_df, col)
     delta_pp = (n_rate - b_rate) * 100.0
-    print(f"{col}: Baseline={b_rate*100:.1f}%  NoPlay={n_rate*100:.1f}%  Δ={delta_pp:+.1f}pp (non-NA: {b_n} vs {n_n})")
+    print(
+        f"{col}: Baseline={b_rate*100:.2f}% ({b_pass}/{b_n})  "
+        f"NoPlay={n_rate*100:.2f}% ({n_pass}/{n_n})  Δ={delta_pp:+.1f}pp"
+    )
 
 # %% [markdown]
 # ## 5. Notes for Paper Framing

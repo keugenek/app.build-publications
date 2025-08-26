@@ -1,5 +1,6 @@
 Dataset loaded: baseline vs no_playwright
 Rows: baseline=30, no_playwright=30
+Aligned on 30 common cases for fair comparison
 
 === Viability (critical gates AB-01 & AB-02) ===
 Baseline viability:      73.3% (22/30)
@@ -17,9 +18,9 @@ No Playwright mean quality: 8.62
 Δ Quality:                  +0.56
 
 === Per-Dimension Pass Rates (Baseline vs No Playwright) ===
-AB-01 Boot: Baseline=83.3%  NoPlay=83.3%  Δ=+0.0pp (non-NA: 30 vs 30)
-AB-02 Prompt: Baseline=70.4%  NoPlay=82.1%  Δ=+11.8pp (non-NA: 27 vs 28)
-AB-03 Create: Baseline=91.7%  NoPlay=92.3%  Δ=+0.6pp (non-NA: 24 vs 26)
-AB-04 View/Edit: Baseline=90.0%  NoPlay=95.2%  Δ=+5.2pp (non-NA: 20 vs 21)
-AB‑06 Clickable Sweep: Baseline=80.0%  NoPlay=85.7%  Δ=+5.7pp (non-NA: 25 vs 28)
-AB‑07 Performance >75: Baseline=92.3%  NoPlay=96.4%  Δ=+4.1pp (non-NA: 26 vs 28)
+AB-01 Boot: Baseline=83.33% (25/30)  NoPlay=83.33% (25/30)  Δ=+0.0pp
+AB-02 Prompt: Baseline=70.37% (19/27)  NoPlay=82.14% (23/28)  Δ=+11.8pp
+AB-03 Create: Baseline=91.67% (22/24)  NoPlay=92.31% (24/26)  Δ=+0.6pp
+AB-04 View/Edit: Baseline=90.00% (18/20)  NoPlay=95.24% (20/21)  Δ=+5.2pp
+AB‑06 Clickable Sweep: Baseline=80.00% (20/25)  NoPlay=85.71% (24/28)  Δ=+5.7pp
+AB‑07 Performance >75: Baseline=92.31% (24/26)  NoPlay=96.43% (27/28)  Δ=+4.1pp
