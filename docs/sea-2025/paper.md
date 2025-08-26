@@ -9,7 +9,7 @@ Production Reliability at Scale: Scaffolding Systems for Agentic Prompt-to-App G
 - Pranav Sah [2]
 - Pratik Nichite [2]
 
-[1] app.build (Neon, now at Databricks)
+[1] Databricks - app.build team
 [2] THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO)
 
 Correspondence: <contact@your-domain.example>
@@ -283,7 +283,7 @@ While our evaluation focuses on software generation environments, the principles
 Our results demonstrate that raw model capability alone cannot bridge the gap between AI potential and production reality. Through systematic environment scaffolding, multi-layered validation, and stack-specific orchestration, app.build transforms probabilistic language models into dependable software engineering agents. Ablation studies show that comprehensive validation layers improve success rates by up to X%, with open-weights models achieving X% of closed-model performance when provided structured environments — confirming that thoughtful environment design matters more than model scale. We conclude that the path to reliable, production-ready AI agents lies not in better prompts or bigger models, but in principled, scalable environment engineering.
 
 ### Acknowledgments
-This submission is prepared in collaboration between app.build (Neon, now Databricks) and THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO). We thank the app.build community for their contributions and feedback, which have been invaluable in shaping this work. Special thanks to Neon/Databricks executive team for supporting the open-source initiative and providing resources for this research.
+This submission is prepared in collaboration between app.build (Databricks - app.build team) and THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO). We thank the app.build community for their contributions and feedback which have been invaluable in shaping this work. Special thanks to Databricks excutive team for supporting the open-source initiative and providing resources for this research.
 
 ### References (@pratik)
 1. Agentic AI Software Engineers: Programming with Trust. arXiv:2502.13767, 2025.

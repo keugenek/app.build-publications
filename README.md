@@ -6,11 +6,11 @@ This repository contains the paper submission for the NeurIPS 2025 Workshop on S
 
 ### About the Collaboration
 
-This submission is a collaborative research effort between **app.build** and **THWS University of Applied Sciences Würzburg-Schweinfurt (CAIRO Lab)**, exploring how environment scaffolding transforms LLMs into production-ready software engineering agents. The research presents empirical evidence from the app.build platform - an open-source prompt-to-app generator that demonstrates systematic reliability improvements through structured environment design.
+This submission is a collaborative research effort between **Databricks - app.build team** and **THWS University of Applied Sciences Würzburg-Schweinfurt (CAIRO Lab)**, exploring how environment scaffolding transforms LLMs into production-ready software engineering agents. The research presents empirical evidence from the app.build platform - an open-source prompt-to-app generator that demonstrates systematic reliability improvements through structured environment design.
 
 ### The app.build Tool
 
-[app.build](https://app.build) is an open-source prompt-to-app generation platform (originally developed at Neon.com, now part of Databricks) that enables reliable production deployment of AI-generated applications through:
+[app.build](https://app.build) is an open-source prompt-to-app generation platform (developed by  Databricks - app.build team) that enables reliable production deployment of AI-generated applications through:
 - FSM-guided multi-agent orchestration
 - Multi-layered validation pipelines
 - Structured error recovery and feedback loops
@@ -22,7 +22,7 @@ This submission is a collaborative research effort between **app.build** and **T
 
 ### Authors & Contributors
 
-**app.build Team (Neon.com/Databricks)**
+**app.build Team (Databricks - app.build team)**
 - Evgenii Kniazev
 - Arseny Kravchenko  
 - Igor Rekun
@@ -31,7 +31,6 @@ This submission is a collaborative research effort between **app.build** and **T
 - Prof. Dr. Ivan Yamshchikov
 - Pranav Sah
 - Pratik Nichite
-- Dheena Dayalan
 
 Lab website: [https://www.thws.de/en/research/institutes/cairo](https://www.thws.de/en/research/institutes/cairo)
 
