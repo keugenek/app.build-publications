@@ -126,10 +126,10 @@ We developed following universal components that are reused for both stacks in t
 #### 4.1 Evaluation Framework
 - Dataset: 30 prompts spanning a complexity spectrum (low: static/single‑page UI; medium: single‑entity CRUD; high: multi‑entity/custom logic). Canonical texts are in Appendix A.1; complexity rubric in §6.5.
 - Metrics:
-  - Success rate (score > 0) and zero‑score rate (score = 0)
-  - Perfect score rate (10/10) and score distribution (functional mean/median)
-  - Validation pass rates by check (AB‑01..AB‑06) and smoke‑test‑conditioned success (P(success | no smoke FAIL))
-  - Automated generation quality (0–10) using the rubric in §4.4
+  - Viability rate (V=1) and non-viability rate (V=0)
+  - Perfect quality rate (Q=10) and quality distribution (mean/median for V=1 apps)
+  - Validation pass rates by check (AB‑01..AB‑06)
+  - Quality scores (Q, 0–10) using the rubric in §4.4
   - Model/cost comparisons where applicable (reported in §6.2)
 
 #### 4.2 Experimental Configurations
@@ -157,26 +157,34 @@ The evaluation dataset comprises 30 prompts designed to assess system performanc
 
 *Human Evaluation Framework*. To systematically assess generated application quality, we implement a structured evaluation protocol comprising seven standardized functional checks executed by human assessors. Each generated application undergoes comprehensive testing across core functionality dimensions, with results recorded using a four-tier classification system (PASS/WARN/FAIL/NA) documented in Appendix Table A2.
 
-*Scoring Methodology*. The evaluation employs a weighted scoring system to quantify application functionality on a normalized 0-10 scale. A score of 0 indicates complete absence of requested functionality - representing applications that are either non-functional, unusable, or devoid of required features. Conversely, a score of 10 denotes full functional implementation with error-free operation and adherence to software engineering best practices. Intermediate scores reflect applications with partial functionality or quality deficiencies.
+*Scoring Methodology*. The evaluation reports two independent outcomes: a binary viability indicator (V) and a 0–10 quality score (Q). Viability expresses “works/doesn’t work” for core smoke criteria, while Quality reflects how well the application meets user needs and software quality expectations.
 
-The composite score S is calculated using a weighted aggregation of individual check results, where each check c ∈ {1,...,6} is assigned specific weights for PASS (w^p_c) and WARN (w^w_c) outcomes, with FAIL multipliers (m_c) applied to critical checks. The scoring function is defined as:
+Viability (binary):
 
-S = ∏_{c∈{1,2}} (1 - I_{FAIL,c}) × ∑_{c=1}^{6} [w^p_c × I_{PASS,c} + w^w_c × I_{WARN,c}] × ∏_{c=3}^{6} (1 - m_c × I_{FAIL,c})
+V = 1 if AB-01 and AB-02 are not FAIL; otherwise V = 0.
 
-where I_{state,c} represents indicator functions for check outcomes (PASS/WARN/FAIL) and weights are normalized such that ∑_c w^p_c = 100.
+Quality (0–10):
 
-**Table 1: Check Weight Distribution**
+Q = 10 × ( ∑_{c∈A} w × s_c ) / ( ∑_{c∈A} w ),
 
-| Check ID | Check Description | PASS Weight (%) | WARN Weight (%) | FAIL Multiplier |
-|----------|-------------------|-----------------|-----------------|-----------------|
-| AB-01 | Boot & Home | 10 | 8 | 0 |
-| AB-02 | Prompt Correspondence | 50 | 40 | 0 |
-| AB-03 | Create Functionality | 10 | 5 | 1 |
-| AB-04 | View/Edit Operations | 10 | 5 | 1 |
-| AB-05 | UI Element Sweep | 10 | 5 | 1 |
-| AB-06 | Performance Metrics | 10 | 5 | 1 |
+where A is the set of applicable checks (excluding NA); all checks use equal weights prior to NA re‑normalization; and per‑check grades s_c are mapped as follows:
+- AB‑01 (Boot): PASS = 1.0, WARN = 0.5, FAIL = 0.0
+- AB‑02 (Prompt correspondence): PASS = 1.0, WARN = 0.5, FAIL = 0.0
+- AB‑03..AB‑05: PASS = 1.0, WARN = 0.5, FAIL = 0.0
+- AB‑06 (Performance): continuous metric normalized to [0,1] (see Appendix A.3)
 
-The scoring mechanism implements hard constraints through critical smoke tests (AB-01, AB-02), where failure results in immediate zero scoring, reflecting complete application non-viability. Prompt correspondence dominates the evaluation at 50% weight, reflecting its fundamental importance to functional adequacy. The remaining quality checks contribute equally (10% each), ensuring balanced assessment across operational dimensions. This design ensures a minimum viable score of 4.0 for applications demonstrating basic prompt adherence despite quality deficiencies.
+**Table 1: Check Weights (Equal Share)**
+
+| Check ID | Check Description | Weight (share) | Notes |
+|----------|-------------------|----------------|-------|
+| AB-01 | Boot & Home | 1/6 | Hard gate for Viability V |
+| AB-02 | Prompt Correspondence | 1/6 | Hard gate for Viability V |
+| AB-03 | Create Functionality | 1/6 | |
+| AB-04 | View/Edit Operations | 1/6 | |
+| AB-05 | UI Element Sweep | 1/6 | |
+| AB-06 | Performance Metrics | 1/6 | Continuous (normalized); see Appendix A.3 |
+
+Viability is determined solely by smoke tests (AB‑01, AB‑02). Quality is computed independently as a normalized weighted average across all checks. An application that achieves viability but fails all non-smoke checks would receive Q = 10 × (1.0 + 1.0 + 0 + 0 + 0 + 0)/6 ≈ 3.3, reflecting basic functionality without operational quality. The continuous performance mapping preserves sensitivity to runtime characteristics.
 
 *Evaluation Criteria*. The assessment protocol implements domain-specific checks designed for comprehensive coverage while maintaining evaluation efficiency. Each check targets a specific functional aspect with stable identifiers to ensure reproducibility. The complete evaluation suite comprises the following criteria:
 
@@ -193,17 +201,17 @@ Detailed evaluation procedures, pass/fail criteria, and reporting standards are 
 
 #### 6.1 Environment Scaffolding Impact (tRPC only)
 
-Evaluating 30 TypeScript/tRPC applications, we observe that automated generation reliability reached 70.0% (21/30), with 30.0% perfect scores and 30.0% zero-scores. Once initial quality gates are passed, generated applications exhibit consistently high quality with 30% of apps that were either not generated or suffered from critical errors.
+Evaluating 30 TypeScript/tRPC applications, we observe that 70.0% (21/30) achieved viability (V=1), with 30.0% attaining perfect quality (Q=10) and 30.0% non-viable (V=0). Once viability criteria are met, generated applications exhibit consistently high quality.
 
 **Table 2: Aggregated Evaluation Results (tRPC)**
 
 | Metric | Value | Key Insight |
 |--------|-------|-------------|
 | Total Applications | 30 | TypeScript/tRPC stack only |
-| Success Rate (Score > 0) | 70.0% | 21/30 functional applications |
-| Perfect Score (10/10) | 30.0% | 9/30 fully compliant applications |
-| Complete Failures (0/10) | 30.0% | 9/30 non-functional applications |
-| Mean Score (functional apps) | ≈ 8.78 | High quality when functional |
+| Viability Rate (V=1) | 70.0% | 21/30 viable applications |
+| Perfect Quality (Q=10) | 30.0% | 9/30 fully compliant applications |
+| Non-viable (V=0) | 30.0% | 9/30 failed smoke tests |
+| Mean Quality (V=1 apps) | ≈ 8.78 | High quality when viable |
 
 **Table 3: Check-Specific Pass Rates (tRPC)**
 
@@ -216,7 +224,7 @@ Evaluating 30 TypeScript/tRPC applications, we observe that automated generation
 | AB-05 (UI Sweep) | 20 | 4 | 1 | 5 | 80.0% |
 | AB-06 (Performance) | 23 | 3 | 0 | 4 | 88.5% |
 
-Smoke tests (AB‑01, AB‑02) act as strong early quality gates. Among apps that did not fail smoke tests (n=22), 95.5% were functional (score > 0) and 77.3% scored ≥9. Zero scores arise from smoke test failures, missing artifacts.
+Smoke tests (AB‑01, AB‑02) determine viability. Among viable applications (V=1, n=21), quality averaged 8.78 with 77.3% achieving Q≥9. Non-viability (V=0) arises from smoke test failures or missing artifacts.
 
 #### 6.2 Open vs Closed Model Performance
 
@@ -228,7 +236,7 @@ Operational characteristics differed notably between model types. Open models re
 
 #### 6.3 Automated Generation Quality
 
-Automated outputs demonstrate strong quality once the environment scaffolding clears initial risks. Functional apps averaged ≈8.78/10 (median 9.5), and 81% of functional apps scored ≥9. Typical residual defects are localized rather than systemic:
+Automated outputs demonstrate strong quality once viability is established. Viable applications averaged Q≈8.78 (median 9.5), with 81% achieving Q≥9. Typical residual defects are localized rather than systemic:
 
 - Minor UI wiring gaps (e.g., a single non‑responsive button)
 - Light state/integration inconsistencies (e.g., refresh required after create)
@@ -257,17 +265,17 @@ We categorize prompts along a simple rubric and analyze success impacts:
 - Medium complexity: single‑entity CRUD without advanced flows or auth
 - High complexity: multi‑entity workflows, custom logic, or complex UI interactions
 
-Empirically, medium‑complexity CRUD prompts achieve the highest reliability (9–10 typical), reflecting strong scaffolding for data models and handlers. Low‑complexity UI prompts are not uniformly “easy”: several failed prompt correspondence (AB‑02) by returning generic templates. High‑complexity prompts show lower success rates due to interaction wiring and state‑consistency issues surfaced by AB‑04/05. This suggests that environment scaffolding is most mature for CRUD‑centric tasks, while additional guardrails and exemplars are needed for multi‑step workflows and rich UI behaviors. todo: However this analysis needs further data to be evaluated.
+Empirically, medium‑complexity CRUD prompts achieve the highest quality (Q=9–10 typical), reflecting strong scaffolding for data models and handlers. Low‑complexity UI prompts are not uniformly "easy": several became non-viable (V=0) by failing prompt correspondence (AB‑02) with generic templates. High‑complexity prompts show lower viability rates due to interaction wiring and state‑consistency issues surfaced by AB‑04/05. This suggests that environment scaffolding is most mature for CRUD‑centric tasks, while additional guardrails and exemplars are needed for multi‑step workflows and rich UI behaviors. todo: However this analysis needs further data to be evaluated.
 
 6.6 Analysis of the runs
 
-Across 30 tRPC runs, automated generation produced functional applications in 70% of cases, with strong quality once smoke tests passed. Failures concentrated in early stages (boot/prompt) and in a small set of interaction/state issues:
+Across 30 tRPC runs, automated generation achieved viability in 70% of cases (V=1), with strong quality scores once viability was established. Non-viability concentrated in smoke test failures (boot/prompt) while quality defects clustered in interaction/state issues:
 
-- Early gates: 9/30 runs resulted in zero scores, traced to AB‑01/AB‑02 failures or missing artifacts/templates.
-- High‑quality plateau: among runs without smoke FAILs (n=22), 95.5% were functional and 77.3% scored ≥9; functional median score was 9.5.
+- Viability gates: 9/30 runs were non-viable (V=0), traced to AB‑01/AB‑02 failures or missing artifacts/templates.
+- Quality plateau: among viable runs (V=1, n=21), 77.3% achieved Q≥9; median quality was 9.5.
 - Residual defects: interaction wiring (unbound buttons/links), minor state issues (refresh required, broken filters), and occasional CSP warnings for images/media.
 
-Prompt complexity correlated with outcomes. Medium‑complexity CRUD prompts achieved the highest reliability (9–10 typical). Low‑complexity UI prompts sometimes failed AB‑02 by yielding generic templates. High‑complexity prompts exhibited more interaction/state defects, reducing success rates. This suggests scaffolding is most mature for CRUD‑centric tasks; richer workflows benefit from additional guardrails and exemplars.
+Prompt complexity correlated with outcomes. Medium‑complexity CRUD prompts achieved the highest quality (Q=9–10 typical). Low‑complexity UI prompts sometimes became non-viable by failing AB‑02 with generic templates. High‑complexity prompts exhibited more interaction/state defects, reducing both viability and quality scores. This suggests scaffolding is most mature for CRUD‑centric tasks; richer workflows benefit from additional guardrails and exemplars.
 
 ### 7. Summary
 
