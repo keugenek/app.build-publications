@@ -128,9 +128,11 @@ We developed following universal components that are reused for both stacks in t
 - Metrics:
   - Viability rate (V=1) and non-viability rate (V=0)
   - Perfect quality rate (Q=10) and quality distribution (mean/median for V=1 apps)
-  - Validation pass rates by check (AB‑01..AB‑06)
+  - Validation pass rates by check (AB‑01, AB‑02, AB‑03, AB‑04, AB‑06, AB‑07)
   - Quality scores (Q, 0–10) using the rubric in §4.4
   - Model/cost comparisons where applicable (reported in §6.2)
+
+NB: Check AB-04 has been removed from the dataset to avoid redundant checks.
 
 #### 4.2 Experimental Configurations
 We designed four experimental configurations to systematically evaluate factors affecting app generation success rates:
@@ -155,7 +157,7 @@ The evaluation dataset comprises 30 prompts designed to assess system performanc
 
 #### 4.4 Assessor Protocol and Checks
 
-*Human Evaluation Framework*. To systematically assess generated application quality, we implement a structured evaluation protocol comprising seven standardized functional checks executed by human assessors. Each generated application undergoes comprehensive testing across core functionality dimensions, with results recorded using a four-tier classification system (PASS/WARN/FAIL/NA) documented in Appendix Table A2.
+*Human Evaluation Framework*. To systematically assess generated application quality, we implement a structured evaluation protocol comprising six standardized functional checks executed by human assessors. Each generated application undergoes comprehensive testing across core functionality dimensions, with results recorded using a four-tier classification system (PASS/WARN/FAIL/NA) documented in Appendix Table A2.
 
 *Scoring Methodology*. The evaluation reports two independent outcomes: a binary viability indicator (V) and a 0–10 quality score (Q). Viability expresses “works/doesn’t work” for core smoke criteria, while Quality reflects how well the application meets user needs and software quality expectations.
 
@@ -170,8 +172,8 @@ Q = 10 × ( ∑_{c∈A} w × s_c ) / ( ∑_{c∈A} w ),
 where A is the set of applicable checks (excluding NA); all checks use equal weights prior to NA re‑normalization; and per‑check grades s_c are mapped as follows:
 - AB‑01 (Boot): PASS = 1.0, WARN = 0.5, FAIL = 0.0
 - AB‑02 (Prompt correspondence): PASS = 1.0, WARN = 0.5, FAIL = 0.0
-- AB‑03..AB‑05: PASS = 1.0, WARN = 0.5, FAIL = 0.0
-- AB‑06 (Performance): continuous metric normalized to [0,1] (see Appendix A.3)
+- AB‑03, AB‑04, AB‑06 (Clickable Sweep): PASS = 1.0, WARN = 0.5, FAIL = 0.0
+- AB‑07 (Performance): continuous metric normalized to [0,1] (see Appendix A.3)
 
 **Table 1: Check Weights (Equal Share)**
 
@@ -181,19 +183,21 @@ where A is the set of applicable checks (excluding NA); all checks use equal wei
 | AB-02 | Prompt Correspondence | 1/6 | Hard gate for Viability V |
 | AB-03 | Create Functionality | 1/6 | |
 | AB-04 | View/Edit Operations | 1/6 | |
-| AB-05 | UI Element Sweep | 1/6 | |
-| AB-06 | Performance Metrics | 1/6 | Continuous (normalized); see Appendix A.3 |
+| AB-06 | Clickable Sweep | 1/6 | |
+| AB-07 | Performance Metrics | 1/6 | Continuous (normalized); see Appendix A.3 |
+
+Note: AB‑05 is not used in this release due to redundant AB-05 check removal. Identifiers AB‑06 (Clickable Sweep) and AB‑07 (Performance) follow the dataset column names for consistency.
 
 Viability is determined solely by smoke tests (AB‑01, AB‑02). Quality is computed independently as a normalized weighted average across all checks. An application that achieves viability but fails all non-smoke checks would receive Q = 10 × (1.0 + 1.0 + 0 + 0 + 0 + 0)/6 ≈ 3.3, reflecting basic functionality without operational quality. The continuous performance mapping preserves sensitivity to runtime characteristics.
 
 *Evaluation Criteria*. The assessment protocol implements domain-specific checks designed for comprehensive coverage while maintaining evaluation efficiency. Each check targets a specific functional aspect with stable identifiers to ensure reproducibility. The complete evaluation suite comprises the following criteria:
 
-1. Application initialization and clean boot sequence
-2. Prompt-to-implementation correspondence and primary action availability
-3. Entity creation workflow functionality
-4. Entity viewing and editing capabilities
-5. User interface element responsiveness and error handling
-6. Performance characteristics under initial load conditions
+1. Application initialization and clean boot sequence (AB‑01)
+2. Prompt-to-implementation correspondence and primary action availability (AB‑02)
+3. Entity creation workflow functionality (AB‑03)
+4. Entity viewing and editing capabilities (AB‑04)
+5. Clickable element sweep for primary interactions (AB‑06)
+6. Performance characteristics under initial load conditions (AB‑07)
 
 Detailed evaluation procedures, pass/fail criteria, and reporting standards are specified in Appendix A.3, including environment preparation protocols (AB-00) and systematic testing methodology.
 
@@ -221,8 +225,8 @@ Evaluating 30 TypeScript/tRPC applications, we observe that 70.0% (21/30) achiev
 | AB-02 (Prompt) | 19 | 3 | 5 | 3 | 70.4% |
 | AB-03 (Create) | 22 | 2 | 0 | 6 | 91.7% |
 | AB-04 (View/Edit) | 17 | 1 | 1 | 11 | 89.5% |
-| AB-05 (UI Sweep) | 20 | 4 | 1 | 5 | 80.0% |
-| AB-06 (Performance) | 23 | 3 | 0 | 4 | 88.5% |
+| AB-06 (Clickable Sweep) | 20 | 4 | 1 | 5 | 80.0% |
+| AB-07 (Performance) | 23 | 3 | 0 | 4 | 88.5% |
 
 Smoke tests (AB‑01, AB‑02) determine viability. Among viable applications (V=1, n=21), quality averaged 8.78 with 77.3% achieving Q≥9. Non-viability (V=0) arises from smoke test failures or missing artifacts.
 
@@ -362,7 +366,7 @@ The table below enumerates the full prompt set used in the benchmark, with short
 #### A.2 Assessor Checklist (Template)
 Record PASS/FAIL/NA for each prompt and check. Use the Notes column for brief context or defect links.
 
-ID	AB-00 Reset	AB-01 Boot	AB-02 Prompt	AB-03 Create	AB-04 View/Edit	AB-05 Refresh	AB‑06 Clickable Sweep	AB‑07 Performance (quick)	Notes	PASS#	WARN#	PTS
+ID	AB-00 Reset	AB-01 Boot	AB-02 Prompt	AB-03 Create	AB-04 View/Edit	AB‑06 Clickable Sweep	AB‑07 Performance (quick)	Notes	PASS#	WARN#	PTS
 P-001										0	0	0
 
 #### A.3 Assessor Protocol Details (app.build‑specific)
@@ -390,11 +394,11 @@ This appendix section provides atomic, app.build‑specific methods, pass criter
   - Method: Open detail/edit; change one field; save.
   - Criteria: PASS if success toast/indicator appears; no Console errors; WARN if errors, NA if no such action; FAIL if action does not work - shows some user error and is not clickable or not updating the page or if refresh cleans up the data.
 
-- AB‑05 Clickable Sweep
+- AB‑06 Clickable Sweep
   - Method: Systematically click all visible primary clickable elements across main pages (nav links, primary/secondary buttons, list rows, tabs). Avoid clearly destructive actions; if confirmation appears, confirm once.
   - Criteria: PASS -no navigation errors; no 404/5xx on route changes; target routes/components render, WARN if unhandled Console errors or one or two out of 10 minor buttons/elements dont work, FAIL if >30% of elements not clickable or brokens
 
-- AB‑06 Performance (quick)
+- AB‑07 Performance (quick)
   - Method: Run Lighthouse once on home (Mobile). Note Performance and Best Practices.
   - Criteria: Record performance score in notes, PASS >75, 30>WARN>75, FAIL<30
 
