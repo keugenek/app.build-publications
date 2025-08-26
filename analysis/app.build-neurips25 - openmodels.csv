@@ -1,6 +1,4 @@
 Case,Assignee,AB-01 Boot,AB-02 Prompt,AB-03 Create,AB-04 View/Edit,AB‑06 Clickable Sweep,AB‑07 Performance >75,Notes,PASS#,WARN#,FAIL#,PTS
-tennis-enthusiast-platform_trpc-agent_claude_gemini (TEST),A2,PASS,PASS,PASS,PASS,WARN,PASS,"When clicked on find player:  Uncaught Error: A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder.
-Performance: 84, Best Practices: 93",5,1,0,9.5
 gym-crm_trpc-agent_gpt-oss_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
 tennis-enthusiast-platform_trpc-agent_qwen3-480b-35a_gemini,A2,PASS,FAIL,WARN,WARN,PASS,,"creation doesnot contains all fileds,  Cannot edit existing one
 Performance: 88, Best Practices: 93",2,2,1,0
