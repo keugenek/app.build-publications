@@ -1,0 +1,2 @@
+template_id,coding_model,success_rate,healthcheck_pass_rate,template_failed_rate,avg_duration,total_input_tokens,total_output_tokens,count
+trpc-agent,claude,0.8333333333333334,0.9,0.06666666666666667,462.72436109999995,20822496,1580274,30

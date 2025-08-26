@@ -18,12 +18,19 @@ def extract_ablation_type(results_path: Path) -> str:
     """
     path_parts = results_path.parts
 
-    # look for pattern like 'ablation/something' or 'benchmark_results_something'
-    for part in path_parts:
-        if part.startswith("benchmark_results_") and part != "benchmark_results":
-            # extract ablation type from benchmark_results_X format
-            return part.replace("benchmark_results_", "")
-
+    # Check if this is in ablations directory
+    if "ablations" in path_parts:
+        # Look for benchmark_results_X pattern
+        for part in path_parts:
+            if part.startswith("benchmark_results_") and part != "benchmark_results":
+                return part.replace("benchmark_results_", "")
+        return "unknown_ablation"
+    
+    # Check if this is openmodels
+    if "openmodels" in path_parts:
+        return "openmodels"
+    
+    # Default to baseline
     return "baseline"
 
 
@@ -127,21 +134,67 @@ def load_experiment_data(results_dir: str) -> list[dict[str, Any]]:
     return results
 
 
-def analyze_benchmarks(*results_dirs: str) -> None:
-    """Analyze benchmark results from one or more directories and display comprehensive statistics."""
+def analyze_benchmarks(*results_dirs: str, output_dir: str = "results") -> None:
+    """Analyze benchmark results from one or more directories and display comprehensive statistics.
+    
+    Args:
+        *results_dirs: Directories containing benchmark results. Defaults to dataset subdirs.
+        output_dir: Directory to save analysis results. Defaults to 'results'.
+    """
+    # If no results_dirs specified, analyze all known benchmark types
     if not results_dirs:
-        results_dirs = ("/Users/arseni.kravchenko/dev/agent/agent/benchmark_results",)
+        dataset_path = Path("dataset")
+        if not dataset_path.exists():
+            print(f"Error: dataset directory not found at {dataset_path.absolute()}")
+            return
+        
+        # Collect all benchmark directories
+        results_dirs = []
+        
+        # Add baseline
+        if (dataset_path / "baseline").exists():
+            results_dirs.append(str(dataset_path / "baseline"))
+        
+        # Add openmodels
+        if (dataset_path / "openmodels").exists():
+            results_dirs.append(str(dataset_path / "openmodels"))
+        
+        # Add all ablations
+        ablations_path = dataset_path / "ablations"
+        if ablations_path.exists():
+            for ablation_dir in ablations_path.iterdir():
+                if ablation_dir.is_dir() and ablation_dir.name.startswith("benchmark_results_"):
+                    results_dirs.append(str(ablation_dir))
+        
+        if not results_dirs:
+            print("No benchmark results found in dataset directory")
+            return
+    
+    # Create output directory
+    output_path = Path(output_dir)
+    output_path.mkdir(exist_ok=True)
+    print(f"\nCreating results directory at: {output_path.absolute()}")
 
     all_results: list[dict[str, Any]] = []
+    benchmark_results: dict[str, list[dict[str, Any]]] = {}
 
     for results_dir in results_dirs:
-        print(f"Loading from {results_dir}...")
+        print(f"\nLoading from {results_dir}...")
         experiment_data = load_experiment_data(results_dir)
         all_results.extend(experiment_data)
-        print(f"  Found {len(experiment_data)} experiments")
+        
+        # Group by benchmark type
+        if experiment_data:
+            benchmark_type = experiment_data[0].get("ablation_type", "unknown")
+            if benchmark_type not in benchmark_results:
+                benchmark_results[benchmark_type] = []
+            benchmark_results[benchmark_type].extend(experiment_data)
+            print(f"  Found {len(experiment_data)} experiments ({benchmark_type})")
+        else:
+            print(f"  No experiments found")
 
     if not all_results:
-        print("No experiment data found in any directory")
+        print("\nNo experiment data found in any directory")
         return
 
     df = pl.DataFrame(all_results)
@@ -275,10 +328,46 @@ def analyze_benchmarks(*results_dirs: str) -> None:
     with pl.Config(tbl_rows=-1, tbl_cols=-1, tbl_width_chars=1000, thousands_separator=True):
         print(stack_model_stats)
 
-    # export to csv
-    output_path = "benchmark_analysis.csv"
-    df.write_csv(output_path)
-    print(f"\nExported {len(df)} results to {output_path}")
+    # Export comprehensive results
+    print("\n" + "=" * 50)
+    print("=== Exporting Analysis Results ===")
+    print("=" * 50)
+    
+    # Export overall summary
+    overall_output_path = output_path / "all_results.csv"
+    df.write_csv(str(overall_output_path))
+    print(f"\nExported {len(df)} total results to {overall_output_path}")
+    
+    # Export per-benchmark results
+    for benchmark_type, results in benchmark_results.items():
+        if results:
+            benchmark_df = pl.DataFrame(results)
+            
+            # Create subdirectory for this benchmark
+            benchmark_dir = output_path / benchmark_type
+            benchmark_dir.mkdir(exist_ok=True)
+            
+            # Export raw data
+            raw_output = benchmark_dir / "raw_results.csv"
+            benchmark_df.write_csv(str(raw_output))
+            print(f"Exported {len(benchmark_df)} {benchmark_type} results to {raw_output}")
+            
+            # Export summary statistics
+            summary_stats = benchmark_df.group_by(["template_id", "coding_model"]).agg([
+                pl.col("success").mean().alias("success_rate"),
+                pl.col("healthcheck_pass").mean().alias("healthcheck_pass_rate"),
+                pl.col("template_failed").mean().alias("template_failed_rate"),
+                pl.col("duration_seconds").mean().alias("avg_duration"),
+                pl.col("total_input_tokens").sum().alias("total_input_tokens"),
+                pl.col("total_output_tokens").sum().alias("total_output_tokens"),
+                pl.len().alias("count")
+            ]).sort(["template_id", "coding_model"])
+            
+            summary_output = benchmark_dir / "summary_stats.csv"
+            summary_stats.write_csv(str(summary_output))
+            print(f"Exported summary statistics to {summary_output}")
+    
+    print(f"\n✅ All analysis results saved to: {output_path.absolute()}")
 
 
 if __name__ == "__main__":
