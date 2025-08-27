@@ -22,8 +22,8 @@ AB-01 Boot: Baseline=83.33% (25/30)  NoLint=86.67% (26/30)  Δ=+3.3pp
 AB-02 Prompt: Baseline=70.37% (19/27)  NoLint=71.43% (20/28)  Δ=+1.1pp
 AB-03 Create: Baseline=91.67% (22/24)  NoLint=83.33% (20/24)  Δ=-8.3pp
 AB-04 View/Edit: Baseline=90.00% (18/20)  NoLint=82.35% (14/17)  Δ=-7.6pp
-AB‑06 Clickable Sweep: Baseline=80.00% (20/25)  NoLint=74.07% (20/27)  Δ=-5.9pp
-AB‑07 Performance >75: Baseline=92.31% (24/26)  NoLint=96.43% (27/28)  Δ=+4.1pp
+AB-06 Clickable Sweep: Baseline=80.00% (20/25)  NoLint=74.07% (20/27)  Δ=-5.9pp
+AB-07 Performance >75: Baseline=92.31% (24/26)  NoLint=96.43% (27/28)  Δ=+4.1pp
 
 === PASS/WARN/FAIL Breakdown (Baseline vs No Lint) ===
 AB-01 Boot:
@@ -38,9 +38,9 @@ AB-03 Create:
 AB-04 View/Edit:
   Baseline: PASS 18/20 (90.0%), WARN 1/20 (5.0%), FAIL 1/20 (5.0%)
   NoLint:   PASS 14/17 (82.4%), WARN 3/17 (17.6%), FAIL 0/17 (0.0%)
-AB‑06 Clickable Sweep:
+AB-06 Clickable Sweep:
   Baseline: PASS 20/25 (80.0%), WARN 4/25 (16.0%), FAIL 1/25 (4.0%)
   NoLint:   PASS 20/27 (74.1%), WARN 6/27 (22.2%), FAIL 1/27 (3.7%)
-AB‑07 Performance >75:
+AB-07 Performance >75:
   Baseline: PASS 24/26 (92.3%), WARN 2/26 (7.7%), FAIL 0/26 (0.0%)
   NoLint:   PASS 27/28 (96.4%), WARN 1/28 (3.6%), FAIL 0/28 (0.0%)

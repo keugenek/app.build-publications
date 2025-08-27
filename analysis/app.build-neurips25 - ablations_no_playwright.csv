@@ -1,4 +1,4 @@
-Case,Assignee,AB-01 Boot,AB-02 Prompt,AB-03 Create,AB-04 View/Edit,AB‑06 Clickable Sweep,AB‑07 Performance >75,Notes,PASS#,WARN#,FAIL#,PTS
+Case,Assignee,AB-01 Boot,AB-02 Prompt,AB-03 Create,AB-04 View/Edit,AB-06 Clickable Sweep,AB-07 Performance >75,Notes,PASS#,WARN#,FAIL#,PTS
 basic-inventory-system_trpc-agent_claude_gemini,A2,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 87, Best Practices: 93",6,0,0,10
 beer-counter-app_trpc-agent_claude_gemini,A2,FAIL,NA,NA,NA,NA,NA,template: Under Construction ,0,0,1,0
 birthday-wish-app_trpc-agent_claude_gemini,A2,WARN,FAIL,NA,NA,FAIL,PASS,"Refused to load the stylesheet and Refused to load the image

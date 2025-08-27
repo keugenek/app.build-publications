@@ -10,7 +10,7 @@ Production Reliability at Scale: Scaffolding Systems for Agentic Prompt-to-App G
 - Pratik Nichite [2]
 
 [1] Databricks - app.build team
-[2] THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO)
+[2] THWS University of Applied Sciences Würzburg-Schweinfurt (CAIRO)
 
 Correspondence: <contact@your-domain.example>
 
@@ -124,11 +124,11 @@ We developed following universal components that are reused for both stacks in t
 
 ### 4. Experimental Setup
 #### 4.1 Evaluation Framework
-- Dataset: 30 prompts spanning a complexity spectrum (low: static/single‑page UI; medium: single‑entity CRUD; high: multi‑entity/custom logic). Canonical texts are in Appendix A.1; complexity rubric in §6.5.
+- Dataset: 30 prompts spanning a complexity spectrum (low: static/single-page UI; medium: single-entity CRUD; high: multi-entity/custom logic). Canonical texts are in Appendix A.1; complexity rubric in §6.5.
 - Metrics:
   - Viability rate (V=1) and non-viability rate (V=0)
   - Perfect quality rate (Q=10) and quality distribution (mean/median for V=1 apps)
-  - Validation pass rates by check (AB‑01, AB‑02, AB‑03, AB‑04, AB‑06, AB‑07)
+  - Validation pass rates by check (AB-01, AB-02, AB-03, AB-04, AB-06, AB-07)
   - Quality scores (Q, 0–10) using the rubric in §4.4
   - Model/cost comparisons where applicable (reported in §6.2)
 
@@ -169,11 +169,11 @@ Quality (0–10):
 
 Q = 10 × ( ∑_{c∈A} w × s_c ) / ( ∑_{c∈A} w ),
 
-where A is the set of applicable checks (excluding NA); all checks use equal weights prior to NA re‑normalization; and per‑check grades s_c are mapped as follows:
-- AB‑01 (Boot): PASS = 1.0, WARN = 0.5, FAIL = 0.0
-- AB‑02 (Prompt correspondence): PASS = 1.0, WARN = 0.5, FAIL = 0.0
-- AB‑03, AB‑04, AB‑06 (Clickable Sweep): PASS = 1.0, WARN = 0.5, FAIL = 0.0
-- AB‑07 (Performance): continuous metric normalized to [0,1] (see Appendix A.3)
+where A is the set of applicable checks (excluding NA); all checks use equal weights prior to NA re-normalization; and per-check grades s_c are mapped as follows:
+- AB-01 (Boot): PASS = 1.0, WARN = 0.5, FAIL = 0.0
+- AB-02 (Prompt correspondence): PASS = 1.0, WARN = 0.5, FAIL = 0.0
+- AB-03, AB-04, AB-06 (Clickable Sweep): PASS = 1.0, WARN = 0.5, FAIL = 0.0
+- AB-07 (Performance): continuous metric normalized to [0,1] (see Appendix A.3)
 
 **Table 1: Check Weights (Equal Share)**
 
@@ -186,18 +186,18 @@ where A is the set of applicable checks (excluding NA); all checks use equal wei
 | AB-06 | Clickable Sweep | 1/6 | |
 | AB-07 | Performance Metrics | 1/6 | Continuous (normalized); see Appendix A.3 |
 
-Note: AB‑05 is not used in this release due to redundant AB-05 check removal. Identifiers AB‑06 (Clickable Sweep) and AB‑07 (Performance) follow the dataset column names for consistency.
+Note: AB-05 is not used in this release due to redundant AB-05 check removal. Identifiers AB-06 (Clickable Sweep) and AB-07 (Performance) follow the dataset column names for consistency.
 
-Viability is determined solely by smoke tests (AB‑01, AB‑02). Quality is computed independently as a normalized weighted average across all checks. An application that achieves viability but fails all non-smoke checks would receive Q = 10 × (1.0 + 1.0 + 0 + 0 + 0 + 0)/6 ≈ 3.3, reflecting basic functionality without operational quality. The continuous performance mapping preserves sensitivity to runtime characteristics.
+Viability is determined solely by smoke tests (AB-01, AB-02). Quality is computed independently as a normalized weighted average across all checks. An application that achieves viability but fails all non-smoke checks would receive Q = 10 × (1.0 + 1.0 + 0 + 0 + 0 + 0)/6 ≈ 3.3, reflecting basic functionality without operational quality. The continuous performance mapping preserves sensitivity to runtime characteristics.
 
 *Evaluation Criteria*. The assessment protocol implements domain-specific checks designed for comprehensive coverage while maintaining evaluation efficiency. Each check targets a specific functional aspect with stable identifiers to ensure reproducibility. The complete evaluation suite comprises the following criteria:
 
-1. Application initialization and clean boot sequence (AB‑01)
-2. Prompt-to-implementation correspondence and primary action availability (AB‑02)
-3. Entity creation workflow functionality (AB‑03)
-4. Entity viewing and editing capabilities (AB‑04)
-5. Clickable element sweep for primary interactions (AB‑06)
-6. Performance characteristics under initial load conditions (AB‑07)
+1. Application initialization and clean boot sequence (AB-01)
+2. Prompt-to-implementation correspondence and primary action availability (AB-02)
+3. Entity creation workflow functionality (AB-03)
+4. Entity viewing and editing capabilities (AB-04)
+5. Clickable element sweep for primary interactions (AB-06)
+6. Performance characteristics under initial load conditions (AB-07)
 
 Detailed evaluation procedures, pass/fail criteria, and reporting standards are specified in Appendix A.3, including environment preparation protocols (AB-00) and systematic testing methodology.
 
@@ -228,7 +228,7 @@ Evaluating 30 TypeScript/tRPC applications, we observe that 70.0% (21/30) achiev
 | AB-06 (Clickable Sweep) | 20 | 4 | 1 | 5 | 80.0% |
 | AB-07 (Performance) | 23 | 3 | 0 | 4 | 88.5% |
 
-Smoke tests (AB‑01, AB‑02) determine viability. Among viable applications (V=1, n=21), quality averaged 8.78 with 77.3% achieving Q≥9. Non-viability (V=0) arises from smoke test failures or missing artifacts.
+Smoke tests (AB-01, AB-02) determine viability. Among viable applications (V=1, n=21), quality averaged 8.78 with 77.3% achieving Q≥9. Non-viability (V=0) arises from smoke test failures or missing artifacts.
 
 #### 6.2 Open vs Closed Model Performance
 
@@ -242,11 +242,11 @@ Operational characteristics differed notably between model types. Open models re
 
 Automated outputs demonstrate strong quality once viability is established. Viable applications averaged Q≈8.78 (median 9.5), with 81% achieving Q≥9. Typical residual defects are localized rather than systemic:
 
-- Minor UI wiring gaps (e.g., a single non‑responsive button)
+- Minor UI wiring gaps (e.g., a single non-responsive button)
 - Light state/integration inconsistencies (e.g., refresh required after create)
-- Occasional content‑security policy warnings for media/images
+- Occasional content-security policy warnings for media/images
 
-This profile indicates that current app.build solution with deterministic gates plus stack‑specific templates reliably produce maintainable, production‑style apps with occasional need of small, actionable fixes.
+This profile indicates that current app.build solution with deterministic gates plus stack-specific templates reliably produce maintainable, production-style apps with occasional need of small, actionable fixes.
 
 #### 6.4 Failure Mode Analysis (from assessor notes)
 
@@ -255,25 +255,25 @@ Observed failure modes in tRPC runs cluster into a small set of categories:
 - Boot/Load failures: template placeholders or incomplete artifacts
 - Prompt correspondence failures: generic template likely because of generation failure
 - CSP/security policy restrictions: blocked images or media by default policies
-- UI interaction defects: unbound handlers, non‑working controls
+- UI interaction defects: unbound handlers, non-working controls
 - State/integration defects: data not persisting across refresh; broken filters; login issues
 - Component misuse: runtime exception due to incorrect component composition
 
-These defects align with our layered pipeline design: early gates catch non‑viable builds, while later gates expose interaction/state issues before human evaluation.
+These defects align with our layered pipeline design: early gates catch non-viable builds, while later gates expose interaction/state issues before human evaluation.
 
 #### 6.5 Prompt Complexity and Success Rate
 
 We categorize prompts along a simple rubric and analyze success impacts:
 
-- Low complexity: static or single‑page UI tasks (e.g., landing pages, counters)
-- Medium complexity: single‑entity CRUD without advanced flows or auth
-- High complexity: multi‑entity workflows, custom logic, or complex UI interactions
+- Low complexity: static or single-page UI tasks (e.g., landing pages, counters)
+- Medium complexity: single-entity CRUD without advanced flows or auth
+- High complexity: multi-entity workflows, custom logic, or complex UI interactions
 
-Empirically, medium‑complexity CRUD prompts achieve the highest quality (Q=9–10 typical), reflecting strong scaffolding for data models and handlers. Low‑complexity UI prompts are not uniformly "easy": several became non-viable (V=0) by failing prompt correspondence (AB‑02) with generic templates. High‑complexity prompts show lower viability rates due to interaction wiring and state‑consistency issues surfaced by AB‑04/05. This suggests that environment scaffolding is most mature for CRUD‑centric tasks, while additional guardrails and exemplars are needed for multi‑step workflows and rich UI behaviors.
+Empirically, medium-complexity CRUD prompts achieve the highest quality (Q=9–10 typical), reflecting strong scaffolding for data models and handlers. Low-complexity UI prompts are not uniformly "easy": several became non-viable (V=0) by failing prompt correspondence (AB-02) with generic templates. High-complexity prompts show lower viability rates due to interaction wiring and state-consistency issues surfaced by AB-04/05. This suggests that environment scaffolding is most mature for CRUD-centric tasks, while additional guardrails and exemplars are needed for multi-step workflows and rich UI behaviors.
 
 #### 6.6 Ablation Studies: Validation Layers (tRPC)
 
-We ran controlled ablations of individual validation layers on the same 30‑prompt cohort to understand their directional impact. We report observed deltas and effect sizes; we avoid binary significance claims. Full artifacts are linked in‑repo.
+We ran controlled ablations of individual validation layers on the same 30-prompt cohort to understand their directional impact. We report observed deltas and effect sizes; we avoid binary significance claims. Full artifacts are linked in-repo.
 
 - **Baseline (reference)**: See human evaluation table and summary in the dataset and analysis notebooks
   - Data: `analysis/app.build-neurips25 - baseline.csv`, overview in `docs/sea-2025/evaluation_data_analysis.md`
@@ -281,36 +281,36 @@ We ran controlled ablations of individual validation layers on the same 30‑pro
 - **No Tests (handlers/unit tests removed)**
   - **Viability**: 80.0% (+6.7 pp from baseline)
   - **Quality**: 7.8 (−0.3 vs baseline)
-  - **Major deltas (PASS count over N=30)**: AB‑03 Create −6.7 pp; AB‑04 View/Edit −20.0 pp; AB‑06 Clickable Sweep +6.7 pp
-  - Interpretation: removing backend tests increases apparent viability but reduces CRUD correctness (AB‑03/AB‑04), trading strict checks for coverage gaps in core flows.
+  - **Major deltas (PASS count over N=30)**: AB-03 Create −6.7 pp; AB-04 View/Edit −20.0 pp; AB-06 Clickable Sweep +6.7 pp
+  - Interpretation: removing backend tests increases apparent viability but reduces CRUD correctness (AB-03/AB-04), trading strict checks for coverage gaps in core flows.
   - Data: `analysis/ablation_study_unit_tests.py` and run log `analysis/ablation_study_unit_tests.out`
 
 - **No Lint (ESLint removed)**
   - **Viability**: 80.0% (+6.7 pp)
   - **Quality**: 8.25 (+0.19)
-  - **Major deltas (PASS over 30)**: AB‑03 −6.7 pp; AB‑04 −13.3 pp; AB‑07 +10.0 pp
-  - Interpretation: small uplift in viability and performance (AB‑07) with modest regressions in CRUD/view/edit (AB‑03/AB‑04). Linting appears to support structural/UI consistency even when not reflected strongly in mean quality.
+  - **Major deltas (PASS over 30)**: AB-03 −6.7 pp; AB-04 −13.3 pp; AB-07 +10.0 pp
+  - Interpretation: small uplift in viability and performance (AB-07) with modest regressions in CRUD/view/edit (AB-03/AB-04). Linting appears to support structural/UI consistency even when not reflected strongly in mean quality.
   - Data: `analysis/ablation_study_no_lint.py`, run log `analysis/ablation_study_no_lint.out`, targeted highlights `analysis/ablation_no_lint_analysis/summary_ab03_ab04.csv`
 
 - **No Playwright (UI smoke/E2E off)**
   - **Viability**: 90.0% (+16.7 pp)
   - **Quality**: 8.62 (+0.56)
-  - **Major deltas (PASS over 30)**: AB‑02 Prompt +13.3 pp; AB‑03 +6.7 pp; AB‑04 +6.7 pp; AB‑06 +13.3 pp; AB‑07 +10.0 pp
+  - **Major deltas (PASS over 30)**: AB-02 Prompt +13.3 pp; AB-03 +6.7 pp; AB-04 +6.7 pp; AB-06 +13.3 pp; AB-07 +10.0 pp
   - Interpretation: Removing brittle E2E checks improves prompt correspondence and overall perceived quality. Qualitative probes suggest Playwright smoke can be flaky for these scaffolded apps; core flows often pass even with TypeScript/ESLint issues present.
-  - Data: `analysis/ablation_study_no_playwright.py`, run log `analysis/ablation_no_playwright.out`, AB‑02 case analysis `analysis/ablation_no_playwright_analysis/ablation_no_playwright_ab02_analysis.csv` and joined smoke summaries
+  - Data: `analysis/ablation_study_no_playwright.py`, run log `analysis/ablation_no_playwright.out`, AB-02 case analysis `analysis/ablation_no_playwright_analysis/ablation_no_playwright_ab02_analysis.csv` and joined smoke summaries
 
 Notes on calculation:
-- "Major deltas" use PASS count changes over the fixed cohort (N=30), yielding 3.3 pp granularity. Our scripts also report non‑NA pass‑rate deltas per dimension; both views are included in the run logs.
+- "Major deltas" use PASS count changes over the fixed cohort (N=30), yielding 3.3 pp granularity. Our scripts also report non-NA pass-rate deltas per dimension; both views are included in the run logs.
 
 6.7 Analysis of the runs
 
 Across 30 tRPC runs, automated generation achieved viability in 70% of cases (V=1), with strong quality scores once viability was established. Non-viability concentrated in smoke test failures (boot/prompt) while quality defects clustered in interaction/state issues:
 
-- Viability gates: 9/30 runs were non-viable (V=0), traced to AB‑01/AB‑02 failures or missing artifacts/templates.
+- Viability gates: 9/30 runs were non-viable (V=0), traced to AB-01/AB-02 failures or missing artifacts/templates.
 - Quality plateau: among viable runs (V=1, n=21), 77.3% achieved Q≥9; median quality was 9.5.
 - Residual defects: interaction wiring (unbound buttons/links), minor state issues (refresh required, broken filters), and occasional CSP warnings for images/media.
 
-Prompt complexity correlated with outcomes. Medium‑complexity CRUD prompts achieved the highest quality (Q=9–10 typical). Low‑complexity UI prompts sometimes became non-viable by failing AB‑02 with generic templates. High‑complexity prompts exhibited more interaction/state defects, reducing both viability and quality scores. This suggests scaffolding is most mature for CRUD‑centric tasks; richer workflows benefit from additional guardrails and exemplars.
+Prompt complexity correlated with outcomes. Medium-complexity CRUD prompts achieved the highest quality (Q=9–10 typical). Low-complexity UI prompts sometimes became non-viable by failing AB-02 with generic templates. High-complexity prompts exhibited more interaction/state defects, reducing both viability and quality scores. This suggests scaffolding is most mature for CRUD-centric tasks; richer workflows benefit from additional guardrails and exemplars.
 
 ### 7. Summary
 
@@ -323,14 +323,14 @@ The AI agent boom is accelerating, but real industry deployments often fail sile
 While our evaluation focuses on software generation environments, the principles of structured validation and environment scaffolding may generalize to other agent domains. The community-driven adoption (3,000+ applications generated without commercial incentives) suggests genuine utility for researchers and developers exploring agent-environment co-design.
 
 7.3 Conclusion
-Our results demonstrate that raw model capability alone cannot bridge the gap between AI potential and production reality. Through systematic environment scaffolding, multi‑layered validation, and stack‑specific orchestration, app.build transforms probabilistic language models into dependable software engineering agents.
+Our results demonstrate that raw model capability alone cannot bridge the gap between AI potential and production reality. Through systematic environment scaffolding, multi-layered validation, and stack-specific orchestration, app.build transforms probabilistic language models into dependable software engineering agents.
 
-Ablations indicate clear trade‑offs across validation layers: removing unit/handlers tests increases apparent viability but reduces CRUD/view‑edit correctness; removing linting yields small viability/performance gains with modest quality regressions; removing Playwright smoke improves viability and observed quality, likely by eliminating flaky UI checks for scaffolded apps. Together, these results support a pragmatic stance: retain minimal, targeted smoke to guarantee boot and primary flows; keep structural checks (lint) to preserve UI/code consistency; and scope E2E to a "golden path" to avoid false negatives while still catching session/flow breakage.
+Ablations indicate clear trade-offs across validation layers: removing unit/handlers tests increases apparent viability but reduces CRUD/view-edit correctness; removing linting yields small viability/performance gains with modest quality regressions; removing Playwright smoke improves viability and observed quality, likely by eliminating flaky UI checks for scaffolded apps. Together, these results support a pragmatic stance: retain minimal, targeted smoke to guarantee boot and primary flows; keep structural checks (lint) to preserve UI/code consistency; and scope E2E to a "golden path" to avoid false negatives while still catching session/flow breakage.
 
-We conclude that the path to reliable, production‑ready AI agents lies not in better prompts or bigger models, but in principled, scalable environment engineering, with validation layers tuned to maximize developer‑visible value while minimizing brittleness. Full data and scripts are included in the repository for reproducibility (see §6 and linked artifacts).
+We conclude that the path to reliable, production-ready AI agents lies not in better prompts or bigger models, but in principled, scalable environment engineering, with validation layers tuned to maximize developer-visible value while minimizing brittleness. Full data and scripts are included in the repository for reproducibility (see §6 and linked artifacts).
 
 ### Acknowledgments
-This submission is prepared in collaboration between app.build (Databricks - app.build team) and THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO). We thank the app.build community for their contributions and feedback which have been invaluable in shaping this work. Special thanks to Databricks excutive team for supporting the open-source initiative and providing resources for this research.
+This submission is prepared in collaboration between app.build (Databricks - app.build team) and THWS University of Applied Sciences Würzburg-Schweinfurt (CAIRO). We thank the app.build community for their contributions and feedback which have been invaluable in shaping this work. Special thanks to Databricks excutive team for supporting the open-source initiative and providing resources for this research.
 
 ### References (@pratik)
 1. Agentic AI Software Engineers: Programming with Trust. arXiv:2502.13767, 2025.
@@ -401,39 +401,39 @@ The table below enumerates the full prompt set used in the benchmark, with short
 #### A.2 Assessor Checklist (Template)
 Record PASS/FAIL/NA for each prompt and check. Use the Notes column for brief context or defect links.
 
-ID	AB-00 Reset	AB-01 Boot	AB-02 Prompt	AB-03 Create	AB-04 View/Edit	AB‑06 Clickable Sweep	AB‑07 Performance (quick)	Notes	PASS#	WARN#	PTS
+ID	AB-00 Reset	AB-01 Boot	AB-02 Prompt	AB-03 Create	AB-04 View/Edit	AB-06 Clickable Sweep	AB-07 Performance (quick)	Notes	PASS#	WARN#	PTS
 P-001										0	0	0
 
-#### A.3 Assessor Protocol Details (app.build‑specific)
-This appendix section provides atomic, app.build‑specific methods, pass criteria, and reporting rules for each check. Report PASS/FAIL/NA in Table A.2.
+#### A.3 Assessor Protocol Details (app.build-specific)
+This appendix section provides atomic, app.build-specific methods, pass criteria, and reporting rules for each check. Report PASS/FAIL/NA in Table A.2.
 
 - Setup & Reset (≈1 minute)
   - Method: Quit Chrome. Relaunch with incognito mode. If present, run `./scripts/reset_env.sh` from the app `source_code` directory.
-  - Notes: If you see common setup issues (Bind for 0.0.0.0:80 failed: port is already allocated; or The container name "/postgres" is already in use by container), re‑run the reset script once; do not report failure.
+  - Notes: If you see common setup issues (Bind for 0.0.0.0:80 failed: port is already allocated; or The container name "/postgres" is already in use by container), re-run the reset script once; do not report failure.
 
-- AB‑01 Boot & Home
+- AB-01 Boot & Home
   - Method: Navigate to `http://localhost`.
   - Criteria: PASS if page renders and Console shows 0 errors; WARN if page renders with Console errors (attach first error); FAIL if page does not render.
-  - Stop rule: If AB‑01 is FAIL, stop after recording AB‑01 - AB‑02 (smoke set). Mark remaining checks NA.
+  - Stop rule: If AB-01 is FAIL, stop after recording AB-01 - AB-02 (smoke set). Mark remaining checks NA.
 
-- AB‑02 Prompt to app correspondence
+- AB-02 Prompt to app correspondence
   - Method: Navigate to `http://localhost`, find and execute main action.
   - Criteria: PASS if app reflects user prompt; WARN if no way to find and execute primary action in 30s, FAIL if application is generic or template with no correspondence to user prompt.
-  - Stop rule: If AB‑02 is FAIL, stop after recording AB‑01 - AB‑02 (smoke set). Mark remaining checks NA.
+  - Stop rule: If AB-02 is FAIL, stop after recording AB-01 - AB-02 (smoke set). Mark remaining checks NA.
 
-- AB‑03 Create
+- AB-03 Create
   - Method: From the main entity form, fill valid fields; submit.
   - Criteria: PASS if success toast/indicator appears; no Console errors; WARN if errors, NA if no such action; FAIL if action does not work - shows some user error and is not clickable or not updating the page.
 
-- AB‑04 View/Edit
+- AB-04 View/Edit
   - Method: Open detail/edit; change one field; save.
   - Criteria: PASS if success toast/indicator appears; no Console errors; WARN if errors, NA if no such action; FAIL if action does not work - shows some user error and is not clickable or not updating the page or if refresh cleans up the data.
 
-- AB‑06 Clickable Sweep
+- AB-06 Clickable Sweep
   - Method: Systematically click all visible primary clickable elements across main pages (nav links, primary/secondary buttons, list rows, tabs). Avoid clearly destructive actions; if confirmation appears, confirm once.
   - Criteria: PASS -no navigation errors; no 404/5xx on route changes; target routes/components render, WARN if unhandled Console errors or one or two out of 10 minor buttons/elements dont work, FAIL if >30% of elements not clickable or brokens
 
-- AB‑07 Performance (quick)
+- AB-07 Performance (quick)
   - Method: Run Lighthouse once on home (Mobile). Note Performance and Best Practices.
   - Criteria: Record performance score in notes, PASS >75, 30>WARN>75, FAIL<30
 

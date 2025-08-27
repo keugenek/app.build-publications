@@ -1,4 +1,4 @@
-Case,Assignee,AB-01 Boot,AB-02 Prompt,AB-03 Create,AB-04 View/Edit,AB‑06 Clickable Sweep,AB‑07 Performance >75,Notes,PASS#,WARN#,FAIL#,PTS
+Case,Assignee,AB-01 Boot,AB-02 Prompt,AB-03 Create,AB-04 View/Edit,AB-06 Clickable Sweep,AB-07 Performance >75,Notes,PASS#,WARN#,FAIL#,PTS
 basic-inventory-system_trpc-agent_claude_gemini,A1,PASS,PASS,PASS,PASS,PASS,PASS,"Performance: 86, Best Practices: 93",6,0,0,10
 beer-counter-app_trpc-agent_claude_gemini,A1,FAIL,NA,NA,NA,NA,NA,template: under construction,0,0,1,0
 birthday-wish-app_trpc-agent_claude_gemini,A1,WARN,FAIL,NA,NA,NA,PASS,"no animations, no photo gallery, basic app without any css, error on home page: Refused to load the image '<URL>' because it violates the following Content Security Policy directive: ""img-src 'self' data:"".

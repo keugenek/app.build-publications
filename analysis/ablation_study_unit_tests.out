@@ -16,8 +16,8 @@ Table 2: Dimension-Specific Pass Rates and Effect Sizes
             02 Prompt              63.3%              66.7%      +3.3pp                    0.07   1.000
             03 Create              73.3%              66.7%      -6.7pp                    0.15   0.778
          04 View/Edit              60.0%              40.0%     -20.0pp                    0.40   0.197
-AB‑06 Clickable Sweep              66.7%              73.3%      +6.7pp                    0.15   0.778
-    AB‑07 Performance              80.0%              76.7%      -3.3pp                    0.08   1.000
+AB-06 Clickable Sweep              66.7%              73.3%      +6.7pp                    0.15   0.778
+    AB-07 Performance              80.0%              76.7%      -3.3pp                    0.08   1.000
 
 AB-04 View/Edit Distribution:
 With Tests: {'PASS': np.int64(18), 'FAIL': np.int64(1), 'WARN': np.int64(1)}

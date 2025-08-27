@@ -99,8 +99,8 @@ AB_COLUMNS = [
     "AB-02 Prompt",
     "AB-03 Create",
     "AB-04 View/Edit",
-    "AB‑06 Clickable Sweep",
-    "AB‑07 Performance >75",
+    "AB-06 Clickable Sweep",
+    "AB-07 Performance >75",
 ]
 
 def quality_score_row(row: pd.Series, cols: list[str]) -> float | None:
