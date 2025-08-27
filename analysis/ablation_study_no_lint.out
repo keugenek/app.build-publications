@@ -1,0 +1,26 @@
+Dataset loaded: baseline vs no_lint
+Rows: baseline=30, no_lint=30
+Aligned on 30 common cases for fair comparison
+
+=== Viability (critical gates AB-01 & AB-02) ===
+Baseline viability:  73.3% (22/30)
+No Lint viability:  80.0% (24/30)
+Δ Viability:        +6.7 pp
+(chi2=0.093, p=0.7602; provided for reference)
+
+Critical gate fails (counts):
+AB-01 Boot   FAIL: baseline=3  no_lint=2
+AB-02 Prompt FAIL: baseline=5  no_lint=4
+
+=== Aggregate Quality (0-10) ===
+Baseline mean quality: 8.06
+No Lint mean quality: 8.25
+Δ Quality:            +0.19
+
+=== Per-Dimension Pass Rates (Baseline vs No Lint) ===
+AB-01 Boot: Baseline=83.33% (25/30)  NoLint=86.67% (26/30)  Δ=+3.3pp
+AB-02 Prompt: Baseline=70.37% (19/27)  NoLint=71.43% (20/28)  Δ=+1.1pp
+AB-03 Create: Baseline=91.67% (22/24)  NoLint=83.33% (20/24)  Δ=-8.3pp
+AB-04 View/Edit: Baseline=90.00% (18/20)  NoLint=82.35% (14/17)  Δ=-7.6pp
+AB‑06 Clickable Sweep: Baseline=80.00% (20/25)  NoLint=74.07% (20/27)  Δ=-5.9pp
+AB‑07 Performance >75: Baseline=92.31% (24/26)  NoLint=96.43% (27/28)  Δ=+4.1pp
