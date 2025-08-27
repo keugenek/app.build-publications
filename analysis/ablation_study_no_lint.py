@@ -147,3 +147,28 @@ for col in AB_COLUMNS:
         f"NoLint={n_rate*100:.2f}% ({n_pass}/{n_n})  Δ={delta_pp:+.1f}pp"
     )
 
+# %% [markdown]
+# ## 5. PASS/WARN/FAIL Breakdown per Dimension
+
+# %%
+def breakdown_counts(df: pd.DataFrame, col: str) -> tuple[int, int, int, int]:
+    s = df[col].astype(str)
+    total = int(s.isin(["PASS","WARN","FAIL"]).sum())
+    p = int((s == "PASS").sum())
+    w = int((s == "WARN").sum())
+    f = int((s == "FAIL").sum())
+    return total, p, w, f
+
+print("\n=== PASS/WARN/FAIL Breakdown (Baseline vs No Lint) ===")
+for col in AB_COLUMNS:
+    tb, pb, wb, fb = breakdown_counts(base_df, col)
+    tn, pn, wn, fn = breakdown_counts(nl_df, col)
+    def pct(x, t):
+        return (x / t * 100.0) if t else 0.0
+    print(
+        f"{col}:\n"
+        f"  Baseline: PASS {pb}/{tb} ({pct(pb,tb):.1f}%), WARN {wb}/{tb} ({pct(wb,tb):.1f}%), FAIL {fb}/{tb} ({pct(fb,tb):.1f}%)\n"
+        f"  NoLint:   PASS {pn}/{tn} ({pct(pn,tn):.1f}%), WARN {wn}/{tn} ({pct(wn,tn):.1f}%), FAIL {fn}/{tn} ({pct(fn,tn):.1f}%)"
+    )
+
+

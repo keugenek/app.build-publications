@@ -1,0 +1,8 @@
+transition,n
+PASS->PASS,9
+PASS->nan,7
+nan->PASS,4
+PASS->WARN,2
+FAIL->nan,1
+WARN->PASS,1
+nan->WARN,1
