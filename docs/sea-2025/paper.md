@@ -269,9 +269,40 @@ We categorize prompts along a simple rubric and analyze success impacts:
 - Medium complexity: single‑entity CRUD without advanced flows or auth
 - High complexity: multi‑entity workflows, custom logic, or complex UI interactions
 
-Empirically, medium‑complexity CRUD prompts achieve the highest quality (Q=9–10 typical), reflecting strong scaffolding for data models and handlers. Low‑complexity UI prompts are not uniformly "easy": several became non-viable (V=0) by failing prompt correspondence (AB‑02) with generic templates. High‑complexity prompts show lower viability rates due to interaction wiring and state‑consistency issues surfaced by AB‑04/05. This suggests that environment scaffolding is most mature for CRUD‑centric tasks, while additional guardrails and exemplars are needed for multi‑step workflows and rich UI behaviors. todo: However this analysis needs further data to be evaluated.
+Empirically, medium‑complexity CRUD prompts achieve the highest quality (Q=9–10 typical), reflecting strong scaffolding for data models and handlers. Low‑complexity UI prompts are not uniformly "easy": several became non-viable (V=0) by failing prompt correspondence (AB‑02) with generic templates. High‑complexity prompts show lower viability rates due to interaction wiring and state‑consistency issues surfaced by AB‑04/05. This suggests that environment scaffolding is most mature for CRUD‑centric tasks, while additional guardrails and exemplars are needed for multi‑step workflows and rich UI behaviors.
 
-6.6 Analysis of the runs
+#### 6.6 Ablation Studies: Validation Layers (tRPC)
+
+We ran controlled ablations of individual validation layers on the same 30‑prompt cohort to understand their directional impact. We report observed deltas and effect sizes; we avoid binary significance claims. Full artifacts are linked in‑repo.
+
+- **Baseline (reference)**: See human evaluation table and summary in the dataset and analysis notebooks
+  - Data: `analysis/app.build-neurips25 - baseline.csv`, overview in `docs/sea-2025/evaluation_data_analysis.md`
+
+- **No Tests (handlers/unit tests removed)**
+  - **Viability**: 80.0% (+6.7 pp from baseline)
+  - **Quality**: 7.8 (−0.3 vs baseline)
+  - **Major deltas (PASS count over N=30)**: AB‑03 Create −6.7 pp; AB‑04 View/Edit −20.0 pp; AB‑06 Clickable Sweep +6.7 pp
+  - Interpretation: removing backend tests increases apparent viability but reduces CRUD correctness (AB‑03/AB‑04), trading strict checks for coverage gaps in core flows.
+  - Data: `analysis/ablation_study_unit_tests.py` and run log `analysis/ablation_study_unit_tests.out`
+
+- **No Lint (ESLint removed)**
+  - **Viability**: 80.0% (+6.7 pp)
+  - **Quality**: 8.25 (+0.19)
+  - **Major deltas (PASS over 30)**: AB‑03 −6.7 pp; AB‑04 −13.3 pp; AB‑07 +10.0 pp
+  - Interpretation: small uplift in viability and performance (AB‑07) with modest regressions in CRUD/view/edit (AB‑03/AB‑04). Linting appears to support structural/UI consistency even when not reflected strongly in mean quality.
+  - Data: `analysis/ablation_study_no_lint.py`, run log `analysis/ablation_study_no_lint.out`, targeted highlights `analysis/ablation_no_lint_analysis/summary_ab03_ab04.csv`
+
+- **No Playwright (UI smoke/E2E off)**
+  - **Viability**: 90.0% (+16.7 pp)
+  - **Quality**: 8.62 (+0.56)
+  - **Major deltas (PASS over 30)**: AB‑02 Prompt +13.3 pp; AB‑03 +6.7 pp; AB‑04 +6.7 pp; AB‑06 +13.3 pp; AB‑07 +10.0 pp
+  - Interpretation: Removing brittle E2E checks improves prompt correspondence and overall perceived quality. Qualitative probes suggest Playwright smoke can be flaky for these scaffolded apps; core flows often pass even with TypeScript/ESLint issues present.
+  - Data: `analysis/ablation_study_no_playwright.py`, run log `analysis/ablation_no_playwright.out`, AB‑02 case analysis `analysis/ablation_no_playwright_analysis/ablation_no_playwright_ab02_analysis.csv` and joined smoke summaries
+
+Notes on calculation:
+- "Major deltas" use PASS count changes over the fixed cohort (N=30), yielding 3.3 pp granularity. Our scripts also report non‑NA pass‑rate deltas per dimension; both views are included in the run logs.
+
+6.7 Analysis of the runs
 
 Across 30 tRPC runs, automated generation achieved viability in 70% of cases (V=1), with strong quality scores once viability was established. Non-viability concentrated in smoke test failures (boot/prompt) while quality defects clustered in interaction/state issues:
 
@@ -292,7 +323,11 @@ The AI agent boom is accelerating, but real industry deployments often fail sile
 While our evaluation focuses on software generation environments, the principles of structured validation and environment scaffolding may generalize to other agent domains. The community-driven adoption (3,000+ applications generated without commercial incentives) suggests genuine utility for researchers and developers exploring agent-environment co-design.
 
 7.3 Conclusion
-Our results demonstrate that raw model capability alone cannot bridge the gap between AI potential and production reality. Through systematic environment scaffolding, multi-layered validation, and stack-specific orchestration, app.build transforms probabilistic language models into dependable software engineering agents. Ablation studies show that comprehensive validation layers improve success rates by up to X%, with open-weights models achieving X% of closed-model performance when provided structured environments — confirming that thoughtful environment design matters more than model scale. We conclude that the path to reliable, production-ready AI agents lies not in better prompts or bigger models, but in principled, scalable environment engineering.
+Our results demonstrate that raw model capability alone cannot bridge the gap between AI potential and production reality. Through systematic environment scaffolding, multi‑layered validation, and stack‑specific orchestration, app.build transforms probabilistic language models into dependable software engineering agents.
+
+Ablations indicate clear trade‑offs across validation layers: removing unit/handlers tests increases apparent viability but reduces CRUD/view‑edit correctness; removing linting yields small viability/performance gains with modest quality regressions; removing Playwright smoke improves viability and observed quality, likely by eliminating flaky UI checks for scaffolded apps. Together, these results support a pragmatic stance: retain minimal, targeted smoke to guarantee boot and primary flows; keep structural checks (lint) to preserve UI/code consistency; and scope E2E to a "golden path" to avoid false negatives while still catching session/flow breakage.
+
+We conclude that the path to reliable, production‑ready AI agents lies not in better prompts or bigger models, but in principled, scalable environment engineering, with validation layers tuned to maximize developer‑visible value while minimizing brittleness. Full data and scripts are included in the repository for reproducibility (see §6 and linked artifacts).
 
 ### Acknowledgments
 This submission is prepared in collaboration between app.build (Databricks - app.build team) and THWS University of Applied Sciences Würzburg‑Schweinfurt (CAIRO). We thank the app.build community for their contributions and feedback which have been invaluable in shaping this work. Special thanks to Databricks excutive team for supporting the open-source initiative and providing resources for this research.
