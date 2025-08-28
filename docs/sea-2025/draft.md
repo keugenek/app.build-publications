@@ -9,8 +9,7 @@ We present app.build, an open-source framework that improves LLM-based applicati
 ## 1. Introduction
 
 ### 1.1 The Production Reliability Gap
-
-While AI coding agents demonstrate impressive capabilities on standard benchmarks like HumanEval [1] and MBPP [2], relying on them to build production-ready applications without human supervision remains infeasible. Recent repository-level systems such as Devin [3] and SWE-agent [4] represent significant advances, yet their performance on real-world software engineering tasks reveals a substantial gap between research benchmarks and production requirements.
+While AI coding agents demonstrate impressive capabilities on standard benchmarks of isolated tasks like HumanEval [20] and MBPP [21], relying on them to build production-ready applications without human supervision remains infeasible. Recent repository-level systems such as Devin [3] and SWE-agent [4] represent significant advances, yet their performance on real-world software engineering tasks reveals a substantial gap between research benchmarks and production requirements.
 
 This gap manifests across multiple dimensions. Function-level benchmarks like HumanEval evaluate isolated code generation but fail to capture system-level concerns including error handling, integration complexity, and production constraints [5]. Even state-of-the-art systems like AutoCodeRover, achieving 19% efficacy on SWE-bench at $0.43 per issue [6], demonstrate that raw model capability alone is insufficient for reliable automated software development.
 
@@ -39,7 +38,7 @@ Our work contributes to scaling environments for agents through:
 
 The evolution of AI coding agents has progressed from simple code completion to autonomous software engineering systems capable of repository-level modifications. **SWE-bench** [9] established the gold standard for evaluating repository-level understanding with 2,294 real GitHub issues from 12 Python projects. The accompanying **SWE-agent** [4] demonstrated that custom agent-computer interfaces significantly enhance performance, achieving 12.5% pass@1 through careful interface design rather than model improvements.
 
-Repository-level agents have emerged as a distinct research direction. **RepoCoder** [10] introduced iterative retrieval-generation pipelines that improve baseline performance by over 10% through better context integration. **AutoCodeRover** [6] combines LLMs with spectrum-based fault localization, achieving 19% efficacy on SWE-bench at $0.43 per issue. More recently, **Agentless** [11] challenged complex agent architectures with a simple three-phase process (localization, repair, validation) achieving 32% on SWE-bench Lite at $0.70 cost, suggesting that sophisticated architectures may not always improve performance.
+Repository-level agents have emerged as a distinct research direction. **WebArena** [1] revealed that even GPT-4 achieves only 14.41% success versus 78.24% human performance in realistic environments, demonstrating that environment design matters more than model capability. **GAIA** [10] reinforces this with 92% human versus 15% GPT-4 performance on practical tasks. **AutoCodeRover** [6] combines LLMs with spectrum-based fault localization, achieving 19% efficacy on SWE-bench at $0.43 per issue. More recently, **Agentless** [11] challenged complex agent architectures with a simple three-phase process (localization, repair, validation) achieving 32% on SWE-bench Lite at $0.70 cost, suggesting that sophisticated architectures may not always improve performance.
 
 **Multi-agent systems** have consistently outperformed single-agent approaches. **AgentCoder** [12] employs a three-agent architecture (Programmer, Test Designer, Test Executor) achieving 96.3% pass@1 on HumanEval with GPT-4, compared to 71.3% for single-agent approaches. **MapCoder** [13] extends this with four specialized agents replicating human programming cycles, achieving 93.9% pass@1 on HumanEval and 22.0% on the challenging APPS benchmark. **MetaGPT** [14] demonstrates role-based agents communicating through structured documents, achieving 85.9% pass@1 on HumanEval with 100% task completion on software development tasks.
 
@@ -65,7 +64,7 @@ LLM-based code generation enables rapid prototyping but often produces code that
 
 #### 3.2.1 Meta-Components
 
-**BaseActor**: A model-agnostic agent implementing core operations (file I/O, code editing, task completion) through tool calling. Stack-specific extensions augment functionality (e.g., dependency management via `uv add` for Python). The completion mechanism triggers stack-specific validation pipelines.
+**BaseActor**: A model-agnostic agent implementing core operations (file I/O, code editing, task completion) through tool calling. Stack-specific extensions augment functionality (e.g., dependency management via `uv add` for Python). The completion mechanism triggers stack-specific validation pipelines. Following R-tuning principles [17], our system prompts explicitly address parametric knowledge gaps in stack-specific domains, enabling appropriate uncertainty handling rather than hallucinated patterns.
 
 **Tree Search**: General data structure enabling autonomous error recovery through environment feedback. Nodes contain LLM completions, performed actions, and evaluation results from validation checks. When validation fails, agents can backtrack and explore alternative generation paths, learning from environment feedback rather than requiring human intervention. This creates a feedback loop where validation results guide autonomous exploration, representing a step toward fully autonomous coding agents that improve through environmental interaction rather than static prompting.
 
@@ -265,9 +264,9 @@ This submission is prepared in collaboration between app.build (Databricks - app
 
 ## References
 
-[1] Chen, M., et al. (2021). Evaluating Large Language Models Trained on Code. arXiv:2107.03374.
+[1] Zhou, S., et al. (2024). WebArena: A Realistic Web Environment for Building Autonomous Agents. ICLR.
 
-[2] Austin, J., et al. (2021). Program synthesis with large language models. arXiv:2108.07732.
+[2] Merrill, M., et al. (2024). Terminal-Bench: A Benchmark for AI Agents in Terminal Environments.
 
 [3] Cognition Labs. (2024). SWE-bench Technical Report. https://cognition.ai/blog/swe-bench-technical-report
 
@@ -283,7 +282,7 @@ This submission is prepared in collaboration between app.build (Databricks - app
 
 [9] Jimenez, C., et al. (2024). SWE-bench: Can Language Models Resolve Real-World GitHub Issues? arXiv:2310.06770.
 
-[10] Zhang, F., et al. (2023). RepoCoder: Repository-Level Code Completion Through Iterative Retrieval and Generation. arXiv:2303.12570.
+[10] Mialon, G., et al. (2023). GAIA: A Benchmark for General AI Assistants. ICLR.
 
 [11] Xia, C. S., et al. (2024). Agentless: Demystifying LLM-based Software Engineering Agents. arXiv:2407.01489.
 
@@ -300,6 +299,13 @@ This submission is prepared in collaboration between app.build (Databricks - app
 [17] OpenAI. (2025). gpt-oss-120b & gpt-oss-20b Model Card. arXiv:2508.10925.
 
 [18] Babushkin, V. & Kravchenko, A. (2025). Machine Learning System Design with End-to-End Examples. Manning Publications. ISBN: 9781633438750.
+
+[19] Zhang, R., et al. (2023). R-Tuning: Instructing Large Language Models to Say 'I Don't Know'. arXiv:2311.09677.
+
+[20] Chen, M., et al. (2021). Evaluating Large Language Models Trained on Code. arXiv:2107.03374.
+
+[21] Austin, J., et al. (2021). Program synthesis with large language models. arXiv:2108.07732.
+
 
 ## Appendix
 
