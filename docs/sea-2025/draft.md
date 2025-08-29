@@ -104,7 +104,7 @@ We designed three experimental configurations to systematically evaluate factors
 
 ### 4.3 Prompt Dataset
 
-The evaluation dataset comprises 30 prompts designed to assess system performance across diverse application development scenarios. Evaluation prompts were generated through a blind testing protocol involving independent human contributors with no prior exposure to the app.build system architecture. Contributors developed tasks reflecting authentic development workflows from their professional experience. Raw prompts underwent automated post-processing using LLMs to anonymize sensitive information and standardize linguistic structure.
+The evaluation dataset comprises 30 prompts designed to assess system performance across diverse application development scenarios. Evaluation prompts were generated through a blind testing protocol involving independent human contributors with no prior exposure to the app.build system architecture. Contributors developed tasks reflecting authentic development workflows from their professional experience. Generated prompts were subsequently filtered by core developers to exclude items requiring enterprise integrations, significant compute resources for AI/ML, or other capabilities beyond the framework’s scope. Raw prompts underwent automated post-processing using LLMs to anonymize sensitive information and standardize linguistic structure.
 
 ### 4.4 Assessor Protocol and Scoring
 
@@ -266,7 +266,7 @@ This submission is prepared in collaboration between app.build (Databricks - app
 
 [1] Zhou, S., et al. (2024). WebArena: A Realistic Web Environment for Building Autonomous Agents. ICLR.
 
-[2] Merrill, M., et al. (2024). Terminal-Bench: A Benchmark for AI Agents in Terminal Environments.
+[2] Merrill, M., et al. (2024). Terminal-Bench: A Benchmark for AI Agents in Terminal Environments. https://www.tbench.ai/
 
 [3] Cognition Labs. (2024). SWE-bench Technical Report. https://cognition.ai/blog/swe-bench-technical-report
 
