@@ -14,6 +14,7 @@
 \usepackage{xcolor}         % colors
 \usepackage{amsmath}        % mathematical expressions
 \usepackage{graphicx}       % graphics support
+\usepackage{threeparttable} % table notes for self-contained captions
 
 \title{Scaling Environments for Code Generation Agents: A Production Framework for Agentic Prompt-to-App Generation}
 
@@ -47,7 +48,7 @@ We propose \textbf{environment scaffolding} as an environment-first approach com
 
 Our approach operates on three core principles. First, \textbf{structured environment design} provides explicit constraints and contextual information, reducing the generation search space while maintaining flexibility. Second, \textbf{multi-layered validation pipelines} implement deterministic quality gates with stack-specific checks, creating iterative validation cycles that catch errors early. Third, \textbf{model-agnostic architecture} decouples environment scaffolding from LLM choice, enabling consistent quality assurance across different foundation models.
 
-We implement this approach through app.build, an open-source framework featuring multiple one production stack (TypeScript/tRPC) and two beta stacks (Python/NiceGUI and PHP/Laravel) with comprehensive validation pipelines. Our architecture combines BaseActor tool-calling patterns, AST-based anti-pattern detection, and finite state machine orchestration to ensure generated applications meet production standards. While our current implementation focuses on CRUD-oriented web applications, the environment scaffolding approach demonstrates that structured validation pipelines can be adapted to diverse programming paradigms and frameworks with reasonable effort.
+We implement this approach through app.build, an open-source framework featuring one production stack (TypeScript/tRPC) and two beta stacks (Python/NiceGUI and PHP/Laravel) with comprehensive validation pipelines. Our architecture combines BaseActor tool-calling patterns, AST-based anti-pattern detection, and finite state machine orchestration to ensure generated applications meet production standards. While our current implementation focuses on CRUD-oriented web applications, the environment scaffolding approach demonstrates that structured validation pipelines can be adapted to diverse programming paradigms and frameworks with reasonable effort.
 
 \subsection{Contributions}
 
@@ -72,16 +73,16 @@ Repository-level agents have emerged as a distinct research direction. \textbf{W
 
 \subsection{Production Quality in Generated Code}
 
-Ensuring production-ready AI-generated code requires validation approaches beyond simple correctness testing. \textbf{Static analysis integration} has shown promise, with intelligent code analysis agents combining GPT-3/4 with traditional static analysis to reduce false-positive rates from 85\% to 66\%. \textbf{Testing frameworks} have evolved to address AI-specific challenges. Test-driven approaches like TiCoder achieve 45.97\% absolute improvement in pass@1 accuracy through interactive generation. Property-based testing frameworks show 23.1-37.3\% relative improvements over established TDD methods by generating tests that capture semantic properties rather than specific implementations.
+Ensuring production-ready AI-generated code requires validation approaches beyond simple correctness testing. \textbf{Static analysis integration} has shown promise, with intelligent code analysis agents combining GPT-3/4 with traditional static analysis to reduce false-positive rates from 85\% to 66\%. \textbf{Testing frameworks} have evolved to address AI-specific challenges. Test-driven approaches like TiCoder achieve 45.97\% absolute improvement in pass@1 accuracy through interactive generation. Property-based testing frameworks show 23.1--37.3\% relative improvements over established TDD methods by generating tests that capture semantic properties rather than specific implementations.
 
-\textbf{AST-based validation} provides structural correctness guarantees. AST-T5 leverages Abstract Syntax Trees for structure-aware analysis, outperforming CodeT5 by 2-3 points on various tasks. Industry deployment reveals gaps between offline performance and practical usage. CodeAssist collected 2M completions from 1,200+ users over one year, revealing significant discrepancies between benchmark performance and real-world usage patterns.
+\textbf{AST-based validation} provides structural correctness guarantees. AST-T5 leverages Abstract Syntax Trees for structure-aware analysis, outperforming CodeT5 by 2--3 points on various tasks. Industry deployment reveals gaps between offline performance and practical usage. CodeAssist collected 2M completions from 1,200+ users over one year, revealing significant discrepancies between benchmark performance and real-world usage patterns.
 
 \subsection{Tree Search}
 
 Tree search enhances LLM-based solutions and serves as a way to increase compute budget beyond internal model reasoning token budget. The closest approach is used by Li et al. in S* Scaling \citep{li2025s} by combining iterative feedback with parallel branches taking different paths toward solving the problem. Sampling more trajectories increases success rate significantly, which is evident by difference in pass@1 and pass@3 often by 30\% or more.
 
- \subsection{Runtime Isolation and Scaling}
-Sandboxing is cornerstone due to web applications requiring much more elaborate testing than running unit tests. It includes setup and teardown of databases and browser emulation. To run that in parallel for scaling we opted for Dagger.io for its caching capabilities and compatibility with Docker.
+\subsection{Runtime Isolation and Scaling}
+Sandboxing is a cornerstone due to web applications requiring much more elaborate testing than running unit tests. It includes setup and teardown of databases and browser emulation. To run that in parallel for scaling we opted for Dagger.io for its caching capabilities and compatibility with Docker.
 
 \section{Problem Setup and Method}
 
@@ -91,7 +92,7 @@ LLM-based code generation enables rapid prototyping but often produces code that
 
 \subsection{Architecture}
 
-App.build agent consists of common 'meta' components that universal for each stack and stack-specific components. 
+App.build agent consists of common ``meta'' components that are universal for each stack and stack-specific components.
 
 \subsubsection{Meta-Components}
 
@@ -99,13 +100,13 @@ App.build agent consists of common 'meta' components that universal for each sta
 
 \textbf{Tree Search}: General data structure enabling autonomous error recovery through environment feedback. Nodes contain LLM completions, performed actions, and evaluation results from validation checks. When validation fails, agents can backtrack and explore alternative generation paths, learning from environment feedback rather than requiring human intervention. This creates a feedback loop where validation results guide autonomous exploration, representing a step toward fully autonomous coding agents that improve through environmental interaction rather than static prompting.
 
-\textbf{Runtime Infrastructure}: Dagger engine is used to provide isolated sandboxes due to its caching mechanism naturally fitting tree searches since child node will share environment of the parent making backtracking essentially free. On top of its sandbox workspaces we also use dagger to serve dependencies such as databases as well as run playwright tests.
+\textbf{Runtime Infrastructure}: Dagger engine is used to provide isolated sandboxes due to its caching mechanism naturally fitting tree searches since a child node will share the environment of the parent, making backtracking essentially free. On top of its sandbox workspaces we also use Dagger to serve dependencies such as databases as well as run Playwright tests.
 
 \textbf{AST-based Validation}: We employ \texttt{ast-grep} for pattern-based code analysis, identifying common anti-patterns in generated code (e.g., silent failures, improper error propagation) that distinguish superficially correct code from production-ready implementations.
 
 \subsubsection{Stack-Specific Components}
 
-\textbf{Generation Flow}: Each stack implements a finite state machine orchestrating the generation process. The TypeScript/tRPC stack generation follows a sequential pipeline: data models $\rightarrow$ API interfaces $\rightarrow$ backend handlers $\rightarrow$ frontend components. The Python/NiceGUI and PHP/Laravel stacks employ two-phase approach: data models $\rightarrow$ API/UI implementation.
+\textbf{Generation Flow}: Each stack implements a finite state machine orchestrating the generation process. The TypeScript/tRPC stack generation follows a sequential pipeline: data models $\rightarrow$ API interfaces $\rightarrow$ backend handlers $\rightarrow$ frontend components. The Python/NiceGUI and PHP/Laravel stacks employ a two-phase approach: data models $\rightarrow$ API/UI implementation.
 
 \textbf{Templates}: Stack-specific templates provide initial application scaffolding, reducing generation overhead while embedding universal smoke tests and health checks into the validation pipeline.
 
@@ -113,19 +114,20 @@ App.build agent consists of common 'meta' components that universal for each sta
 
 \section{Experimental Setup}
 
-In order to support claims in this paper and validate specific design decisions for supported stacks, we designed a set of experiments based on specially created prompt dataset, metrics designed to evaluate viability and quality of generated applications.
+In order to support claims in this paper and validate specific design decisions for supported stacks, we designed a set of experiments based on a specially created prompt dataset and metrics designed to evaluate viability and quality of generated applications.
 
 \subsection{Evaluation Framework}
 
 \subsection{Prompt Dataset}
+\label{sec:prompt-dataset-desc}
 
-The evaluation dataset comprises 30 prompts designed to assess system performance across diverse application development scenarios. Evaluation prompts were created involving independent human contributors with no prior exposure to the app.build system architecture. Contributors developed tasks reflecting authentic development workflows from their professional experience. That prompts were subsequently filtered to exclude items requiring enterprise integrations, significant compute resources for AI/ML, or other capabilities beyond the framework's scope. Raw prompts underwent automated post-processing using LLMs to anonymize sensitive information and standardize linguistic structure.
-The resulting dataset constsis of 30 prompts spanning a complexity spectrum (low: static/single-page UI; medium: single-entity CRUD; high: multi-entity/custom logic).
-See the full list of prompts in \ref{Prompt Dataset (Full List)}
+The evaluation dataset comprises 30 prompts designed to assess system performance across diverse application development scenarios. Evaluation prompts were created involving independent human contributors with no prior exposure to the app.build system architecture. Contributors developed tasks reflecting authentic development workflows from their professional experience. The prompts were subsequently filtered to exclude items requiring enterprise integrations, significant compute resources for AI/ML, or other capabilities beyond the framework's scope. Raw prompts underwent automated post-processing using LLMs to anonymize sensitive information and standardize linguistic structure.
+The resulting dataset consists of 30 prompts spanning a complexity spectrum (low: static/single-page UI; medium: single-entity CRUD; high: multi-entity/custom logic).
+See the full list of prompts in Appendix~\ref{sec:prompt-dataset}.
 
 \subsection{Metrics}
 
-Each application generated by the agent was evaluated by the following metrics, designed to assess its viability and quality under time and cost constraints preset. 
+Each application generated by the agent was evaluated by the following metrics, designed to assess its viability and quality under preset time and cost constraints.
 
 \begin{itemize}
 \item Viability rate ($V=1$) and non-viability rate ($V=0$)
@@ -144,7 +146,6 @@ We designed three experimental configurations to systematically evaluate factors
 \textbf{Configuration 2: Model Architecture Analysis}. Using the tRPC stack, we evaluated open versus closed foundation models. Claude Sonnet 4 served as the baseline coding model, compared against Qwen3-Coder-480B-A35B \citep{qwen2025qwen3} and GPT OSS 120B \citep{openai2025gpt} as open alternatives.
 
 \textbf{Configuration 3: Testing Framework Ablation}. We conducted three ablation studies on the tRPC stack isolating the impact of each type of checks by turning them off independently: (3a) disabled isolated Playwright UI smoke tests; (3b) disabled ESLint checks; and (3c) removed handlers tests, eliminating backend validation.
-
 
 \subsection{Assessor Protocol and Scoring}
 \label{sec:scoring}
@@ -173,21 +174,26 @@ where $A$ is the set of applicable checks (excluding NA); all checks use equal w
 \end{itemize}
 
 \begin{table}[t]
-\caption{Check Weights (Equal Share)}
+\caption{Check weights and definitions used in scoring (see rubric in Section~\ref{sec:scoring}). All checks share equal weight after NA re-normalization; AB-01 and AB-02 are hard gates for Viability $V$.}
 \label{tab:check-weights}
 \centering
+\begin{threeparttable}
 \begin{tabular}{llcl}
 \toprule
 Check ID & Check Description & Weight (share) & Notes \\
 \midrule
 AB-01 & Boot \& Home & 1/6 & Hard gate for Viability $V$ \\
 AB-02 & Prompt Correspondence & 1/6 & Hard gate for Viability $V$ \\
-AB-03 & Create Functionality & 1/6 & \\
-AB-04 & View/Edit Operations & 1/6 & \\
-AB-06 & Clickable Sweep & 1/6 & \\
-AB-07 & Performance Metrics & 1/6 & Continuous (normalized) \\
+AB-03 & Create Functionality & 1/6 &  \\
+AB-04 & View/Edit Operations & 1/6 &  \\
+AB-06 & Clickable Sweep & 1/6 &  \\
+AB-07 & Performance Metrics & 1/6 & Continuous; normalized to $[0,1]$ \\
 \bottomrule
 \end{tabular}
+\begin{tablenotes}
+\item \textit{Note.} See mapping of PASS/WARN/FAIL to numeric scores and viability definition in Section~\ref{sec:scoring}.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
 \section{Results}
@@ -197,9 +203,10 @@ AB-07 & Performance Metrics & 1/6 & Continuous (normalized) \\
 Evaluating 30 TypeScript/tRPC applications, we observe that 70.0\% (21/30) achieved viability ($V=1$), with 30.0\% attaining perfect quality ($Q=10$) and 30.0\% non-viable ($V=0$). Once viability criteria are met, generated applications exhibit consistently high quality.
 
 \begin{table}[t]
-\caption{Aggregated Evaluation Results (tRPC)}
+\caption{Aggregated evaluation results for TypeScript/tRPC ($n=30$ prompts). Viability $V$ and quality $Q$ are defined in Section~\ref{sec:scoring}. ``Perfect quality'' denotes $Q=10$ (all applicable checks PASS). ``Non-viable'' denotes $V=0$ (AB-01 or AB-02 = FAIL). Mean quality is computed over viable apps only ($V=1$).}
 \label{tab:aggregated-results}
 \centering
+\begin{threeparttable}
 \begin{tabular}{llc}
 \toprule
 Metric & Value & Key Insight \\
@@ -208,15 +215,20 @@ Total Applications & 30 & TypeScript/tRPC stack only \\
 Viability Rate ($V=1$) & 70.0\% & 21/30 viable applications \\
 Perfect Quality ($Q=10$) & 30.0\% & 9/30 fully compliant applications \\
 Non-viable ($V=0$) & 30.0\% & 9/30 failed smoke tests \\
-Mean Quality ($V=1$ apps) & $\approx 8.78$ & High quality when viable \\
+Mean Quality ($V=1$ apps) & 8.78 & High quality when viable \\
 \bottomrule
 \end{tabular}
+\begin{tablenotes}
+\item \textit{Note.} Scoring rubric and check definitions in Section~\ref{sec:scoring}.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
 \begin{table}[t]
-\caption{Check-Specific Pass Rates (tRPC)}
+\caption{Check-specific outcomes across $n=30$ TypeScript/tRPC tasks. See Section~\ref{sec:scoring} for check definitions, PASS/WARN/FAIL grading, and the viability rule. NA indicates the check was not applicable to a prompt (e.g., AB-04 when no view/edit flows are required). ``Pass Rate (excl. NA)'' is computed over applicable cases only.}
 \label{tab:check-pass-rates}
 \centering
+\begin{threeparttable}
 \begin{tabular}{lccccc}
 \toprule
 Check & Pass & Warn & Fail & NA & Pass Rate (excl. NA) \\
@@ -229,6 +241,10 @@ AB-06 (Clickable Sweep) & 20 & 4 & 1 & 5 & 80.0\% \\
 AB-07 (Performance) & 23 & 3 & 0 & 4 & 88.5\% \\
 \bottomrule
 \end{tabular}
+\begin{tablenotes}
+\item \textit{Note.} AB-07 is a continuous metric normalized to $[0,1]$; thresholding for PASS/WARN/FAIL is specified in Section~\ref{sec:scoring}.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
 Smoke tests (AB-01, AB-02) determine viability. Among viable applications ($V=1$, $n=21$), quality averaged 8.78 with 77.3\% achieving $Q \geq 9$. Non-viability ($V=0$) arises from smoke test failures or missing artifacts.
@@ -312,6 +328,7 @@ Observed failure modes in tRPC runs cluster into categories:
 These defects align with our layered pipeline design: early gates catch non-viable builds, while later gates expose interaction/state issues before human evaluation.
 
 \subsection{Prompt Complexity and Success Rate}
+\label{sec:prompt-complexity}
 
 We categorize prompts along a simple rubric and analyze success impacts:
 
@@ -397,9 +414,10 @@ This submission is prepared in collaboration between app.build (Databricks - app
 \appendix
 
 \section{Prompt Dataset (Full List)}
+\label{sec:prompt-dataset}
 
 \begin{table}[h]
-\caption{Complete Prompt Dataset}
+\caption{Complete prompt dataset used in evaluation ($n=30$). Dataset construction details in Section~\ref{sec:prompt-dataset-desc}. Complexity labels follow the rubric in Section~\ref{sec:prompt-complexity}: \emph{Low} (static/single-page UI), \emph{Medium} (single-entity CRUD), \emph{High} (multi-entity/custom logic).}
 \label{tab:prompt-dataset}
 \centering
 \scriptsize
