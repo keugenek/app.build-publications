@@ -14,6 +14,7 @@
 \usepackage{xcolor}         % colors
 \usepackage{amsmath}        % mathematical expressions
 \usepackage{graphicx}       % graphics support
+\usepackage{svg}            % include SVG figures (requires --shell-escape)
 \usepackage{threeparttable} % table notes for self-contained captions
 
 
@@ -59,22 +60,13 @@ The core challenge lies in treating LLMs as standalone systems rather than compo
 \paragraph{Why ES vs.\ model-centric approaches?}
 Traditional (model-centric) systems prompt an LLM to generate the full solution in one or few passes, with checks (if any) at the end. ES, in contrast, enforces a guarded, iterative loop: generate $\rightarrow$ validate $\rightarrow$ repair, per sub-task. Figure~\ref{fig:es-vs-model} and Table~\ref{tab:es-contrast} summarize the contrast.
 
-\begin{table}[t]
+\begin{figure}[t]
   \centering
-  \small
-  \begin{threeparttable}
-  \caption{\textbf{Environment Scaffolding vs.\ Model-Centric Comparison.}}
+  \includesvg[width=\linewidth]{diagrams/fig1}
+  \vspace{-0.5em}
+  \caption{\textbf{Environment scaffolding vs.\ model-centric generation.} ES wraps the model with a finite, validated workflow that catches errors early and repairs them before proceeding.}
   \label{fig:es-vs-model}
-  \begin{tabular}{@{}p{3.2cm}p{5.6cm}p{5.6cm}@{}}
-  \toprule
-  \textbf{Aspect} & \textbf{Model-Centric} & \textbf{Environment Scaffolding (Ours)} \\
-  \midrule
-  Task structure & One-shot or loosely staged prompting; little global control & Explicit multi-stage plan (FSM); scoped sub-tasks with shared context \\
-  Validation & Minimal/late checks (often only end-to-end) & Early, layered checks per step (lint, type, unit/smoke tests) \\
-  \bottomrule
-  \end{tabular}
-  \end{threeparttable}
-\end{table}
+\end{figure}
 
 \begin{table}[t]
 \centering
@@ -152,7 +144,7 @@ LLM-based code generation enables rapid prototyping but often produces code that
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{diagrams/appbuild-arch.png}
+  \includesvg[width=\linewidth]{diagrams/fig2}
   \vspace{-0.5em}
   \caption{\textbf{app.build architecture} expressed through environment scaffolding. The orchestrator plans stages per stack; each sub-task runs in a sandbox, is validated, and only then merged. CI/CD and DB provisioning are integrated.}
   \label{fig:appbuild-arch}
