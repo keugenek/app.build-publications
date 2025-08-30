@@ -31,7 +31,7 @@
 \maketitle
 
 \begin{abstract}
-We present app.build, an open-source framework that improves LLM-based application generation through systematic validation and structured environments. Our approach combines multi-layered validation pipelines, stack-specific orchestration, and model-agnostic architecture, implemented across three reference stacks. Through evaluation on 30 generation tasks, we demonstrate that comprehensive validation achieves 70\% viability rate with 30\% reaching perfect quality scores, while open-weights models achieve 80.8\% of closed-model performance when provided structured environments. The open-source framework (available at \url{https://github.com/appdotbuild/agent}) has been adopted by the community, with over 3,000 applications generated to date. This work demonstrates that scaling reliable AI agents requires scaling environments, not just models---providing empirical insights and complete reference implementations for production-oriented agent systems.
+We present app.build, an open-source framework that improves LLM-based application generation through systematic validation and structured environments. Our approach combines multi-layered validation pipelines, stack-specific orchestration, and model-agnostic architecture, implemented across three reference stacks. Through evaluation on 30 generation tasks, we demonstrate that comprehensive validation achieves 73.3\% viability rate with 30\% reaching perfect quality scores, while open-weights models achieve 80.8\% of closed-model performance when provided structured environments. The open-source framework has been adopted by the community, with over 3,000 applications generated to date. This work demonstrates that scaling reliable AI agents requires scaling environments, not just models---providing empirical insights and complete reference implementations for production-oriented agent systems.
 \end{abstract}
 
 \section{Introduction}
@@ -242,7 +242,7 @@ AB-07 & Performance Metrics & 1/6 & Continuous; normalized to $[0,1]$ \\
 
 \subsection{Environment Scaffolding Impact (TypeScript/tRPC only)}
 
-Evaluating 30 TypeScript/tRPC applications, we observe that 70.0\% (21/30) achieved viability ($V=1$), with 30.0\% attaining perfect quality ($Q=10$) and 30.0\% non-viable ($V=0$). Once viability criteria are met, generated applications exhibit consistently high quality.
+Evaluating 30 TypeScript/tRPC applications, we observe that 73.3\% (22/30) achieved viability ($V=1$), with 30.0\% attaining perfect quality ($Q=10$) and 26.7\% non-viable ($V=0$). Once viability criteria are met, generated applications exhibit consistently high quality.
 
 \begin{table}[t]
 \caption{Aggregated evaluation results for TypeScript/tRPC ($n=30$ prompts). Viability $V$ and quality $Q$ are defined in Section~\ref{sec:scoring}. ``Perfect quality'' denotes $Q=10$ (all applicable checks PASS). ``Non-viable'' denotes $V=0$ (AB-01 or AB-02 = FAIL). Mean quality is computed over viable apps only ($V=1$).}
@@ -254,9 +254,9 @@ Evaluating 30 TypeScript/tRPC applications, we observe that 70.0\% (21/30) achie
 Metric & Value & Key Insight \\
 \midrule
 Total Applications & 30 & TypeScript/tRPC stack only \\
-Viability Rate ($V=1$) & 70.0\% & 21/30 viable applications \\
+Viability Rate ($V=1$) & 73.3\% & 22/30 viable applications \\
 Perfect Quality ($Q=10$) & 30.0\% & 9/30 fully compliant applications \\
-Non-viable ($V=0$) & 30.0\% & 9/30 failed smoke tests \\
+Non-viable ($V=0$) & 26.7\% & 8/30 failed smoke tests \\
 Mean Quality ($V=1$ apps) & 8.78 & High quality when viable \\
 \bottomrule
 \end{tabular}
