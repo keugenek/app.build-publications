@@ -59,13 +59,22 @@ The core challenge lies in treating LLMs as standalone systems rather than compo
 \paragraph{Why ES vs.\ model-centric approaches?}
 Traditional (model-centric) systems prompt an LLM to generate the full solution in one or few passes, with checks (if any) at the end. ES, in contrast, enforces a guarded, iterative loop: generate $\rightarrow$ validate $\rightarrow$ repair, per sub-task. Figure~\ref{fig:es-vs-model} and Table~\ref{tab:es-contrast} summarize the contrast.
 
-\begin{figure}[t]
+\begin{table}[t]
   \centering
-  \includegraphics[width=\linewidth]{diagrams/es-vs-model.png}
-  \vspace{-0.5em}
-  \caption{\textbf{Environment scaffolding vs.\ model-centric generation.} ES wraps the model with a finite, validated workflow that catches errors early and repairs them before proceeding.}
+  \small
+  \begin{threeparttable}
+  \caption{\textbf{Environment Scaffolding vs.\ Model-Centric Comparison.}}
   \label{fig:es-vs-model}
-\end{figure}
+  \begin{tabular}{@{}p{3.2cm}p{5.6cm}p{5.6cm}@{}}
+  \toprule
+  \textbf{Aspect} & \textbf{Model-Centric} & \textbf{Environment Scaffolding (Ours)} \\
+  \midrule
+  Task structure & One-shot or loosely staged prompting; little global control & Explicit multi-stage plan (FSM); scoped sub-tasks with shared context \\
+  Validation & Minimal/late checks (often only end-to-end) & Early, layered checks per step (lint, type, unit/smoke tests) \\
+  \bottomrule
+  \end{tabular}
+  \end{threeparttable}
+\end{table}
 
 \begin{table}[t]
 \centering
