@@ -138,10 +138,6 @@ Sandboxing is a cornerstone due to web applications requiring much more elaborat
 
 LLM-based code generation enables rapid prototyping but often produces code that does not meet production standards. We formalize this as an environment design problem where success depends not just on model capability but on the structured constraints and validation feedback provided by the generation environment.
 
-\subsection{Architecture}
-
-\textbf{High-level design.} The app.build agent implements ES with a central \emph{orchestrator} that decomposes a user's specification into stack-specific stages and executes each stage inside an isolated sandbox with validation before acceptance. The same workflow applies across supported stacks (TypeScript/tRPC, PHP/Laravel, Python/NiceGUI). Per-stage validators are stack-aware (e.g., ESLint+TypeScript and Playwright for tRPC; PHPStan and feature/architecture tests for Laravel; \texttt{pytest}/\texttt{ruff}/\texttt{pyright} for Python data apps), and the platform provisions a managed Postgres database and CI/CD hooks for each generated project.
-
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{diagrams/appbuild-arch.png}
@@ -149,6 +145,10 @@ LLM-based code generation enables rapid prototyping but often produces code that
   \caption{\textbf{app.build architecture} expressed through environment scaffolding. The orchestrator plans stages per stack; each sub-task runs in a sandbox, is validated, and only then merged. CI/CD and DB provisioning are integrated.}
   \label{fig:appbuild-arch}
 \end{figure}
+
+\subsection{Architecture}
+
+\textbf{High-level design.} The app.build agent implements ES with a central \emph{orchestrator} that decomposes a user's specification into stack-specific stages and executes each stage inside an isolated sandbox with validation before acceptance. The same workflow applies across supported stacks (TypeScript/tRPC, PHP/Laravel, Python/NiceGUI). Per-stage validators are stack-aware (e.g., ESLint+TypeScript and Playwright for tRPC; PHPStan and feature/architecture tests for Laravel; \texttt{pytest}/\texttt{ruff}/\texttt{pyright} for Python data apps), and the platform provisions a managed Postgres database and CI/CD hooks for each generated project.
 
 \textbf{Execution loop.} For each sub-task, the agent (i) assembles minimal context (files, interfaces, constraints), (ii) prompts the LLM, (iii) executes the result in a sandbox, (iv) collects validator feedback, and (v) either accepts the artifact or re-prompts to repair. This iterative loop provides robustness without assuming a particular model, and scales by parallelizing sandboxes and caching environment layers.
 
