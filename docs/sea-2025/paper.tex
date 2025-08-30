@@ -14,7 +14,7 @@
 \usepackage{xcolor}         % colors
 \usepackage{amsmath}        % mathematical expressions
 \usepackage{graphicx}       % graphics support
-\usepackage{svg}            % include SVG figures (requires --shell-escape)
+
 \usepackage{threeparttable} % table notes for self-contained captions
 
 
@@ -62,7 +62,7 @@ Traditional (model-centric) systems prompt an LLM to generate the full solution 
 
 \begin{figure}[t]
   \centering
-  \includesvg[width=\linewidth]{diagrams/fig1}
+  \includegraphics[width=\linewidth]{diagrams/es-vs-model.png}
   \vspace{-0.5em}
   \caption{\textbf{Environment scaffolding vs.\ model-centric generation.} ES wraps the model with a finite, validated workflow that catches errors early and repairs them before proceeding.}
   \label{fig:es-vs-model}
@@ -144,7 +144,7 @@ LLM-based code generation enables rapid prototyping but often produces code that
 
 \begin{figure}[t]
   \centering
-  \includesvg[width=\linewidth]{diagrams/fig2}
+  \includegraphics[width=\linewidth]{diagrams/appbuild-arch.png}
   \vspace{-0.5em}
   \caption{\textbf{app.build architecture} expressed through environment scaffolding. The orchestrator plans stages per stack; each sub-task runs in a sandbox, is validated, and only then merged. CI/CD and DB provisioning are integrated.}
   \label{fig:appbuild-arch}
