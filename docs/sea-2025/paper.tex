@@ -33,6 +33,7 @@ We present app.build, an open-source framework that improves LLM-based applicati
 \end{abstract}
 
 \section{Introduction}
+\label{sec:intro}
 
 \subsection{The Production Reliability Gap}
 
@@ -62,6 +63,7 @@ Our work contributes to scaling environments for agents through:
 \end{itemize}
 
 \section{Background and Related Work}
+\label{sec:related}
 
 \subsection{Agentic Software Engineering}
 
@@ -85,6 +87,7 @@ Tree search enhances LLM-based solutions and serves as a way to increase compute
 Sandboxing is a cornerstone due to web applications requiring much more elaborate testing than running unit tests. It includes setup and teardown of databases and browser emulation. To run that in parallel for scaling we opted for Dagger.io for its caching capabilities and compatibility with Docker.
 
 \section{Problem Setup and Method}
+\label{sec:method}
 
 \subsection{Problem Formulation}
 
@@ -113,6 +116,7 @@ App.build agent consists of common ``meta'' components that are universal for ea
 \textbf{Validation Pipeline}: Stack-specific validation implements hierarchical checks ordered by computational cost and diagnostic value. Compilation verification precedes integration testing; static analysis gates dynamic testing. This design minimizes computational overhead while maximizing error detection coverage.
 
 \section{Experimental Setup}
+\label{sec:experimental-setup}
 
 In order to support claims in this paper and validate specific design decisions for supported stacks, we designed a set of experiments based on a specially created prompt dataset and metrics designed to evaluate viability and quality of generated applications.
 
@@ -197,6 +201,7 @@ AB-07 & Performance Metrics & 1/6 & Continuous; normalized to $[0,1]$ \\
 \end{table}
 
 \section{Results}
+\label{sec:results}
 
 \subsection{Environment Scaffolding Impact (TypeScript/tRPC only)}
 
@@ -341,16 +346,20 @@ We categorize prompts along a simple rubric and analyze success impacts:
 Empirically, medium-complexity CRUD prompts achieve the highest quality ($Q=9$--10 typical), reflecting strong scaffolding for data models and handlers. Low-complexity UI prompts are not uniformly ``easy'': several became non-viable ($V=0$) by failing prompt correspondence (AB-02) with generic templates. High-complexity prompts show lower viability rates due to interaction wiring and state-consistency issues surfaced by AB-04/AB-06.
 
 \section{Discussion}
+\label{sec:discussion}
 
 \subsection{Limitations}
+\label{sec:limitations}
 
 Our current framework is limited to CRUD-oriented data applications, focusing on structured workflows with well-defined input-output expectations. While effective for common web application patterns, it does not yet support complex systems or advanced integrations. The validation pipeline, though comprehensive, relies on domain-specific heuristics and expert-defined anti-patterns, which may not generalize to novel or edge-case designs. Additionally, our human evaluation protocol, while rigorous, is poorly scalable and constrained by subjectivity in assessing maintainability and user experience nuances.
 
 \subsection{Broader Impact}
+\label{sec:broader-impact}
 
 The AI agent boom is accelerating, but real industry deployments often fail silently. Without environment scaffolding, we risk massive overengineering of AI models while ignoring the real bottleneck. App.build represents a shift from model-centric to system-centric AI engineering--a critical step toward scaling reliable agent environments. As emphasized in Machine Learning System Design with End-to-End Examples \citep{babushkin2025machine}, production AI systems only become effective when development integrates not just model performance, but core software engineering principles. By open-sourcing both the framework and evaluation protocol, we provide a reproducible, transparent foundation for building and benchmarking agent environments at scale.
 
 \section{Conclusion}
+\label{sec:conclusion}
 
 Our results demonstrate that raw model capability alone cannot bridge the gap between AI potential and production reality. Through systematic environment scaffolding, multi-layered validation, and stack-specific orchestration, app.build transforms probabilistic language models into dependable software engineering agents.
 
@@ -485,7 +494,7 @@ The checklist answers are an integral part of your paper submission. They are vi
 \item {\bf Limitations}
     \item[] Question: Does the paper discuss the limitations of the work performed by the authors?
     \item[] Answer: \textbf{Yes}
-    \item[] Justification: Section 6.1 explicitly discusses limitations including restriction to CRUD applications, reliance on domain-specific heuristics, and scalability challenges of human evaluation.
+    \item[] Justification: Section~\ref{sec:limitations} explicitly discusses limitations including restriction to CRUD applications, reliance on domain-specific heuristics, and scalability challenges of human evaluation.
 
 \item {\bf Theory Assumptions and Proofs}
     \item[] Question: For each theoretical result, does the paper provide the full set of assumptions and a complete (and correct) proof?
@@ -500,12 +509,12 @@ The checklist answers are an integral part of your paper submission. They are vi
 \item {\bf Open access to data and code}
     \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
     \item[] Answer: \textbf{Yes}
-    \item[] Justification: The app.build framework is open-source, and we provide the complete evaluation dataset and protocols in the appendix.
+    \item[] Justification: The app.build framework is open-source, and we provide the complete evaluation dataset and protocols in Appendix~\ref{sec:prompt-dataset}.
 
 \item {\bf Experimental Setting/Details}
     \item[] Question: Does the paper specify all the training and test details (e.g., data splits, hyperparameters, how they were chosen, type of optimizer, etc.) necessary to understand the results?
     \item[] Answer: \textbf{Yes}
-    \item[] Justification: Section 4 provides comprehensive experimental setup including configurations, model choices, evaluation metrics, and detailed scoring protocols.
+    \item[] Justification: Section~\ref{sec:experimental-setup} provides comprehensive experimental setup including configurations, model choices, evaluation metrics, and detailed scoring protocols.
 
 \item {\bf Experiment Statistical Significance}
     \item[] Question: Does the paper report error bars suitably and correctly defined or other appropriate information about the statistical significance of the experiments?
@@ -525,7 +534,7 @@ The checklist answers are an integral part of your paper submission. They are vi
 \item {\bf Broader Impacts}
     \item[] Question: Does the paper discuss both potential positive societal impacts and negative societal impacts of the work performed?
     \item[] Answer: \textbf{Yes}
-    \item[] Justification: Section 6.2 discusses the broader impact of shifting from model-centric to environment-centric AI engineering and the importance of production-ready agent systems.
+    \item[] Justification: Section~\ref{sec:broader-impact} discusses the broader impact of shifting from model-centric to environment-centric AI engineering and the importance of production-ready agent systems.
 
 \item {\bf Safeguards}
     \item[] Question: Does the paper describe safeguards that have been put in place for responsible release of data or models that have a high risk for misuse?
