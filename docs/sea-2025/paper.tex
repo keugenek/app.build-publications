@@ -15,7 +15,7 @@
 \usepackage{amsmath}        % mathematical expressions
 \usepackage{graphicx}       % graphics support
 \usepackage{threeparttable} % table notes for self-contained captions
-\usepackage{plantuml}
+
 
 \title{Scaling Environments for Code Generation Agents: A Production Framework for Agentic Prompt-to-App Generation}
 
@@ -61,42 +61,7 @@ Traditional (model-centric) systems prompt an LLM to generate the full solution 
 
 \begin{figure}[t]
   \centering
-  \begin{plantuml}
-@startuml
-left to right direction
-skinparam componentStyle rectangle
-skinparam shadowing false
-
-package "Model-Centric" {
-  actor "User" as U1
-  component "LLM" as L1
-  component "Code (unchecked)" as C1
-  U1 -> L1 : Prompt
-  L1 --> C1 : One-shot output
-  note bottom of C1
-    Minimal validation, late failure
-  end note
-}
-
-package "Environment Scaffolding" {
-  actor "User" as U2
-  component "FSM Orchestrator" as FSM
-  component "LLM" as L2
-  component "Sandbox" as SB
-  component "Validation Pipeline" as VAL
-  component "Incremental Artifacts" as OUT
-  U2 -> FSM : Spec / intent
-  FSM -> L2 : Structured sub-task
-  L2 --> SB : Candidate code
-  SB --> VAL : Run \& observe
-  VAL --> L2 : Errors / metrics
-  L2 --> OUT : Revised code (accepted)
-  note bottom of VAL
-    Linters, type checks,\nunit/smoke tests, logs
-  end note
-}
-@enduml
-  \end{plantuml}
+  \includegraphics[width=\linewidth]{diagrams/es-vs-model.png}
   \vspace{-0.5em}
   \caption{\textbf{Environment scaffolding vs.\ model-centric generation.} ES wraps the model with a finite, validated workflow that catches errors early and repairs them before proceeding.}
   \label{fig:es-vs-model}
@@ -178,50 +143,7 @@ LLM-based code generation enables rapid prototyping but often produces code that
 
 \begin{figure}[t]
   \centering
-  \begin{plantuml}
-@startuml
-skinparam componentStyle rectangle
-skinparam shadowing false
-left to right direction
-
-actor "User" as User
-cloud "LLM Backend(s)\n(pluggable)" as LLM
-
-package "app.build Agent (ES)" as AG {
-  component "Orchestrator (FSM)" as ORCH
-  component "Task Runner\n(Generate→Validate→Repair)" as LOOP
-  component "Sandbox Manager\n(containers)" as SBX
-  component "Validators Hub" as VAL
-
-  package "Stack Adapters" as ADP {
-    component "tRPC Adapter\n(Bun/Fastify/Drizzle)" as TRPC
-    component "Laravel Adapter\n(PHP 8+/Inertia)" as LAR
-    component "Python Data Adapter\n(NiceGUI/SQLModel)" as PYA
-  }
-}
-
-database "Neon Postgres\n(provisioned)" as DB
-folder "GitHub Repo\n+ CI/CD & Deploy" as GH
-
-User --> ORCH : App spec / intent
-ORCH --> ADP : Select stack \n& stage plan
-ORCH --> LOOP : Issue sub-task
-LOOP --> LLM : Prompt with context
-LLM --> LOOP : Candidate code
-LOOP --> SBX : Run in isolated env
-SBX --> VAL : Lint / typecheck / tests
-VAL --> LOOP : Errors / logs / metrics
-LOOP --> ADP : Accepted artifacts
-ADP --> GH : Commit/PR \n (CI runs)
-ADP --> DB : Schema/migrations
-note right of VAL
-  \nPer-stack examples:
-  - tRPC: ESLint, TypeScript,\n  Playwright smoke tests
-  - Laravel: PHPStan,\n  feature/architecture tests
-  - Python: pytest, ruff, pyright
-end note
-@enduml
-  \end{plantuml}
+  \includegraphics[width=\linewidth]{diagrams/appbuild-arch.png}
   \vspace{-0.5em}
   \caption{\textbf{app.build architecture} expressed through environment scaffolding. The orchestrator plans stages per stack; each sub-task runs in a sandbox, is validated, and only then merged. CI/CD and DB provisioning are integrated.}
   \label{fig:appbuild-arch}
