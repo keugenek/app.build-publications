@@ -10,7 +10,6 @@
 *.fdb_latexmk
 *.fls
 *.xdv
-*.pdf
 
 # editor
 .DS_Store
