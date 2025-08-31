@@ -43,11 +43,11 @@ While AI coding agents demonstrate impressive capabilities on standard benchmark
 
 This gap manifests across multiple dimensions. Function-level benchmarks like HumanEval evaluate isolated code generation but fail to capture system-level concerns including error handling, integration complexity, and production constraints \citep{liu2023your}. Even state-of-the-art systems like AutoCodeRover, achieving 19\% efficacy on SWE-bench at \$0.43 per issue \citep{zhang2024autocoder}, demonstrate that raw model capability alone is insufficient for reliable automated software development.
 
-The core challenge lies in treating LLMs as standalone systems rather than components requiring structured environments. Current approaches predominantly focus on making models ``smarter'' via either training or prompt engineering, but this paradigm fails to address fundamental reliability issues inherent in probabilistic generation. As noted in recent comprehensive surveys \citep{jiang2024survey,paul2024benchmarks}, the field requires a shift in perspective from model-centric to environment-centric design.
+The core challenge lies in treating LLMs as standalone systems rather than components requiring structured environments. Current approaches predominantly focus on making models ``smarter'' via either training or prompt engineering, but this paradigm fails to address fundamental reliability issues inherent in probabilistic generation. Recent surveys \citep{jiang2024survey,paul2024benchmarks} note the field requires a shift from model-centric to environment-centric design.
 
 \subsection{Our Approach: Environment Scaffolding}
 
-\textbf{Definition.} We define \emph{environment scaffolding (ES)} as an \textbf{environment-first} paradigm for LLM-based code generation where the model operates inside a structured sandbox that constrains actions and provides continuous, deterministic feedback. Rather than relying on larger models or prompt-only techniques, ES \emph{improves the context} around the model --- shaping the action space, pre-providing templates and tools, and validating each step --- so that creativity is channeled into \emph{safe, verifiable} outcomes.
+\textbf{Definition.} We define \emph{environment scaffolding (ES)} as an \textbf{environment-first} paradigm for LLM-based code generation where the model operates inside a structured sandbox that constrains actions and provides continuous, deterministic feedback. Rather than relying on larger models or prompt-only techniques, ES \emph{improves the context} around the model --- shaping the action space, providing templates and tools, and validating each step --- so that creativity is channeled into \emph{safe, verifiable} outcomes.
 
 \paragraph{Principles.}
 \begin{enumerate}
@@ -129,7 +129,7 @@ Ensuring production-ready AI-generated code requires validation approaches beyon
 Tree search enhances LLM-based solutions and serves as a way to increase compute budget beyond internal model reasoning token budget. The closest approach is used by Li et al. in S* Scaling \citep{li2025s} by combining iterative feedback with parallel branches taking different paths toward solving the problem. Sampling more trajectories increases success rate significantly, which is evident by difference in pass@1 and pass@3 often by 30\% or more.
 
 \subsection{Runtime Isolation and Scaling}
-Sandboxing is a cornerstone due to web applications requiring much more elaborate testing than running unit tests. It includes setup and teardown of databases and browser emulation. To run that in parallel for scaling we opted for Dagger.io for its caching capabilities and compatibility with Docker.
+Sandboxing is a cornerstone due to web applications requiring much more elaborate testing than running unit tests. It includes setup and teardown of databases and browser emulation. For parallel scaling, we use Dagger.io for its caching capabilities and Docker compatibility.
 
 \section{Problem Setup and Method}
 \label{sec:method}
@@ -148,21 +148,21 @@ LLM-based code generation enables rapid prototyping but often produces code that
 
 \subsection{Architecture}
 
-\textbf{High-level design.} The app.build agent implements ES with a central \emph{orchestrator} that decomposes a user's specification into stack-specific stages and executes each stage inside an isolated sandbox with validation before acceptance. The same workflow applies across supported stacks (TypeScript/tRPC, PHP/Laravel, Python/NiceGUI). Per-stage validators are stack-aware (e.g., ESLint+TypeScript and Playwright for tRPC; PHPStan and feature/architecture tests for Laravel; \texttt{pytest}/\texttt{ruff}/\texttt{pyright} for Python data apps), and the platform provisions a managed Postgres database and CI/CD hooks for each generated project.
+\textbf{High-level design.} The app.build agent implements ES with a central \emph{orchestrator} that decomposes a user's specification into stack-specific stages and executes each stage inside an isolated sandbox with validation before acceptance. The same workflow applies across supported stacks (TypeScript/tRPC, PHP/Laravel, Python/NiceGUI). Per-stage validators are stack-aware (e.g., ESLint+TypeScript and Playwright for tRPC; PHPStan and feature tests for Laravel; \texttt{pytest}/\texttt{ruff}/\texttt{pyright} for Python), and the platform provisions managed Postgres databases and CI/CD hooks.
 
 \textbf{Execution loop.} For each sub-task, the agent (i) assembles minimal context (files, interfaces, constraints), (ii) prompts the LLM, (iii) executes the result in a sandbox, (iv) collects validator feedback, and (v) either accepts the artifact or re-prompts to repair. This iterative loop provides robustness without assuming a particular model, and scales by parallelizing sandboxes and caching environment layers.
 
 \section{Experimental Setup}
 \label{sec:experimental-setup}
 
-In order to support claims in this paper and validate specific design decisions for supported stacks, we designed a set of experiments based on a specially created prompt dataset and metrics designed to evaluate viability and quality of generated applications.
+We designed experiments using a custom prompt dataset and metrics to evaluate viability and quality of generated applications.
 
 \subsection{Evaluation Framework}
 
 \subsection{Prompt Dataset}
 \label{sec:prompt-dataset-desc}
 
-The evaluation dataset comprises 30 prompts designed to assess system performance across diverse application development scenarios. Evaluation prompts were created involving independent human contributors with no prior exposure to the app.build system architecture. Contributors developed tasks reflecting authentic development workflows from their professional experience. The prompts were subsequently filtered to exclude items requiring enterprise integrations, significant compute resources for AI/ML, or other capabilities beyond the framework's scope. Raw prompts underwent automated post-processing using LLMs to anonymize sensitive information and standardize linguistic structure.
+The evaluation dataset comprises 30 prompts designed to assess system performance across diverse application development scenarios. Independent human contributors with no prior exposure to the app.build system created evaluation prompts. Contributors developed tasks reflecting authentic development workflows from their professional experience. Prompts were filtered to exclude enterprise integrations, AI/ML compute requirements, or capabilities beyond framework scope. Raw prompts underwent automated post-processing using LLMs to anonymize sensitive information and standardize linguistic structure.
 The resulting dataset consists of 30 prompts spanning a complexity spectrum (low: static/single-page UI; medium: single-entity CRUD; high: multi-entity/custom logic).
 See the full list of prompts in Appendix~\ref{sec:prompt-dataset}.
 
@@ -295,9 +295,9 @@ Smoke tests (AB-01, AB-02) determine viability. Among viable applications ($V=1$
 
 We evaluated Claude Sonnet 4 against two open-weights models using the TypeScript/tRPC stack with full validation pipelines. Claude achieved 86.7\% success rate, establishing our closed-model baseline at \$110.20 total cost. Qwen3-Coder-480B-A35B reached 70\% success rate (80.8\% relative performance) while GPT OSS 120B managed only 30\% success rate. Both open models were accessed via OpenRouter, resulting in significantly lower costs: \$12.68 for Qwen3 and \$4.55 for GPT OSS.
 
-The performance gap reveals that environment scaffolding alone cannot eliminate the need for capable foundation models. However, leading open-weights models like Qwen3 demonstrate that structured environments can enable production-viable performance at substantially reduced costs. The 9x cost reduction for 19\% performance loss represents a viable tradeoff for cost-sensitive deployments.
+The performance gap reveals that environment scaffolding alone cannot eliminate the need for capable foundation models. However, leading open-weights models like Qwen3 demonstrate that structured environments can enable production-viable performance at substantially reduced costs. The 9x cost reduction for 19\% performance loss represents a viable tradeoff.
 
-Operational characteristics differed notably between model types. Open models required more validation retries, evidenced by higher LLM call counts (4,359 for Qwen3, 4,922 for GPT OSS vs 3,413 for Claude). Healthcheck pass rates (86.7\% for Qwen3 vs 96.7\% for Claude) indicate that open models generate syntactically correct code but struggle more with integration-level correctness, emphasizing the importance of comprehensive validation pipelines for open-weights deployments.
+Operational characteristics differed notably between model types. Open models required more validation retries, evidenced by higher LLM call counts (4,359 for Qwen3, 4,922 for GPT OSS vs 3,413 for Claude). Healthcheck pass rates (86.7\% for Qwen3 vs 96.7\% for Claude) indicate open models generate syntactically correct code but struggle with integration-level correctness, emphasizing the importance of comprehensive validation.
 
 \subsection{Ablation Studies: Impact of Validation Layers}
 
@@ -313,7 +313,7 @@ To understand how each validation layer contributes to application quality, we c
 \begin{itemize}
 \item Viability: 80.0\% (+6.7 pp) -- fewer apps fail smoke tests
 \item Mean Quality: 7.78 ($-0.28$) -- quality degrades despite higher viability
-\item Key degradations: AB-04 View/Edit drops from 90\% to 60\% pass rate ($-30$ pp)
+\item Key degradations: AB-04 View/Edit drops from 90\% to 60\% pass rate
 \item Interpretation: Backend tests catch critical CRUD errors. Without them, apps boot successfully but fail on data operations.
 \end{itemize}
 
@@ -330,7 +330,7 @@ To understand how each validation layer contributes to application quality, we c
 \item Viability: 90.0\% (+16.7 pp) -- highest among all configurations
 \item Mean Quality: 8.62 (+0.56) -- meaningful quality improvement
 \item Broad improvements: AB-02 Prompt +11.8 pp, AB-06 Clickable +5.7 pp
-\item Interpretation: Playwright tests appear overly brittle for scaffolded apps. Many apps that fail E2E tests actually work correctly for users. The 36 improved vs 6 regressed cases for AB-02 support this interpretation.
+\item Interpretation: Playwright tests appear overly brittle for scaffolded apps. Many apps that fail E2E tests actually work correctly for users.
 \end{itemize}
 
 \subsection{Synthesis: Optimal Validation Strategy}
@@ -352,19 +352,19 @@ Based on these findings, we recommend:
 \item \textbf{Replace}: Full E2E suite with targeted integration tests for critical paths only
 \end{itemize}
 
-This pragmatic approach balances catching real defects while avoiding false rejections of functional applications. Importantly, when quality is paramount and compute budget less constrained (our experimental budget was capped), comprehensive validation including strict E2E tests remains a viable strategy--trading lower success rates for guaranteed production quality.
+This pragmatic approach balances catching real defects while avoiding false rejections. When quality is paramount and compute budget less constrained, comprehensive validation including strict E2E tests remains viable—trading lower success rates for guaranteed production quality.
 
 \subsection{Failure Mode Analysis}
 
-Observed failure modes in tRPC runs cluster into categories:
+Failure modes in tRPC runs cluster into categories:
 
 \begin{itemize}
 \item \textbf{Boot/Load failures}: template placeholders or incomplete artifacts
-\item \textbf{Prompt correspondence failures}: generic template likely because of generation failure
+\item \textbf{Prompt correspondence failures}: generic templates from generation failures
 \item \textbf{CSP/security policy restrictions}: blocked images or media by default policies
 \item \textbf{UI interaction defects}: unbound handlers, non-working controls
 \item \textbf{State/integration defects}: data not persisting across refresh; broken filters; login issues
-\item \textbf{Component misuse}: runtime exception due to incorrect component composition
+\item \textbf{Component misuse}: runtime exceptions from incorrect component composition
 \end{itemize}
 
 These defects align with our layered pipeline design: early gates catch non-viable builds, while later gates expose interaction/state issues before human evaluation.
@@ -380,7 +380,7 @@ We categorize prompts along a simple rubric and analyze success impacts:
 \item \textbf{High complexity}: multi-entity workflows, custom logic, or complex UI interactions
 \end{itemize}
 
-Empirically, medium-complexity CRUD prompts achieve the highest quality ($Q=9$--10 typical), reflecting strong scaffolding for data models and handlers. Low-complexity UI prompts are not uniformly ``easy'': several became non-viable ($V=0$) by failing prompt correspondence (AB-02) with generic templates. High-complexity prompts show lower viability rates due to interaction wiring and state-consistency issues surfaced by AB-04/AB-06.
+Medium-complexity CRUD prompts achieve the highest quality ($Q=9$--10), reflecting strong scaffolding for data models and handlers. Low-complexity UI prompts are not uniformly easy: several failed prompt correspondence (AB-02) with generic templates. High-complexity prompts show lower viability rates due to interaction wiring and state-consistency issues surfaced by AB-04/AB-06.
 
 \section{Discussion}
 \label{sec:discussion}
@@ -393,20 +393,17 @@ Our current framework is limited to CRUD-oriented data applications, focusing on
 \subsection{Broader Impact}
 \label{sec:broader-impact}
 
-The AI agent boom is accelerating, but real industry deployments often fail silently. Without environment scaffolding, we risk massive overengineering of AI models while ignoring the real bottleneck. App.build represents a shift from model-centric to system-centric AI engineering--a critical step toward scaling reliable agent environments. As emphasized in Machine Learning System Design with End-to-End Examples \citep{babushkin2025machine}, production AI systems only become effective when development integrates not just model performance, but core software engineering principles. By open-sourcing both the framework and evaluation protocol, we provide a reproducible, transparent foundation for building and benchmarking agent environments at scale.
+The AI agent boom is accelerating, but real industry deployments often fail silently. Without environment scaffolding, we risk massive overengineering of AI models while ignoring the real bottleneck. App.build represents a shift from model-centric to system-centric AI engineering—a critical step toward scaling reliable agent environments. As emphasized in Machine Learning System Design with End-to-End Examples \citep{babushkin2025machine}, production AI systems only become effective when development integrates not just model performance, but core software engineering principles. By open-sourcing both the framework and evaluation protocol, we provide a reproducible, transparent foundation for building and benchmarking agent environments at scale.
 
 \section{Conclusion}
 \label{sec:conclusion}
 
 Our results demonstrate that raw model capability alone cannot bridge the gap between AI potential and production reality. Through systematic environment scaffolding, multi-layered validation, and stack-specific orchestration, app.build transforms probabilistic language models into dependable software engineering agents.
 
-Ablations indicate clear trade-offs across validation layers: removing unit/handlers tests increases apparent viability but reduces CRUD/view-edit correctness; removing linting yields small viability/performance gains with modest quality regressions; removing Playwright smoke improves viability and observed quality, likely by eliminating flaky UI checks for scaffolded apps. Together, these results support a pragmatic stance: retain minimal, targeted smoke to guarantee boot and primary flows; keep structural checks (lint) to preserve UI/code consistency; and scope E2E to a ``golden path'' to avoid false negatives while still catching session/flow breakage.
+Ablations reveal clear trade-offs: removing unit tests increases apparent viability but reduces CRUD correctness; removing linting yields small gains with modest regressions; removing Playwright tests improves outcomes by eliminating flaky UI checks. These results support retaining minimal smoke tests for boot and primary flows, structural checks for UI/code consistency, and scoped E2E tests for critical paths only.
 
-We conclude that the path to reliable, production-ready AI agents lies not in better prompts or bigger models, but in principled, scalable environment engineering, with validation layers tuned to maximize developer-visible value while minimizing brittleness.
+The path to reliable AI agents lies not in better prompts or bigger models, but in principled environment engineering with validation layers tuned to maximize value while minimizing brittleness.
 
-\section*{Acknowledgments}
-
-This submission is prepared in collaboration between app.build (Databricks - app.build team) and THWS University of Applied Sciences W\"urzburg-Schweinfurt (CAIRO). We thank the app.build community for their contributions and feedback. Special thanks to Databricks executive team for supporting the open-source initiative.
 
 \section*{References}
 
