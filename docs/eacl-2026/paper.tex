@@ -1,33 +1,33 @@
-\documentclass{article}
+\documentclass[11pt]{article}
 
+% ACL style file - change "review" to "final" for camera-ready version
+\usepackage[review]{acl}
 
-% Ensure US Letter page size
-\pdfpagewidth=8.5in
-\pdfpageheight=11in
+% Standard ACL package includes
+\usepackage{times}
+\usepackage{latexsym}
 
-\usepackage[utf8]{inputenc} % allow utf-8 input
-\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-\usepackage{hyperref}       % hyperlinks
-\usepackage{url}            % simple URL typesetting
-\usepackage{booktabs}       % professional-quality tables
-\usepackage{amsfonts}       % blackboard math symbols
-\usepackage{nicefrac}       % compact symbols for 1/2, etc.
-\usepackage{microtype}      % microtypography
-\usepackage{xcolor}         % colors
+% For proper rendering and hyphenation of words containing Latin characters
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% Improve layout and aesthetics
+\usepackage{microtype}
+\usepackage{inconsolata}
+
+% Additional packages for your paper
 \usepackage{amsmath}        % mathematical expressions
+\usepackage{amsfonts}       % blackboard math symbols
 \usepackage{graphicx}       % graphics support
+\usepackage{booktabs}       % professional-quality tables
 \usepackage{threeparttable} % table notes for self-contained captions
-
-% Add natbib for proper citation management
-% \usepackage[numbers,sort&compress]{natbib}
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
 
 \title{Scaling Environments for Code Generation Agents: A Production Framework for Agentic Prompt-to-App Generation}
 
-\author{%
-  Anonymous Authors \\
+\author{Anonymous Authors \\
   Anonymous Institution \\
-  \texttt{anonymous@example.com} \\
-}
+  \texttt{anonymous@example.com}}
 
 \begin{document}
 
@@ -406,7 +406,7 @@ Ablations reveal clear trade-offs: removing unit tests increases apparent viabil
 The path to reliable AI agents lies not in better prompts or bigger models, but in principled environment engineering with validation layers tuned to maximize value while minimizing brittleness.
 
 % Bibliography section
-\bibliographystyle{plainnat}
+% The ACL style file handles bibliography formatting automatically
 \bibliography{references}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
