@@ -1,7 +1,5 @@
 \documentclass{article}
 
-% NeurIPS 2024 template
-\usepackage{neurips_2024}
 
 % Ensure US Letter page size
 \pdfpagewidth=8.5in
@@ -463,86 +461,5 @@ cat-conspiracy-tracker & Humorous app tracking cat suspicious activities. & Low 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newpage
-\section*{NeurIPS Paper Checklist}
-
-\begin{enumerate}
-
-\item {\bf Claims}
-    \item[] Question: Do the main claims made in the abstract and introduction accurately reflect the paper's contributions and scope?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: The abstract and introduction clearly state our contributions regarding environment scaffolding for code generation agents, with specific claims supported by experimental results on 30 generation tasks.
-
-\item {\bf Limitations}
-    \item[] Question: Does the paper discuss the limitations of the work performed by the authors?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: Section~\ref{sec:limitations} explicitly discusses limitations including restriction to CRUD applications, reliance on domain-specific heuristics, and scalability challenges of human evaluation.
-
-\item {\bf Theory Assumptions and Proofs}
-    \item[] Question: For each theoretical result, does the paper provide the full set of assumptions and a complete (and correct) proof?
-    \item[] Answer: \textbf{N/A}
-    \item[] Justification: This paper focuses on empirical evaluation of a practical system rather than theoretical contributions requiring formal proofs.
-
-\item {\bf Experimental Result Reproducibility}
-    \item[] Question: Does the paper fully disclose all the information needed to reproduce the main experimental results of the paper to the extent that it affects the main claims and/or conclusions of the paper (regardless of whether the code and data are provided or not)?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: We provide detailed experimental configurations, evaluation protocols, and the complete prompt dataset. The framework is open-source with reference implementations.
-
-\item {\bf Open access to data and code}
-    \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: The app.build framework is open-source, and we provide the complete evaluation dataset and protocols in Appendix~\ref{sec:prompt-dataset}.
-
-\item {\bf Experimental Setting/Details}
-    \item[] Question: Does the paper specify all the training and test details (e.g., data splits, hyperparameters, how they were chosen, type of optimizer, etc.) necessary to understand the results?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: Section~\ref{sec:experimental-setup} provides comprehensive experimental setup including configurations, model choices, evaluation metrics, and detailed scoring protocols.
-
-\item {\bf Experiment Statistical Significance}
-    \item[] Question: Does the paper report error bars suitably and correctly defined or other appropriate information about the statistical significance of the experiments?
-    \item[] Answer: \textbf{No}
-    \item[] Justification: We report success rates and quality scores but do not include statistical significance tests due to the limited sample size (30 prompts) and focus on practical system evaluation rather than statistical inference.
-
-\item {\bf Experiments Compute Resources}
-    \item[] Question: For each experiment, does the paper provide sufficient information on the computer resources (type of compute workers, memory, time of execution) needed to reproduce the experiments?
-    \item[] Answer: \textbf{Partial}
-    \item[] Justification: We mention Dagger.io infrastructure and Docker-based sandboxing but do not provide detailed compute resource specifications for reproduction.
-
-\item {\bf Code Of Ethics}
-    \item[] Question: Does the research conducted in the paper conform, in every respect, with the NeurIPS Code of Ethics?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: Our research focuses on improving software development tools and does not involve human subjects, sensitive data, or potential for misuse.
-
-\item {\bf Broader Impacts}
-    \item[] Question: Does the paper discuss both potential positive societal impacts and negative societal impacts of the work performed?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: Section~\ref{sec:broader-impact} discusses the broader impact of shifting from model-centric to environment-centric AI engineering and the importance of production-ready agent systems.
-
-\item {\bf Safeguards}
-    \item[] Question: Does the paper describe safeguards that have been put in place for responsible release of data or models that have a high risk for misuse?
-    \item[] Answer: \textbf{N/A}
-    \item[] Justification: Our work involves a software development framework rather than models or datasets with high misuse potential.
-
-\item {\bf Licenses for existing assets}
-    \item[] Question: Are the creators or original owners of assets (e.g., code, data, models), used in the paper, properly credited and are the license and terms of use explicitly mentioned and properly respected?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: We properly cite all referenced models, benchmarks, and tools. The app.build framework is released as open-source with appropriate licensing.
-
-\item {\bf New Assets}
-    \item[] Question: Are new assets introduced in the paper well documented and is the documentation provided alongside the assets?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: The app.build framework and evaluation dataset are well-documented with detailed protocols provided in the appendix and open-source repository.
-
-\item {\bf Crowdsourcing and Research with Human Subjects}
-    \item[] Question: For crowdsourcing experiments and research with human subjects, does the paper include the full text of instructions given to participants and screenshots, if applicable, as well as details about compensation (if any)?
-    \item[] Answer: \textbf{N/A}
-    \item[] Justification: Our evaluation involved human assessors following standardized protocols but did not constitute formal human subjects research requiring IRB approval.
-
-\item {\bf Institutional Review Board (IRB) Approvals or Equivalent for Research with Human Subjects}
-    \item[] Question: Does the paper describe potential risks incurred by study participants, whether such risks were disclosed to the subjects, and whether Institutional Review Board (IRB) approvals were obtained?
-    \item[] Answer: \textbf{N/A}
-    \item[] Justification: The human evaluation did not involve study participants but rather standard software testing protocols by technical evaluators.
-
-\end{enumerate}
 
 \end{document}
