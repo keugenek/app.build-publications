@@ -1,0 +1,3 @@
+[submodule "docs/eacl-2026/template"]
+	path = docs/eacl-2026/template
+	url = https://github.com/acl-org/acl-style-files.git
