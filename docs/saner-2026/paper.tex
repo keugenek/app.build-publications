@@ -5,15 +5,27 @@
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
 \usepackage{textcomp}
+\usepackage{url}
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{threeparttable} % table notes for self-contained captions
 
-\title{Scaling Environments for Code Generation Agents: A Production Framework for Agentic Prompt-to-App Generation}
+\title{app.build: A Production Framework for Scaling Agentic Prompt-to-App Generation with Environment Scaffolding\thanks{Code available at \url{https://github.com/appdotbuild/agent/}}}
 
-\author{\IEEEauthorblockN{Anonymous Authors}
-\IEEEauthorblockA{\textit{Anonymous Institution} \\
-Anonymous City, Country \\
-anonymous@example.com}
+\author{
+\IEEEauthorblockN{%
+Evgenii Kniazev\IEEEauthorrefmark{1}\IEEEauthorrefmark{3},
+Arseny Kravchenko\IEEEauthorrefmark{1}\IEEEauthorrefmark{3},
+Igor Rekun\IEEEauthorrefmark{1}\IEEEauthorrefmark{3},
+James Broadhead\IEEEauthorrefmark{1},
+Nikita Shamgunov\IEEEauthorrefmark{1},
+Pranav Sah\IEEEauthorrefmark{2},
+Pratik Nichite\IEEEauthorrefmark{2},
+Ivan Yamshchikov\IEEEauthorrefmark{2}}
+\IEEEauthorblockA{\IEEEauthorrefmark{1}Databricks\\
+Email: eng-appbuild@databricks.com}
+\IEEEauthorblockA{\IEEEauthorrefmark{2}THWS University of Applied Sciences,\\
+Würzburg-Schweinfurt (CAIRO)}
+\IEEEauthorblockA{\IEEEauthorrefmark{3}Equal contribution}
 }
 
 \begin{document}
@@ -63,26 +75,26 @@ Traditional (model-centric) systems prompt an LLM to generate the full solution 
 
 \begin{table}[t]
 \centering
-\small
+\footnotesize
 \begin{threeparttable}
-\caption{\textbf{Environment scaffolding (ES) vs.\ model-centric generation.}}
+\caption{Environment Scaffolding (ES) vs.\ Model-Centric Generation}
 \label{tab:es-contrast}
-\begin{tabular}{@{}p{3.2cm}p{5.6cm}p{5.6cm}@{}}
+\begin{tabular}{@{}p{1.8cm}p{2.8cm}p{2.8cm}@{}}
 \toprule
-\textbf{Aspect} & \textbf{Model-Centric} & \textbf{Environment Scaffolding (Ours)} \\
+\textbf{Aspect} & \textbf{Model-Centric} & \textbf{ES (Ours)} \\
 \midrule
-Task decomposition & Single/loosely guided multi-step; no fixed structure &
-Explicit pipeline (FSM): schema $\rightarrow$ API $\rightarrow$ UI \\
-Validation & Late or ad-hoc checks &
-Integrated per-step: linters, type checks, unit/smoke tests \\
-Error recovery & Manual/ad-hoc retries &
-Automatic repair loop using error feedback \\
-Execution isolation & Often none; runs on host &
-Isolated containers; reproducible runs \\
-Model dependence & Strong (prompt/model specific) &
-Model-agnostic; environment guides behavior \\
-Observability & Limited, coarse logs &
-Per-step metrics, artifacts, and logs \\
+Task decomp. & Single/loosely guided; no fixed structure &
+Explicit FSM: schema $\rightarrow$ API $\rightarrow$ UI \\
+Validation & Late or ad-hoc &
+Per-step: linters, types, tests \\
+Error recovery & Manual/ad-hoc &
+Auto repair loop w/ feedback \\
+Execution & Often on host &
+Isolated containers \\
+Model dep. & Strong (prompt-specific) &
+Model-agnostic \\
+Observability & Limited logs &
+Per-step metrics, artifacts \\
 \bottomrule
 \end{tabular}
 \end{threeparttable}
@@ -206,25 +218,26 @@ where $A$ is the set of applicable checks (excluding NA); all checks use equal w
 \item AB-07 (Performance): continuous metric normalized to $[0,1]$
 \end{itemize}
 
-\begin{table}[t]
-\caption{Check weights and definitions used in scoring (see rubric in Section~\ref{sec:scoring}). All checks share equal weight after NA re-normalization; AB-01 and AB-02 are hard gates for Viability $V$.}
+\begin{table}[!t]
+\caption{Check Weights and Definitions Used in Scoring}
 \label{tab:check-weights}
 \centering
+\small
 \begin{threeparttable}
-\begin{tabular}{llcl}
+\begin{tabular}{@{}llcp{3cm}@{}}
 \toprule
-Check ID & Check Description & Weight (share) & Notes \\
+\textbf{Check ID} & \textbf{Description} & \textbf{Weight} & \textbf{Notes} \\
 \midrule
-AB-01 & Boot \& Home & 1/6 & Hard gate for Viability $V$ \\
-AB-02 & Prompt Correspondence & 1/6 & Hard gate for Viability $V$ \\
-AB-03 & Create Functionality & 1/6 &  \\
-AB-04 & View/Edit Operations & 1/6 &  \\
+AB-01 & Boot \& Home & 1/6 & Hard gate for $V$ \\
+AB-02 & Prompt Corr. & 1/6 & Hard gate for $V$ \\
+AB-03 & Create Func. & 1/6 &  \\
+AB-04 & View/Edit Ops & 1/6 &  \\
 AB-06 & Clickable Sweep & 1/6 &  \\
-AB-07 & Performance Metrics & 1/6 & Continuous; normalized to $[0,1]$ \\
+AB-07 & Performance & 1/6 & Normalized to $[0,1]$ \\
 \bottomrule
 \end{tabular}
-\begin{tablenotes}
-\item \textit{Note.} See mapping of PASS/WARN/FAIL to numeric scores and viability definition in Section~\ref{sec:scoring}.
+\begin{tablenotes}\footnotesize
+\item See Section~\ref{sec:scoring} for rubric details. All weights equal after NA re-normalization.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -236,47 +249,49 @@ AB-07 & Performance Metrics & 1/6 & Continuous; normalized to $[0,1]$ \\
 
 Evaluating 30 TypeScript/tRPC applications, we observe that 73.3\% (22/30) achieved viability ($V=1$), with 30.0\% attaining perfect quality ($Q=10$) and 26.7\% non-viable ($V=0$). Once viability criteria are met, generated applications exhibit consistently high quality.
 
-\begin{table}[t]
-\caption{Aggregated evaluation results for TypeScript/tRPC ($n=30$ prompts). Viability $V$ and quality $Q$ are defined in Section~\ref{sec:scoring}. ``Perfect quality'' denotes $Q=10$ (all applicable checks PASS). ``Non-viable'' denotes $V=0$ (AB-01 or AB-02 = FAIL). Mean quality is computed over viable apps only ($V=1$).}
+\begin{table}[!t]
+\caption{Aggregated Evaluation Results for TypeScript/tRPC ($n=30$)}
 \label{tab:aggregated-results}
 \centering
+\small
 \begin{threeparttable}
-\begin{tabular}{llc}
+\begin{tabular}{@{}lcc@{}}
 \toprule
-Metric & Value & Key Insight \\
+\textbf{Metric} & \textbf{Value} & \textbf{Note} \\
 \midrule
-Total Applications & 30 & TypeScript/tRPC stack only \\
-Viability Rate ($V=1$) & 73.3\% & 22/30 viable applications \\
-Perfect Quality ($Q=10$) & 30.0\% & 9/30 fully compliant applications \\
-Non-viable ($V=0$) & 26.7\% & 8/30 failed smoke tests \\
-Mean Quality ($V=1$ apps) & 8.78 & High quality when viable \\
+Total Apps & 30 & tRPC stack only \\
+Viability ($V=1$) & 73.3\% & 22/30 viable \\
+Perfect ($Q=10$) & 30.0\% & 9/30 perfect \\
+Non-viable ($V=0$) & 26.7\% & 8/30 failed \\
+Mean Quality & 8.78 & $V=1$ apps only \\
 \bottomrule
 \end{tabular}
-\begin{tablenotes}
-\item \textit{Note.} Scoring rubric and check definitions in Section~\ref{sec:scoring}.
+\begin{tablenotes}\footnotesize
+\item Viability $V$ and quality $Q$ defined in Section~\ref{sec:scoring}. Perfect = all checks PASS; non-viable = AB-01 or AB-02 FAIL.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-\begin{table}[t]
-\caption{Check-specific outcomes across $n=30$ TypeScript/tRPC tasks. See Section~\ref{sec:scoring} for check definitions, PASS/WARN/FAIL grading, and the viability rule. NA indicates the check was not applicable to a prompt (e.g., AB-04 when no view/edit flows are required). ``Pass Rate (excl. NA)'' is computed over applicable cases only.}
+\begin{table}[!t]
+\caption{Check-Specific Outcomes Across $n=30$ Tasks}
 \label{tab:check-pass-rates}
 \centering
+\small
 \begin{threeparttable}
-\begin{tabular}{lccccc}
+\begin{tabular}{@{}lcccc@{}}
 \toprule
-Check & Pass & Warn & Fail & NA & Pass Rate (excl. NA) \\
+\textbf{Check} & \textbf{Pass} & \textbf{Warn} & \textbf{Fail} & \textbf{NA} \\
 \midrule
-AB-01 (Boot) & 25 & 2 & 3 & 0 & 83.3\% \\
-AB-02 (Prompt) & 19 & 3 & 5 & 3 & 70.4\% \\
-AB-03 (Create) & 22 & 2 & 0 & 6 & 91.7\% \\
-AB-04 (View/Edit) & 17 & 1 & 1 & 11 & 89.5\% \\
-AB-06 (Clickable Sweep) & 20 & 4 & 1 & 5 & 80.0\% \\
-AB-07 (Performance) & 23 & 3 & 0 & 4 & 88.5\% \\
+AB-01 (Boot) & 25 & 2 & 3 & 0 \\
+AB-02 (Prompt) & 19 & 3 & 5 & 3 \\
+AB-03 (Create) & 22 & 2 & 0 & 6 \\
+AB-04 (View/Edit) & 17 & 1 & 1 & 11 \\
+AB-06 (Clickable) & 20 & 4 & 1 & 5 \\
+AB-07 (Perf.) & 23 & 3 & 0 & 4 \\
 \bottomrule
 \end{tabular}
-\begin{tablenotes}
-\item \textit{Note.} AB-07 is a continuous metric normalized to $[0,1]$; thresholding for PASS/WARN/FAIL is specified in Section~\ref{sec:scoring}.
+\begin{tablenotes}\footnotesize
+\item See Section~\ref{sec:scoring} for grading criteria. NA = not applicable. Pass rates (excl. NA): AB-01: 83.3\%, AB-02: 70.4\%, AB-03: 91.7\%, AB-04: 89.5\%, AB-06: 80.0\%, AB-07: 88.5\%.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -396,25 +411,27 @@ Ablations reveal clear trade-offs: removing unit tests increases apparent viabil
 
 The path to reliable AI agents lies not in better prompts or bigger models, but in principled environment engineering with validation layers tuned to maximize value while minimizing brittleness.
 
+\section*{Acknowledgments}
+
+This submission is prepared in collaboration between Databricks (app.build team) and THWS University of Applied Sciences Würzburg-Schweinfurt (CAIRO). We thank the app.build community for their contributions and feedback which have been invaluable in shaping this work. Special thanks to Databricks executive team for supporting the open-source initiative and providing resources for this research. We also thank David Gomes for advocating for the community-centered vision that guided this project.
+
 % Bibliography
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\appendix
-
-\section{Prompt Dataset (Full List)}
+\section*{Appendix: Prompt Dataset}
 \label{sec:prompt-dataset}
 
-\begin{table}[h]
-\caption{Complete prompt dataset used in evaluation ($n=30$). Dataset construction details in Section~\ref{sec:prompt-dataset-desc}. Complexity labels follow the rubric in Section~\ref{sec:prompt-complexity}: \emph{Low} (static/single-page UI), \emph{Medium} (single-entity CRUD), \emph{High} (multi-entity/custom logic).}
+\begin{table*}[h!]
+\caption{Complete Prompt Dataset Used in Evaluation ($n=30$)}
 \label{tab:prompt-dataset}
 \centering
-\scriptsize
-\begin{tabular}{p{3cm}p{8cm}p{1.5cm}}
+\footnotesize
+\begin{tabular}{@{}p{4cm}p{10cm}p{2cm}@{}}
 \toprule
-ID & Prompt (summary) & Complexity \\
+\textbf{ID} & \textbf{Prompt (summary)} & \textbf{Complexity} \\
 \midrule
 plant-care-tracker & Track plant conditions using moods with custom rule-based logic. No AI/ML/APIs. & Medium \\
 roommate-chore-wheel & Randomly assigns chores weekly and tracks completion. & Medium \\
@@ -448,8 +465,9 @@ pomodoro-study-timer & Minimalistic Pomodoro timer with session logging. & Low \
 cat-conspiracy-tracker & Humorous app tracking cat suspicious activities. & Low \\
 \bottomrule
 \end{tabular}
-\end{table}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{2mm}
+\footnotesize
+\textit{Note.} Dataset details in Section~\ref{sec:prompt-dataset-desc}. Complexity rubric in Section~\ref{sec:prompt-complexity}: Low (static/single-page UI), Medium (single-entity CRUD), High (multi-entity/custom logic).
+\end{table*}
 
 \end{document}
