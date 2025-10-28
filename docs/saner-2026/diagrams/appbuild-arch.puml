@@ -1,0 +1,44 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam shadowing false
+left to right direction
+
+actor "User" as User
+cloud "LLM Backend(s)\n(pluggable)" as LLM
+
+package "app.build Agent (ES)" as AG {
+  component "Orchestrator (FSM)" as ORCH
+  component "Task Runner\n(Generate→Validate→Repair)" as LOOP
+  component "Sandbox Manager\n(containers)" as SBX
+  component "Validators Hub" as VAL
+
+  package "Stack Adapters" as ADP {
+    component "tRPC Adapter\n(Bun/Fastify/Drizzle)" as TRPC
+    component "Laravel Adapter\n(PHP 8+/Inertia)" as LAR
+    component "Python Data Adapter\n(NiceGUI/SQLModel)" as PYA
+  }
+}
+
+database "Neon Postgres\n(provisioned)" as DB
+folder "GitHub Repo\n+ CI/CD & Deploy" as GH
+
+User --> ORCH : App spec / intent
+ORCH --> ADP : Select stack \n& stage plan
+ORCH --> LOOP : Issue sub-task
+LOOP --> LLM : Prompt with context
+LLM --> LOOP : Candidate code
+LOOP --> SBX : Run in isolated env
+SBX --> VAL : Lint / typecheck / tests
+VAL --> LOOP : Errors / logs / metrics
+LOOP --> ADP : Accepted artifacts
+ADP --> GH : Commit/PR \n (CI runs)
+ADP --> DB : Schema/migrations
+note right of VAL
+  \nPer-stack examples:
+  - tRPC: ESLint, TypeScript,\n  Playwright smoke tests
+  - Laravel: PHPStan,\n  feature/architecture tests
+  - Python: pytest, ruff, pyright
+end note
+@enduml
+
+
