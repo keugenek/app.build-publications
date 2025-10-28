@@ -1,34 +1,19 @@
-\documentclass{article}
-
-% NeurIPS 2024 template
-\usepackage{neurips_2024}
-
-% Ensure US Letter page size
-\pdfpagewidth=8.5in
-\pdfpageheight=11in
-
-\usepackage[utf8]{inputenc} % allow utf-8 input
-\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-\usepackage{hyperref}       % hyperlinks
-\usepackage{url}            % simple URL typesetting
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
 \usepackage{booktabs}       % professional-quality tables
-\usepackage{amsfonts}       % blackboard math symbols
-\usepackage{nicefrac}       % compact symbols for 1/2, etc.
-\usepackage{microtype}      % microtypography
-\usepackage{xcolor}         % colors
-\usepackage{amsmath}        % mathematical expressions
-\usepackage{graphicx}       % graphics support
 \usepackage{threeparttable} % table notes for self-contained captions
-
-% Add natbib for proper citation management
-% \usepackage[numbers,sort&compress]{natbib}
 
 \title{Scaling Environments for Code Generation Agents: A Production Framework for Agentic Prompt-to-App Generation}
 
-\author{%
-  Anonymous Authors \\
-  Anonymous Institution \\
-  \texttt{anonymous@example.com} \\
+\author{\IEEEauthorblockN{Anonymous Authors}
+\IEEEauthorblockA{\textit{Anonymous Institution} \\
+Anonymous City, Country \\
+anonymous@example.com}
 }
 
 \begin{document}
@@ -39,16 +24,20 @@
 We present app.build, an open-source framework that improves LLM-based application generation through systematic validation and structured environments. Our approach combines multi-layered validation pipelines, stack-specific orchestration, and model-agnostic architecture, implemented across three reference stacks. Through evaluation on 30 generation tasks, we demonstrate that comprehensive validation achieves 73.3\% viability rate with 30\% reaching perfect quality scores, while open-weights models achieve 80.8\% of closed-model performance when provided structured environments. The open-source framework has been adopted by the community, with over 3,000 applications generated to date. This work demonstrates that scaling reliable AI agents requires scaling environments, not just models---providing empirical insights and complete reference implementations for production-oriented agent systems.
 \end{abstract}
 
+\begin{IEEEkeywords}
+software engineering, code generation, LLM agents, validation, environment scaffolding
+\end{IEEEkeywords}
+
 \section{Introduction}
 \label{sec:intro}
 
 \subsection{The Production Reliability Gap}
 
-While AI coding agents demonstrate impressive capabilities on standard benchmarks of isolated tasks like HumanEval \citep{chen2021evaluating} and MBPP \citep{austin2021program}, relying on them to build production-ready applications without human supervision remains infeasible. Recent repository-level systems such as Devin \citep{cognition2024swe} and SWE-agent \citep{yang2024swe} represent significant advances, yet their performance on real-world software engineering tasks reveals a substantial gap between research benchmarks and production requirements.
+While AI coding agents demonstrate impressive capabilities on standard benchmarks of isolated tasks like HumanEval \cite{chen2021evaluating} and MBPP \cite{austin2021program}, relying on them to build production-ready applications without human supervision remains infeasible. Recent repository-level systems such as Devin \cite{cognition2024swe} and SWE-agent \cite{yang2024swe} represent significant advances, yet their performance on real-world software engineering tasks reveals a substantial gap between research benchmarks and production requirements.
 
-This gap manifests across multiple dimensions. Function-level benchmarks like HumanEval evaluate isolated code generation but fail to capture system-level concerns including error handling, integration complexity, and production constraints \citep{liu2023your}. Even state-of-the-art systems like AutoCodeRover, achieving 19\% efficacy on SWE-bench at \$0.43 per issue \citep{zhang2024autocoder}, demonstrate that raw model capability alone is insufficient for reliable automated software development.
+This gap manifests across multiple dimensions. Function-level benchmarks like HumanEval evaluate isolated code generation but fail to capture system-level concerns including error handling, integration complexity, and production constraints \cite{liu2023your}. Even state-of-the-art systems like AutoCodeRover, achieving 19\% efficacy on SWE-bench at \$0.43 per issue \cite{zhang2024autocoder}, demonstrate that raw model capability alone is insufficient for reliable automated software development.
 
-The core challenge lies in treating LLMs as standalone systems rather than components requiring structured environments. Current approaches predominantly focus on making models ``smarter'' via either training or prompt engineering, but this paradigm fails to address fundamental reliability issues inherent in probabilistic generation. Recent surveys \citep{jiang2024survey,paul2024benchmarks} note the field requires a shift from model-centric to environment-centric design.
+The core challenge lies in treating LLMs as standalone systems rather than components requiring structured environments. Current approaches predominantly focus on making models ``smarter'' via either training or prompt engineering, but this paradigm fails to address fundamental reliability issues inherent in probabilistic generation. Recent surveys \cite{jiang2024survey,paul2024benchmarks} note the field requires a shift from model-centric to environment-centric design.
 
 \subsection{Our Approach: Environment Scaffolding}
 
@@ -116,11 +105,11 @@ Our work advances \emph{environment-first} agent design. The main contributions 
 
 \subsection{Agentic Software Engineering}
 
-The evolution of AI coding agents has progressed from simple code completion to autonomous software engineering systems capable of repository-level modifications. \textbf{SWE-bench} \citep{jimenez2024swe} established the gold standard for evaluating repository-level understanding with 2,294 real GitHub issues from 12 Python projects. The accompanying \textbf{SWE-agent} \citep{yang2024swe} demonstrated that custom agent-computer interfaces significantly enhance performance, achieving 12.5\% pass@1 through careful interface design rather than model improvements.
+The evolution of AI coding agents has progressed from simple code completion to autonomous software engineering systems capable of repository-level modifications. \textbf{SWE-bench} \cite{jimenez2024swe} established the gold standard for evaluating repository-level understanding with 2,294 real GitHub issues from 12 Python projects. The accompanying \textbf{SWE-agent} \cite{yang2024swe} demonstrated that custom agent-computer interfaces significantly enhance performance, achieving 12.5\% pass@1 through careful interface design rather than model improvements.
 
-Repository-level agents have emerged as a distinct research direction. \textbf{WebArena} \citep{zhou2024webarena} revealed that even GPT-4 achieves only 14.41\% success versus 78.24\% human performance in realistic environments, demonstrating that environment design matters more than model capability. \textbf{GAIA} \citep{mialon2023gaia} reinforces this with 92\% human versus 15\% GPT-4 performance on practical tasks. \textbf{AutoCodeRover} \citep{zhang2024autocoder} combines LLMs with spectrum-based fault localization, achieving 19\% efficacy on SWE-bench at \$0.43 per issue. More recently, \textbf{Agentless} \citep{xia2024agentless} challenged complex agent architectures with a simple three-phase process (localization, repair, validation) achieving 32\% on SWE-bench Lite at \$0.70 cost, suggesting that sophisticated architectures may not always improve performance.
+Repository-level agents have emerged as a distinct research direction. \textbf{WebArena} \cite{zhou2024webarena} revealed that even GPT-4 achieves only 14.41\% success versus 78.24\% human performance in realistic environments, demonstrating that environment design matters more than model capability. \textbf{GAIA} \cite{mialon2023gaia} reinforces this with 92\% human versus 15\% GPT-4 performance on practical tasks. \textbf{AutoCodeRover} \cite{zhang2024autocoder} combines LLMs with spectrum-based fault localization, achieving 19\% efficacy on SWE-bench at \$0.43 per issue. More recently, \textbf{Agentless} \cite{xia2024agentless} challenged complex agent architectures with a simple three-phase process (localization, repair, validation) achieving 32\% on SWE-bench Lite at \$0.70 cost, suggesting that sophisticated architectures may not always improve performance.
 
-\textbf{Multi-agent systems} have consistently outperformed single-agent approaches. \textbf{AgentCoder} \citep{huang2023agentcoder} employs a three-agent architecture (Programmer, Test Designer, Test Executor) achieving 96.3\% pass@1 on HumanEval with GPT-4, compared to 71.3\% for single-agent approaches. \textbf{MapCoder} \citep{islam2024mapcoder} extends this with four specialized agents replicating human programming cycles, achieving 93.9\% pass@1 on HumanEval and 22.0\% on the challenging APPS benchmark. \textbf{MetaGPT} \citep{hong2023metagpt} demonstrates role-based agents communicating through structured documents, achieving 85.9\% pass@1 on HumanEval with 100\% task completion on software development tasks.
+\textbf{Multi-agent systems} have consistently outperformed single-agent approaches. \textbf{AgentCoder} \cite{huang2023agentcoder} employs a three-agent architecture (Programmer, Test Designer, Test Executor) achieving 96.3\% pass@1 on HumanEval with GPT-4, compared to 71.3\% for single-agent approaches. \textbf{MapCoder} \cite{islam2024mapcoder} extends this with four specialized agents replicating human programming cycles, achieving 93.9\% pass@1 on HumanEval and 22.0\% on the challenging APPS benchmark. \textbf{MetaGPT} \cite{hong2023metagpt} demonstrates role-based agents communicating through structured documents, achieving 85.9\% pass@1 on HumanEval with 100\% task completion on software development tasks.
 
 \subsection{Production Quality in Generated Code}
 
@@ -130,7 +119,7 @@ Ensuring production-ready AI-generated code requires validation approaches beyon
 
 \subsection{Tree Search}
 
-Tree search enhances LLM-based solutions and serves as a way to increase compute budget beyond internal model reasoning token budget. The closest approach is used by Li et al. in S* Scaling \citep{li2025s} by combining iterative feedback with parallel branches taking different paths toward solving the problem. Sampling more trajectories increases success rate significantly, which is evident by difference in pass@1 and pass@3 often by 30\% or more.
+Tree search enhances LLM-based solutions and serves as a way to increase compute budget beyond internal model reasoning token budget. The closest approach is used by Li et al. in S* Scaling \cite{li2025s} by combining iterative feedback with parallel branches taking different paths toward solving the problem. Sampling more trajectories increases success rate significantly, which is evident by difference in pass@1 and pass@3 often by 30\% or more.
 
 \subsection{Runtime Isolation and Scaling}
 Sandboxing is a cornerstone due to web applications requiring much more elaborate testing than running unit tests. It includes setup and teardown of databases and browser emulation. For parallel scaling, we use Dagger.io for its caching capabilities and Docker compatibility.
@@ -187,7 +176,7 @@ We designed three experimental configurations to systematically evaluate factors
 
 \textbf{Configuration 1: Baseline}. We generated baseline tRPC apps with default production setup and all checks ON to assess default generation success rate, cost and time.
 
-\textbf{Configuration 2: Model Architecture Analysis}. Using the tRPC stack, we evaluated open versus closed foundation models. Claude Sonnet 4 served as the baseline coding model, compared against Qwen3-Coder-480B-A35B \citep{qwen2025qwen3} and GPT OSS 120B \citep{openai2025gpt} as open alternatives.
+\textbf{Configuration 2: Model Architecture Analysis}. Using the tRPC stack, we evaluated open versus closed foundation models. Claude Sonnet 4 served as the baseline coding model, compared against Qwen3-Coder-480B-A35B \cite{qwen2025qwen3} and GPT OSS 120B \cite{openai2025gpt} as open alternatives.
 
 \textbf{Configuration 3: Testing Framework Ablation}. We conducted three ablation studies on the tRPC stack isolating the impact of each type of checks by turning them off independently: (3a) disabled isolated Playwright UI smoke tests; (3b) disabled ESLint checks; and (3c) removed handlers tests, eliminating backend validation.
 
@@ -396,7 +385,7 @@ Our current framework is limited to CRUD-oriented data applications, focusing on
 \subsection{Broader Impact}
 \label{sec:broader-impact}
 
-The AI agent boom is accelerating, but real industry deployments often fail silently. Without environment scaffolding, we risk massive overengineering of AI models while ignoring the real bottleneck. App.build represents a shift from model-centric to system-centric AI engineering—a critical step toward scaling reliable agent environments. As practitioners emphasize \citep{babushkin2025machine}, production AI systems only become effective when development integrates not just model performance, but core software engineering principles. By open-sourcing both the framework and evaluation protocol, we provide a reproducible, transparent foundation for building and benchmarking agent environments at scale.
+The AI agent boom is accelerating, but real industry deployments often fail silently. Without environment scaffolding, we risk massive overengineering of AI models while ignoring the real bottleneck. App.build represents a shift from model-centric to system-centric AI engineering—a critical step toward scaling reliable agent environments. As practitioners emphasize \cite{babushkin2025machine}, production AI systems only become effective when development integrates not just model performance, but core software engineering principles. By open-sourcing both the framework and evaluation protocol, we provide a reproducible, transparent foundation for building and benchmarking agent environments at scale.
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -407,8 +396,8 @@ Ablations reveal clear trade-offs: removing unit tests increases apparent viabil
 
 The path to reliable AI agents lies not in better prompts or bigger models, but in principled environment engineering with validation layers tuned to maximize value while minimizing brittleness.
 
-% Bibliography section
-\bibliographystyle{plainnat}
+% Bibliography
+\bibliographystyle{IEEEtran}
 \bibliography{references}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -462,87 +451,5 @@ cat-conspiracy-tracker & Humorous app tracking cat suspicious activities. & Low 
 \end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\newpage
-\section*{NeurIPS Paper Checklist}
-
-\begin{enumerate}
-
-\item {\bf Claims}
-    \item[] Question: Do the main claims made in the abstract and introduction accurately reflect the paper's contributions and scope?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: The abstract and introduction clearly state our contributions regarding environment scaffolding for code generation agents, with specific claims supported by experimental results on 30 generation tasks.
-
-\item {\bf Limitations}
-    \item[] Question: Does the paper discuss the limitations of the work performed by the authors?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: Section~\ref{sec:limitations} explicitly discusses limitations including restriction to CRUD applications, reliance on domain-specific heuristics, and scalability challenges of human evaluation.
-
-\item {\bf Theory Assumptions and Proofs}
-    \item[] Question: For each theoretical result, does the paper provide the full set of assumptions and a complete (and correct) proof?
-    \item[] Answer: \textbf{N/A}
-    \item[] Justification: This paper focuses on empirical evaluation of a practical system rather than theoretical contributions requiring formal proofs.
-
-\item {\bf Experimental Result Reproducibility}
-    \item[] Question: Does the paper fully disclose all the information needed to reproduce the main experimental results of the paper to the extent that it affects the main claims and/or conclusions of the paper (regardless of whether the code and data are provided or not)?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: We provide detailed experimental configurations, evaluation protocols, and the complete prompt dataset. The framework is open-source with reference implementations.
-
-\item {\bf Open access to data and code}
-    \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: The app.build framework is open-source, and we provide the complete evaluation dataset and protocols in Appendix~\ref{sec:prompt-dataset}.
-
-\item {\bf Experimental Setting/Details}
-    \item[] Question: Does the paper specify all the training and test details (e.g., data splits, hyperparameters, how they were chosen, type of optimizer, etc.) necessary to understand the results?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: Section~\ref{sec:experimental-setup} provides comprehensive experimental setup including configurations, model choices, evaluation metrics, and detailed scoring protocols.
-
-\item {\bf Experiment Statistical Significance}
-    \item[] Question: Does the paper report error bars suitably and correctly defined or other appropriate information about the statistical significance of the experiments?
-    \item[] Answer: \textbf{No}
-    \item[] Justification: We report success rates and quality scores but do not include statistical significance tests due to the limited sample size (30 prompts) and focus on practical system evaluation rather than statistical inference.
-
-\item {\bf Experiments Compute Resources}
-    \item[] Question: For each experiment, does the paper provide sufficient information on the computer resources (type of compute workers, memory, time of execution) needed to reproduce the experiments?
-    \item[] Answer: \textbf{Partial}
-    \item[] Justification: We mention Dagger.io infrastructure and Docker-based sandboxing but do not provide detailed compute resource specifications for reproduction.
-
-\item {\bf Code Of Ethics}
-    \item[] Question: Does the research conducted in the paper conform, in every respect, with the NeurIPS Code of Ethics?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: Our research focuses on improving software development tools and does not involve human subjects, sensitive data, or potential for misuse.
-
-\item {\bf Broader Impacts}
-    \item[] Question: Does the paper discuss both potential positive societal impacts and negative societal impacts of the work performed?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: Section~\ref{sec:broader-impact} discusses the broader impact of shifting from model-centric to environment-centric AI engineering and the importance of production-ready agent systems.
-
-\item {\bf Safeguards}
-    \item[] Question: Does the paper describe safeguards that have been put in place for responsible release of data or models that have a high risk for misuse?
-    \item[] Answer: \textbf{N/A}
-    \item[] Justification: Our work involves a software development framework rather than models or datasets with high misuse potential.
-
-\item {\bf Licenses for existing assets}
-    \item[] Question: Are the creators or original owners of assets (e.g., code, data, models), used in the paper, properly credited and are the license and terms of use explicitly mentioned and properly respected?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: We properly cite all referenced models, benchmarks, and tools. The app.build framework is released as open-source with appropriate licensing.
-
-\item {\bf New Assets}
-    \item[] Question: Are new assets introduced in the paper well documented and is the documentation provided alongside the assets?
-    \item[] Answer: \textbf{Yes}
-    \item[] Justification: The app.build framework and evaluation dataset are well-documented with detailed protocols provided in the appendix and open-source repository.
-
-\item {\bf Crowdsourcing and Research with Human Subjects}
-    \item[] Question: For crowdsourcing experiments and research with human subjects, does the paper include the full text of instructions given to participants and screenshots, if applicable, as well as details about compensation (if any)?
-    \item[] Answer: \textbf{N/A}
-    \item[] Justification: Our evaluation involved human assessors following standardized protocols but did not constitute formal human subjects research requiring IRB approval.
-
-\item {\bf Institutional Review Board (IRB) Approvals or Equivalent for Research with Human Subjects}
-    \item[] Question: Does the paper describe potential risks incurred by study participants, whether such risks were disclosed to the subjects, and whether Institutional Review Board (IRB) approvals were obtained?
-    \item[] Answer: \textbf{N/A}
-    \item[] Justification: The human evaluation did not involve study participants but rather standard software testing protocols by technical evaluators.
-
-\end{enumerate}
 
 \end{document}
