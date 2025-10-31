@@ -8,6 +8,9 @@ REVIEW SUMMARY TO ADDRESS
 - Tech stack justification: Added
 
 **High Priority Issues:** 0/4 Addressed
+
+**Medium Priority (Claims):** 1/7 Addressed ✅
+- Overstated claims: Moderated
 - Dataset expansion: Not done (requires new experiments)
 - Benchmark comparison: Not done (requires new experiments)
 - Multi-stack evaluation: Not done (requires new experiments)
@@ -196,15 +199,19 @@ The paper asserted specific numbers without inline citations:
 
 ### 9. Scope & Claims Moderation
 
-#### Soften Overstated Claims
-- [ ] **Moderate conclusion statements** like:
-  - "the path to reliable AI agents lies not in better prompts or bigger models, but in principled environment engineering"
-  - Counter-argument: Richard Sutton's "bitter lesson"
-  - Acknowledge model capability still matters
-- [ ] **Resolve internal contradiction:**
-  - Strong claims vs. admission that "environment scaffolding alone cannot eliminate need for capable foundation models"
-  - Make stance consistent
-- [ ] **Qualify generalization** - "raw model capability alone cannot bridge the gap" based on one stack, limited examples
+#### Soften Overstated Claims ✅ **ADDRESSED**
+- [x] **Moderate conclusion statements** - ✅ FIXED (paper.tex:60, 398, 402):
+  - OLD (line 402): "the path to reliable AI agents lies not in better prompts or bigger models, but in principled environment engineering"
+  - NEW: "offers a complementary path to scaling model capability...As model capabilities continue to advance, the systematic integration of validation and iterative repair remains essential"
+  - Now acknowledges both model scaling AND environment matter (addresses Sutton's "bitter lesson")
+- [x] **Resolve internal contradiction** - ✅ RESOLVED:
+  - Strong claims vs. admission removed
+  - Now consistently presents environment as "complementary" not exclusive path
+  - Changed "demonstrate" → "suggest" throughout
+- [x] **Qualify generalization** - ✅ SCOPED (paper.tex:60, 398):
+  - OLD: "raw model capability alone cannot bridge the gap"
+  - NEW: "for CRUD-oriented web applications...complements model capability in achieving production reliability"
+  - Added domain qualifiers: "within constrained domains", "in structured domains"
 
 #### Acknowledge Limitations
 - [ ] **Address CRUD-only scope** explicitly in limitations
