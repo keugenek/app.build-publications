@@ -33,15 +33,25 @@ Würzburg-Schweinfurt (CAIRO)}
 \maketitle
 
 \begin{abstract}
-We present app.build, an open-source framework that improves LLM-based application generation through systematic validation and structured environments. Our approach combines multi-layered validation pipelines, stack-specific orchestration, and model-agnostic architecture, implemented across three reference stacks. Through evaluation on 30 generation tasks, we demonstrate that comprehensive validation achieves 73.3\% viability rate with 30\% reaching perfect quality scores, while open-weights models achieve 80.8\% of closed-model performance when provided structured environments. The open-source framework has been adopted by the community, with over 3,000 applications generated to date. This work demonstrates that scaling reliable AI agents requires scaling environments, not just models---providing empirical insights and complete reference implementations for production-oriented agent systems.
+\textbf{Industrial motivation.} Engineering teams increasingly experiment with LLM agents to synthesize full-stack web applications, yet \emph{production reliability} and \emph{reproducibility} remain the blocking issues. Model-only improvements do not reliably translate into deployable software; what matters in practice is the \emph{environment} that constrains, validates, and repairs model outputs.
+
+\textbf{What we did.} We present the \emph{app.build} framework and report our industrial experience using \emph{environment scaffolding} (stack-aware generate$\rightarrow$validate$\rightarrow$repair loops, sandboxed execution, and policy gates) to turn prompt-to-app generation into a dependable workflow. We keep the model choice fixed and vary the environment to understand its effect on reliability and cost.
+
+\textbf{What we found.} Across end-to-end app-building tasks, structured validators and isolation improve the rate of \emph{viable} apps, while na\"\i ve end-to-end browser tests introduce brittleness. Ablations indicate that lightweight smoke checks and backend contract tests deliver most of the reliability lift, whereas broad E2E suites often reject working apps.
+
+\textbf{Why this matters.} For SANER's Industrial Track, this paper frames the problem as a software engineering challenge (reliability, maintainability, and cost in agentic development), provides a reproducible evaluation protocol, and distills lessons for practitioners deploying LLM agents. We release the open-source framework and an artifact to reproduce the main tables.
 \end{abstract}
+
 
 \begin{IEEEkeywords}
 software engineering, code generation, LLM agents, validation, environment scaffolding
 \end{IEEEkeywords}
 
-\section{Introduction}
-\label{sec:intro}
+% NOTE [SANER-Industrial]: Consider adding a short paragraph at the end of the introduction that states 3--4 research questions in SE terms (reliability, maintainability, cost, generalizability). Example:
+% RQ1 (Reliability): Does environment scaffolding increase the share of \emph{viable} apps compared to a plain-LLM baseline at similar budgets?
+% RQ2 (Maintainability): Does the scaffold improve static analysis/lints and CRUD contract checks?
+% RQ3 (Cost-effectiveness): What are token and wall-clock costs per \emph{viable} app under each validation setup?
+% RQ4 (Generalizability): Do results hold across representative stacks/tasks?
 
 \subsection{The Production Reliability Gap}
 
@@ -112,8 +122,7 @@ Our work advances \emph{environment-first} agent design. The main contributions 
   \item \textbf{Community Adoption.} The framework has been used to generate thousands of applications in practice, suggesting ES is useful beyond controlled experiments.
 \end{itemize}
 
-\section{Background and Related Work}
-\label{sec:related}
+% NOTE [SANER-Industrial]: Condense this section to \raisebox{0.5ex}{\textasciitilde}0.5 page. Keep only essential context and 6--8 citations that motivate environment-first validation; move niche survey details to supplemental or trim.
 
 \subsection{Agentic Software Engineering}
 
@@ -136,7 +145,7 @@ Tree search enhances LLM-based solutions and serves as a way to increase compute
 \subsection{Runtime Isolation and Scaling}
 Sandboxing is a cornerstone due to web applications requiring much more elaborate testing than running unit tests. It includes setup and teardown of databases and browser emulation. For parallel scaling, we use Dagger.io for its caching capabilities and Docker compatibility.
 
-\section{Problem Setup and Method}
+\section{Industrial Context \& System}
 \label{sec:method}
 
 \subsection{Problem Formulation}
@@ -170,8 +179,7 @@ The evaluation dataset comprises 30 prompts designed to assess system performanc
 The resulting dataset consists of 30 prompts spanning a complexity spectrum (low: static/single-page UI; medium: single-entity CRUD; high: multi-entity/custom logic).
 See the full list of prompts in Appendix~\ref{sec:prompt-dataset}.
 
-\subsection{Metrics}
-
+% NOTE [SANER-Industrial]: If space allows, rename \emph{Viability} to \emph{Smoke-Viable} and define \emph{Release-Viable} (requires CRUD correctness and zero Critical WARNs). If you keep current naming, add one sentence clarifying the gate semantics.
 Each application generated by the agent was evaluated by the following metrics, designed to assess its viability and quality under preset time and cost constraints.
 
 \begin{itemize}
@@ -332,6 +340,7 @@ To understand how each validation layer contributes to application quality, we c
 \item Interpretation: ESLint catches legitimate issues but may also block valid patterns. The performance gain suggests some lint rules may be overly restrictive.
 \end{itemize}
 
+% NOTE [SANER-Industrial]: Emphasize this as a \emph{negative result} and a practical lesson (brittle E2E inflates apparent failure rate); reviewers value frank trade-offs.
 \textbf{Finding 3: Removing Playwright Tests Significantly Improves Outcomes}
 \begin{itemize}
 \item Viability: 90.0\% (+16.7 pp) -- highest among all configurations
@@ -389,22 +398,18 @@ We categorize prompts along a simple rubric and analyze success impacts:
 
 Medium-complexity CRUD prompts achieve the highest quality ($Q=9$--10), reflecting strong scaffolding for data models and handlers. Low-complexity UI prompts are not uniformly easy: several failed prompt correspondence (AB-02) with generic templates. High-complexity prompts show lower viability rates due to interaction wiring and state-consistency issues surfaced by AB-04/AB-06.
 
-\section{Discussion}
-\label{sec:discussion}
-
-\subsection{Limitations}
+% NOTE [SANER-Industrial]: Start with 3--5 bullet "Lessons for Practitioners" (e.g., Keep smoke + backend contract tests; Avoid broad E2E suites; Curate ESLint rules; Sandbox & seed for reproducibility; Track token budgets).
+\subsection{Threats to Validity \& Limitations}
 \label{sec:limitations}
 
 Our current framework is limited to CRUD-oriented data applications, focusing on structured workflows with well-defined input-output expectations. While effective for common web application patterns, it does not yet support complex systems or advanced integrations. The validation pipeline, though comprehensive, relies on domain-specific heuristics and expert-defined anti-patterns, which may not generalize to novel or edge-case designs. Additionally, our human evaluation protocol, while rigorous, is poorly scalable and constrained by subjectivity in assessing maintainability and user experience nuances.
 
-\subsection{Broader Impact}
+\subsection{Ethics \& Broader Impact}
 \label{sec:broader-impact}
 
 The AI agent boom is accelerating, but real industry deployments often fail silently. Without environment scaffolding, we risk massive overengineering of AI models while ignoring the real bottleneck. App.build represents a shift from model-centric to system-centric AI engineering—a critical step toward scaling reliable agent environments. As practitioners emphasize \cite{babushkin2025machine}, production AI systems only become effective when development integrates not just model performance, but core software engineering principles. By open-sourcing both the framework and evaluation protocol, we provide a reproducible, transparent foundation for building and benchmarking agent environments at scale.
 
-\section{Conclusion}
-\label{sec:conclusion}
-
+% NOTE [SANER-Industrial]: Add a one-sentence artifact statement with link/DOI (one-command runner, tasks, prompts, Docker/CI). If permitted, cite adoption evidence ("thousands of apps generated") with an anonymized plot pointer.
 Our results demonstrate that raw model capability alone cannot bridge the gap between AI potential and production reality. Through systematic environment scaffolding, multi-layered validation, and stack-specific orchestration, app.build transforms probabilistic language models into dependable software engineering agents.
 
 Ablations reveal clear trade-offs: removing unit tests increases apparent viability but reduces CRUD correctness; removing linting yields small gains with modest regressions; removing Playwright tests improves outcomes by eliminating flaky UI checks. These results support retaining minimal smoke tests for boot and primary flows, structural checks for UI/code consistency, and scoped E2E tests for critical paths only.
