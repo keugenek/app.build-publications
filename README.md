@@ -1,6 +1,6 @@
-# app.build Paper Submission - NeurIPS 2025 SEA Workshop
+# app.build Collaboration between Databricks Codegen team and THWS CAIRO Lab
 
-This repository contains the paper submission for the NeurIPS 2025 Workshop on Scaling Environments for Agents (SEA).
+This repository contains paper submissions and supporting materials for app.build prompt to application agent.
 
 ## Paper: Production Reliability at Scale: Scaffolding Systems for Agentic Prompt-to-App Generation
 
@@ -16,10 +16,6 @@ This submission is a collaborative research effort between **Databricks - app.bu
 - Structured error recovery and feedback loops
 - Production-grade quality gates
 
-### Manuscript
-
-- Draft manuscript: [`docs/sea-2025/draft0.md`](docs/sea-2025/paper.md)
-
 ### Authors & Contributors
 
 **app.build Team (Databricks - app.build team)**
@@ -33,12 +29,4 @@ This submission is a collaborative research effort between **Databricks - app.bu
 - Pratik Nichite
 
 Lab website: [https://www.thws.de/en/research/institutes/cairo](https://www.thws.de/en/research/institutes/cairo)
-
-### Workshop Information
-
-**SEA Workshop @ NeurIPS 2025**  
-- Date: December 6, 2025 (San Diego Convention Center)
-- Website: [https://sea-workshop.github.io/](https://sea-workshop.github.io/)
-- Submission deadline: September 1, 2025
-- Contact: sea-workshop-neurips2025@googlegroups.com
 
