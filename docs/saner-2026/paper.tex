@@ -143,7 +143,7 @@ Our work advances \emph{environment-first} agent design. The main contributions 
 \begin{itemize}
   \item \textbf{Environment Scaffolding Paradigm.} We formalize \emph{environment scaffolding (ES)} and show how structuring the action space with per-step validation enables reliable code generation without model-specific tricks.
   \item \textbf{Open-Source Framework (app.build).} We release an implementation of ES that targets three stacks (TypeScript/tRPC, PHP/Laravel, Python/NiceGUI) and ships with validators and deployment hooks. The framework has gained 650+ GitHub stars and 89 forks, demonstrating practitioner adoption.
-  \item \textbf{Two-Tier Empirical Evaluation.} We conduct 300 end-to-end generation experiments with automated metrics (success rate, cost, tokens, duration) plus detailed human evaluation on 30 representative prompts with 6-criteria quality rubric. This methodology balances statistical power with nuanced quality assessment.
+  \item \textbf{Two-Tier Empirical Evaluation.} We conduct 300 end-to-end generation experiments with automated metrics (success rate, cost, tokens, duration) plus detailed human evaluation on 30 representative prompts with 6-criteria quality rubric. This methodology combines automated consistency checks at scale with manual viability assessment on representative samples.
   \item \textbf{Production-Scale Validation.} The framework has been deployed in production since June 2025, generating over 3000 user applications during the first 4 months with hundreds of applications generated daily at peak usage, providing ecological validity beyond controlled experiments.
   \item \textbf{Cost-Performance Analysis.} We quantify validation overhead through token usage and cost-per-viable-app metrics, showing open-weights models (Qwen3) achieve 70\% success at 8.2x lower cost (\$0.61 vs \$5.01 per viable app), while validation ablations reveal that comprehensive testing increases costs by~\$40 per cohort but catches real defects.
   \item \textbf{Methodological Insight.} We find that improving the \emph{environment} (constraints, tests, repair loops) often matters more than scaling the model for production reliability, with lightweight smoke tests and backend validation providing most gains while E2E browser tests introduce brittleness.
@@ -183,6 +183,16 @@ LLM-based code generation enables rapid prototyping but often produces code that
 We designed experiments using a custom prompt dataset and metrics to evaluate viability and quality of generated applications.
 
 \subsection{Evaluation Framework}
+
+Our evaluation methodology addresses the core challenge of assessing prompt-to-app generation systems: validating that generated applications not only compile and boot, but actually implement the requested functionality correctly. We combine manual-heavy viability assessment with automated checks across 300 end-to-end experiments, where every generated application undergoes deterministic validation followed by human review on a representative subset.
+
+\textbf{Two-tier evaluation design.} We conduct 300 end-to-end generation runs with automated checks measuring boot success, smoke test passage, cost, token usage, and duration. These automated gates provide fast, deterministic feedback but cannot assess functional correctness or usability. For viability assessment, human evaluators systematically test 30 representative applications using a structured 6-criteria rubric (Section~\ref{sec:scoring}), verifying that generated apps correctly implement requested functionality, handle edge cases, and meet production quality standards. This manual assessment is essential because automated metrics alone cannot detect integration bugs, incorrect business logic, or poor UX that would block production deployment.
+
+\textbf{Viability vs. quality distinction.} We separate binary viability ($V \in \{0,1\}$) from continuous quality ($Q \in [0,10]$). Viability requires only that an application boots successfully and demonstrates basic prompt correspondence---a minimal threshold for deployment consideration. Quality scoring evaluates correctness, completeness, error handling, and code maintainability through systematic human assessment. This distinction reflects industrial practice: automated gates filter non-viable candidates before human review evaluates deployment readiness.
+
+\textbf{Production-scale validation.} Beyond controlled experiments, we validate the framework through production deployment metrics. Since June 2025, the system has generated over 3000 user applications with peak usage exceeding 220 apps/day (Section~\ref{sec:results}). Production data provides ecological validity showing the framework operates reliably with diverse real-world requirements beyond our curated test set.
+
+\textbf{Cost-performance tradeoffs.} All experiments track token consumption (input/output) and API costs to quantify validation overhead. We report both total cost per generation cohort and cost-per-viable-app to reveal true economics: validation may increase upfront costs but reduces the effective cost of successful outcomes by filtering failures early.
 
 \subsection{Prompt Dataset}
 \label{sec:prompt-dataset-desc}
@@ -291,9 +301,9 @@ The community adoption metrics (650+ stars, 89 forks) position app.build among a
 
 \subsection{Two-Tier Evaluation Methodology}
 
-Our evaluation combines large-scale automated validation with detailed human quality assessment. We conducted \textbf{300 end-to-end generation experiments} across baseline and ablation conditions, collecting objective metrics (success rate, healthcheck pass rate, cost, duration, token usage) for each run. This automated tier provides statistical power and cost-effectiveness analysis. For quality validation, we performed \textbf{detailed human evaluation on 30 representative prompts} using the AB-check rubric (Section~\ref{sec:scoring}), providing nuanced assessment of viability and functional correctness that automated metrics cannot capture.
+Our evaluation combines automated checks with manual viability assessment. We conducted \textbf{300 end-to-end generation experiments} across baseline and ablation conditions, collecting objective metrics (success rate, healthcheck pass rate, cost, duration, token usage) for each run. These automated checks enable consistent measurement and cost-effectiveness analysis across configurations. For viability validation, we performed \textbf{detailed human evaluation on 30 representative prompts} using the AB-check rubric (Section~\ref{sec:scoring}), providing nuanced assessment of functional correctness and production readiness that automated metrics cannot capture.
 
-This two-tier approach balances scale with depth: automated metrics (n=300) establish broad patterns and enable rigorous ablation studies, while human evaluation (n=30) validates that automated success correlates with actual application quality. The methodology reflects industrial practice where automated gates filter candidates before human review.
+This two-tier approach reflects industrial practice: automated metrics enable systematic comparison across model architectures and validation strategies, while human evaluation validates that generated applications actually work for their intended purpose. Automated gates filter obviously broken candidates, but human assessors determine whether apps meet production deployment criteria.
 
 \subsection{Automated Validation Results at Scale (n=300)}
 
