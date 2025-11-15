@@ -273,9 +273,16 @@ The app.build framework has been deployed in production since June 2025, demonst
 \label{fig:star-history}
 \end{figure}
 
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.48\textwidth]{diagrams/production-usage-metrics.png}
+\caption{Production usage metrics demonstrating real-world deployment scale. Left: Daily application creation and deployment activity showing peak usage of 220+ apps/day in early August 2025. Right: User growth trajectory over 30 days showing rapid adoption spike coinciding with peak usage period, reaching 160+ active users. Data from production database analytics.}
+\label{fig:production-usage}
+\end{figure}
+
 Figure~\ref{fig:star-history} shows the repository's star growth trajectory, revealing an inflection point in June 2025 when the framework reached production maturity. The repository grew from approximately 50 stars to 650+ stars over five months, representing 13x growth with peak velocity exceeding 100 stars per month during August-September 2025. This organic adoption pattern—characterized by sustained acceleration rather than a single viral spike—suggests the framework addresses genuine practitioner needs.
 
-At peak usage, the platform generated hundreds of applications daily, with over 3000 user applications generated during the first 4 months (June-October 2025). This production-scale validation complements our controlled experiments: while our systematic evaluation uses 30 prompts with detailed human assessment and 300 experiments with automated metrics, the production deployment provides ecological validity showing the framework operates reliably in uncontrolled real-world conditions with diverse user requirements.
+At peak usage, the platform generated hundreds of applications daily (Figure~\ref{fig:production-usage}, left panel shows peak of 220+ apps/day in early August 2025), with over 3000 user applications generated during the first 4 months (June-October 2025). The concurrent user growth spike (Figure~\ref{fig:production-usage}, right panel) demonstrates sustained platform adoption beyond initial experimentation. This production-scale validation complements our controlled experiments: while our systematic evaluation uses 30 prompts with detailed human assessment and 300 experiments with automated metrics, the production deployment provides ecological validity showing the framework operates reliably in uncontrolled real-world conditions with diverse user requirements.
 
 The community adoption metrics (650+ stars, 89 forks) position app.build among actively-used open-source agent frameworks, demonstrating that practitioners value systematic environment scaffolding for production reliability over model-only approaches. The correlation between production deployment launch (June 2025) and rapid community growth validates the industrial relevance of our environment-first approach.
 
