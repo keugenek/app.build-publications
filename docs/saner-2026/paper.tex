@@ -80,24 +80,27 @@ The gap manifests in three critical dimensions that affect practitioner adoption
 
 \textbf{Reproducibility and debugging.} When generation fails, practitioners need actionable diagnostics. Model-centric approaches offer little guidance for iterative refinement. Practitioners need structured validation feedback that pinpoints specific failure modes, so that repairs can be targeted effectively.
 
-\textbf{Economic viability.} At scale, token costs and iteration cycles determine feasibility. Closed frontier models like Claude Sonnet 4.5 achieve high success rates but at significant costs. For teams generating hundreds of applications, these costs compound rapidly. The industry needs cost-performance tradeoffs: where can open-weights models substitute for frontier models? What validation overhead is justified by reliability gains?
+\textbf{Economic viability.} At scale, token costs and iteration cycles determine feasibility. Closed frontier models like Claude Sonnet 4.5 achieve high success rates but at significant costs [TODO:proof!]. For teams generating hundreds of applications, these costs compound rapidly. The industry needs cost-performance tradeoffs: where can open-weights models substitute for frontier models? What validation overhead is justified by reliability gains?
 
-We claim that model-only improvements are insufficient. The prevailing approach treats reliability as a model capability problem---scale parameters, improve training data, refine prompts. However, our production experience generating thousands of applications reveals that environment design matters more than model selection for industrial deployment. A frontier model without validation produces unreliable apps; industry needs explicit tradeoffs between cost, speed, and correctness. Production-ready systems require frameworks that integrate validation, isolation, and repair as first-class concerns---not post-hoc additions to model outputs. Recent surveys \cite{jiang2024survey,paul2024benchmarks} note the field requires a shift from model-centric to environment-centric design.
+We claim that leaning on model-only improvements is insufficient. The prevailing approach treats reliability as a model capability problem---scale parameters, improve training data, refine prompts. However, our production experience generating thousands of applications reveals that environment design matters more than model selection for industrial deployment. A frontier model without validation produces unreliable apps; industry needs explicit tradeoffs between cost, speed, and correctness. Production-ready systems require frameworks that integrate validation, isolation, and repair as first-class concerns---not post-hoc additions to model outputs. Recent surveys \cite{jiang2024survey,paul2024benchmarks} note the field requires a shift from model-centric to environment-centric design.
 
 \subsection{Our Approach: Environment Scaffolding}
 
 \textbf{Definition.} We define \emph{environment scaffolding (ES)} as an \textbf{environment-first} paradigm for LLM-based code generation where the model operates inside a structured sandbox that constrains actions and provides continuous, deterministic feedback. Rather than relying on larger models or prompt-only techniques, ES \emph{improves the context} around the model --- shaping the action space, providing templates and tools, and validating each step --- so that creativity is channeled into \emph{safe, verifiable} outcomes.
 
-\paragraph{Principles.}
-\begin{enumerate}
-  \item \textbf{Structured task decomposition.} The agent works through an explicit sequence of well-scoped tasks (e.g., schema $\rightarrow$ API $\rightarrow$ UI), each with clear inputs/outputs and acceptance rules.
-  \item \textbf{Multi-layered validation.} Deterministic checks (linters, type-checkers, unit/smoke tests, runtime logs) run \emph{after every significant generation}, catching errors early and feeding them back for automatic repair.
-  \item \textbf{Runtime isolation.} All code executes in isolated sandboxes (containers) with ephemeral state, enabling safe trial-and-error and reproducible re-runs.
-  \item \textbf{Model-agnostic integration.} The scaffolding is decoupled from any particular LLM; different backends can be swapped without changing the workflow.
-\end{enumerate}
+\paragraph{How environment scaffolding works in practice.}
+Environment scaffolding structures LLM-based code generation around four core practices that address production reliability requirements:
 
-\paragraph{Why ES vs.\ model-centric approaches?}
-Traditional (model-centric) systems prompt an LLM to generate the full solution in one or few passes, with checks (if any) at the end. ES, in contrast, enforces a guarded, iterative loop: generate $\rightarrow$ validate $\rightarrow$ repair, per sub-task. Figure~\ref{fig:es-vs-model} and Table~\ref{tab:es-contrast} summarize the contrast.
+\textbf{Structured task decomposition.} Rather than asking the model to generate an entire application at once, we break work into explicit stages (schema $\rightarrow$ API $\rightarrow$ UI) with defined inputs, outputs, and success criteria. This matches how developers actually build software and makes failures easier to diagnose.
+
+\textbf{Multi-layered validation.} After every generation step, deterministic checks run automatically: linters catch syntax errors, type-checkers verify contracts, unit tests validate logic, and smoke tests ensure the app boots. Failures trigger immediate repair loops before moving forward, preventing error accumulation.
+
+\textbf{Runtime isolation.} Every generation and test runs in an isolated sandbox with ephemeral state. If the model generates code that crashes or corrupts data, the container resets cleanly. This enables aggressive trial-and-error without risk to production systems.
+
+\textbf{Model-agnostic design.} The scaffolding layer sits between your workflow and the LLM, allowing you to swap models (e.g., from Claude to Qwen) without rewriting validation logic. This protects against vendor lock-in and enables cost-performance optimization.
+
+\paragraph{Why this differs from model-centric approaches.}
+Most existing systems prompt an LLM to generate code and then validate the complete output. This works for simple scripts but fails for full-stack applications where a single integration error can invalidate hours of generation work. Environment scaffolding instead enforces generate$\rightarrow$validate$\rightarrow$repair at each step, catching errors early when they are cheap to fix. Figure~\ref{fig:es-vs-model} and Table~\ref{tab:es-contrast} illustrate this architectural difference.
 
 \begin{figure}[t]
   \centering
