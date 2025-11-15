@@ -50,13 +50,13 @@ Würzburg-Schweinfurt (CAIRO)}
 \maketitle
 
 \begin{abstract}
-\textbf{Industrial motivation.} Engineering teams increasingly experiment with LLM agents to synthesize full-stack web applications, yet \emph{production reliability} and \emph{reproducibility} remain the blocking issues. Model-only improvements do not reliably translate into deployable software; what matters in practice is the \emph{environment} that constrains, validates, and repairs model outputs.
+Engineering teams increasingly experiment with LLM agents to synthesize full-stack web applications, yet production reliability and code generation reproducibility remain the blocking issues. Ongoing improvements of foundational models alone do not reliably translate into deployable software; what matters in practice is the environment that constrains, validates, and repairs model outputs.
 
-\textbf{What we did.} We present the \emph{app.build} framework and report our industrial experience using \emph{environment scaffolding} (stack-aware generate$\rightarrow$validate$\rightarrow$repair loops, sandboxed execution, and policy gates) to turn prompt-to-app generation into a dependable workflow. We conducted 300 end-to-end generation experiments with automated validation metrics, complemented by detailed human quality assessment on 30 representative prompts. The framework has been deployed in production, generating hundreds of applications daily with 650+ GitHub stars and 89 forks.
+We present the app.build framework and report our industrial experience using environment scaffolding (stack-aware generate$\rightarrow$validate$\rightarrow$repair loops, sandboxed execution, and policy gates) to turn prompt-to-app generation into a dependable workflow. We conducted 300 end-to-end generation experiments with automated validation metrics, complemented by detailed human quality assessment on 30 representative prompts. The framework has been deployed in production and generated 3000+ user applications during 4 months of operation.
 
-\textbf{What we found.} Across end-to-end app-building tasks, structured validators and isolation improve the rate of \emph{viable} apps, while na\"\i ve end-to-end browser tests introduce brittleness. Large-scale automated metrics (n=300) reveal that open-weights models achieve 70\% success at 9x lower cost than closed models, with validation ablations showing lightweight smoke checks and backend contract tests deliver most reliability lift, whereas broad E2E suites often reject working apps.
+Across end-to-end app-building tasks, structured validators and code execution isolation improve the rate of viable apps (viability = pass boot + prompt-correspondence smoke checks) to 73.3\% in our tests, while generic end-to-end browser tests introduce brittleness. Large-scale automated metrics (n=300) reveal that open-weights models achieve 80.8\% performance of top closed model at 8.2$\times$ lower cost per viable app, with validation ablations showing lightweight smoke checks and backend contract tests deliver most reliability lift, whereas broad end-to-end suites often reject working apps.
 
-\textbf{Why this matters.} For SANER's Industrial Track, this paper frames the problem as a software engineering challenge (reliability, maintainability, and cost in agentic development), provides a reproducible evaluation protocol validated at production scale, and distills lessons for practitioners deploying LLM agents. We release the open-source framework (650+ stars) and an artifact to reproduce the main tables.
+This paper frames the problem as a software engineering challenge (reliability, maintainability, and cost in agentic development), provides a reproducible evaluation protocol validated at production scale, and distills lessons for practitioners deploying LLM agents. We release the open-source framework (650+ stars) and an artifact to reproduce the main tables.
 \end{abstract}
 
 
@@ -141,7 +141,7 @@ Our work advances \emph{environment-first} agent design. The main contributions 
   \item \textbf{Environment Scaffolding Paradigm.} We formalize \emph{environment scaffolding (ES)} and show how structuring the action space with per-step validation enables reliable code generation without model-specific tricks.
   \item \textbf{Open-Source Framework (app.build).} We release an implementation of ES that targets three stacks (TypeScript/tRPC, PHP/Laravel, Python/NiceGUI) and ships with validators and deployment hooks. The framework has gained 650+ GitHub stars and 89 forks, demonstrating practitioner adoption.
   \item \textbf{Two-Tier Empirical Evaluation.} We conduct 300 end-to-end generation experiments with automated metrics (success rate, cost, tokens, duration) plus detailed human evaluation on 30 representative prompts with 6-criteria quality rubric. This methodology balances statistical power with nuanced quality assessment.
-  \item \textbf{Production-Scale Validation.} The framework has been deployed in production since early 2025, generating hundreds of applications daily at peak usage with thousands of accumulated deployments, providing ecological validity beyond controlled experiments.
+  \item \textbf{Production-Scale Validation.} The framework has been deployed in production since June 2025, generating over 3000 user applications during the first 4 months with hundreds of applications generated daily at peak usage, providing ecological validity beyond controlled experiments.
   \item \textbf{Cost-Performance Analysis.} We quantify validation overhead through token usage and cost-per-viable-app metrics, showing open-weights models (Qwen3) achieve 70\% success at 8.2x lower cost (\$0.61 vs \$5.01 per viable app), while validation ablations reveal that comprehensive testing increases costs by~\$40 per cohort but catches real defects.
   \item \textbf{Methodological Insight.} We find that improving the \emph{environment} (constraints, tests, repair loops) often matters more than scaling the model for production reliability, with lightweight smoke tests and backend validation providing most gains while E2E browser tests introduce brittleness.
 \end{itemize}
@@ -264,7 +264,7 @@ AB-07 & Performance & 1/6 & Normalized to $[0,1]$ \\
 
 \subsection{Production Deployment and Community Adoption}
 
-The app.build framework has been deployed in production since early 2025, demonstrating real-world viability beyond controlled experiments. The open-source repository (\url{https://github.com/appdotbuild/agent/}) has gained significant community traction with 650 stars and 89 forks as of October 2025, indicating strong practitioner interest in environment-first approaches to agentic code generation.
+The app.build framework has been deployed in production since June 2025, demonstrating real-world viability beyond controlled experiments. The open-source repository (\url{https://github.com/appdotbuild/agent/}) has gained significant community traction with 650 stars and 89 forks as of October 2025, indicating strong practitioner interest in environment-first approaches to agentic code generation.
 
 \begin{figure}[!t]
 \centering
@@ -275,7 +275,7 @@ The app.build framework has been deployed in production since early 2025, demons
 
 Figure~\ref{fig:star-history} shows the repository's star growth trajectory, revealing an inflection point in June 2025 when the framework reached production maturity. The repository grew from approximately 50 stars to 650+ stars over five months, representing 13x growth with peak velocity exceeding 100 stars per month during August-September 2025. This organic adoption pattern—characterized by sustained acceleration rather than a single viral spike—suggests the framework addresses genuine practitioner needs.
 
-At peak usage, the platform generated hundreds of applications daily, with accumulated production deployments exceeding thousands of apps. This production-scale validation complements our controlled experiments: while our systematic evaluation uses 30 prompts with detailed human assessment and 300 experiments with automated metrics, the production deployment provides ecological validity showing the framework operates reliably in uncontrolled real-world conditions with diverse user requirements.
+At peak usage, the platform generated hundreds of applications daily, with over 3000 user applications generated during the first 4 months (June-October 2025). This production-scale validation complements our controlled experiments: while our systematic evaluation uses 30 prompts with detailed human assessment and 300 experiments with automated metrics, the production deployment provides ecological validity showing the framework operates reliably in uncontrolled real-world conditions with diverse user requirements.
 
 The community adoption metrics (650+ stars, 89 forks) position app.build among actively-used open-source agent frameworks, demonstrating that practitioners value systematic environment scaffolding for production reliability over model-only approaches. The correlation between production deployment launch (June 2025) and rapid community growth validates the industrial relevance of our environment-first approach.
 
@@ -287,7 +287,7 @@ This two-tier approach balances scale with depth: automated metrics (n=300) esta
 
 \subsection{Automated Validation Results at Scale (n=300)}
 
-Table~\ref{tab:large-scale-automated} presents aggregated results from 300 automated experiments across all conditions. The baseline configuration (Claude Sonnet 4 with full validation) achieved 86.7\% automated success rate at \$110.20 total cost for 30 apps. Open-weights models show cost-performance tradeoffs: Qwen3-Coder-480B achieved 70\% success at \$12.68 (9x cost reduction), while validation ablations reveal systematic patterns discussed in subsequent sections.
+Table~\ref{tab:large-scale-automated} presents aggregated results from 300 automated experiments across all conditions. The baseline configuration (Claude Sonnet 4 with full validation) achieved 86.7\% automated success rate at \$110.20 total cost for 30 apps. Open-weights models show cost-performance tradeoffs: Qwen3-Coder-480B achieved 70\% success at \$12.68 total cost, delivering an 8.2x cost reduction per viable app (\$0.61 vs \$5.01), while validation ablations reveal systematic patterns discussed in subsequent sections.
 
 \begin{table}[!t]
 \caption{Large-Scale Automated Results Across 300 Experiments}
@@ -408,7 +408,7 @@ Smoke tests (AB-01, AB-02) determine viability. Among viable applications ($V=1$
 
 We evaluated Claude Sonnet 4 against two open-weights models using the TypeScript/tRPC stack with simplified validation pipeline ensuring the app is bootable and renders correctly. Claude achieved 86.7\% success rate, establishing our closed-model baseline at \$110.20 total cost. Qwen3-Coder-480B-A35B reached 70\% success rate (80.8\% relative performance) while GPT OSS 120B managed only 30\% success rate. Both open models were accessed via OpenRouter, resulting in significantly lower costs: \$12.68 for Qwen3 and \$4.55 for GPT OSS.
 
-The performance gap reveals that environment scaffolding alone cannot eliminate the need for capable foundation models. However, leading open-weights models like Qwen3 demonstrate that structured environments can enable production-viable performance at substantially reduced costs. The 9x cost reduction for 19\% performance loss represents a viable tradeoff.
+The performance gap reveals that environment scaffolding alone cannot eliminate the need for capable foundation models. However, leading open-weights models like Qwen3 demonstrate that structured environments can enable production-viable performance at substantially reduced costs. The 8.2x cost reduction per viable app for 19\% performance loss represents a viable tradeoff for many production scenarios.
 
 Operational characteristics differed notably between model types. Open models required more validation retries, evidenced by higher LLM call counts (4,359 for Qwen3, 4,922 for GPT OSS vs 3,413 for Claude). Healthcheck pass rates (86.7\% for Qwen3 vs 96.7\% for Claude) indicate open models generate syntactically correct code but struggle with integration-level correctness, emphasizing the importance of comprehensive validation.
 
