@@ -158,22 +158,23 @@ no_tests: 30 experiments
 
 #### 5.2 Regenerate Results from Raw Data
 
-If you want to regenerate the results tables from the raw dataset:
+To regenerate all results tables from the raw dataset:
 
 ```bash
 cd analysis
+bash run_analysis_and_compare.sh
+```
 
-# Install dependencies (uses pyproject.toml from parent directory)
-pip install -r ../pyproject.toml
+This script will:
+1. Process all experiments in dataset/baseline/, dataset/openmodels/, dataset/ablations/
+2. Calculate success rates, costs, token usage
+3. Generate results/*.csv files with summary statistics
+4. Output can be compared with paper Table III
 
-# Regenerate all results tables from dataset/
+**Manual run (alternative):**
+```bash
+cd analysis
 python analyze_benchmark.py
-
-# This will:
-# 1. Process all experiments in dataset/baseline/, dataset/openmodels/, dataset/ablations/
-# 2. Calculate success rates, costs, token usage
-# 3. Generate results/*.csv files
-# 4. Print summary statistics matching paper Table III
 ```
 
 **Output location:** `results/` directory
