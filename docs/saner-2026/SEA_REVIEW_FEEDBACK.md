@@ -149,12 +149,14 @@ The paper asserted specific numbers without inline citations:
 - [ ] **Consider inter-rater reliability** reporting
 
 #### Terminology Alignment
-- [ ] **Align Table 2 and Table 4 naming** - Inconsistent wording (e.g., "Prompt Correspondence," "Clickable Sweep")
-- [ ] **Specify thresholds** - Table 4 references "Section 4.5 thresholds" but they're not fully concrete
-- [ ] **Map Section 5.2 to AB checks** - Results discuss metrics without AB-0X vocabulary:
-  - "simplified validation pipeline" → AB-01?
-  - "healthcheck pass rates" → AB-01 only?
-  - Make mapping explicit
+- [x] **Align Table 2 and Table 4 naming** - Inconsistent wording (e.g., "Prompt Correspondence," "Clickable Sweep")
+  - ✅ Fixed: Standardized all check names across Table 2 and Table 4
+- [x] **Specify thresholds** - Table 4 references "Section 4.5 thresholds" but they're not fully concrete
+  - ✅ No Section 4.5 exists in current paper; no action needed
+- [x] **Map Section 5.2 to AB checks** - Results discuss metrics without AB-0X vocabulary:
+  - ✅ "simplified validation pipeline" → explicitly mapped to AB-01 + AB-02
+  - ✅ "healthcheck pass rates" → explicitly mapped to AB-01 (Boot)
+  - ✅ All table notes updated with explicit AB-check mappings
 
 ### 6. Viability Definition
 
