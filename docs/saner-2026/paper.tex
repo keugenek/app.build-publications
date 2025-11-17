@@ -8,6 +8,7 @@
 \usepackage{url}
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{threeparttable} % table notes for self-contained captions
+\usepackage{float}          % for [H] placement specifier
 
 \title{app.build: A Production Framework for Scaling Agentic Prompt-to-App Generation with Environment Scaffolding\thanks{Code available at \protect\url{https://github.com/neondatabase/appdotbuild-agent}}}
 
@@ -505,11 +506,14 @@ This submission is prepared in collaboration between Databricks (app.build team)
 \bibliography{references}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
 
 \section*{Appendix: Prompt Dataset}
 \label{sec:prompt-dataset}
 
-\begin{table*}[h!]
+Table~\ref{tab:prompt-dataset} presents the complete set of 30 prompts used in our evaluation, including complexity classifications.
+
+\begin{table*}[!h]
 \caption{Complete Prompt Dataset Used in Evaluation ($n=30$)}
 \label{tab:prompt-dataset}
 \centering
