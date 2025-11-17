@@ -54,7 +54,7 @@ Engineering teams increasingly experiment with LLM agents to synthesize full-sta
 
 We present the app.build framework and report our industrial experience using environment scaffolding (stack-aware generate$\rightarrow$validate$\rightarrow$repair loops, sandboxed execution, and policy gates) to turn prompt-to-app generation into a dependable workflow. We conducted 300 end-to-end generation experiments with automated validation metrics, complemented by detailed human quality assessment on 30 representative prompts. The framework has been deployed in production and generated 3000+ user applications during 4 months of operation.
 
-Across end-to-end app-building tasks, structured validators and code execution isolation improve the rate of viable apps (viability = pass boot + prompt-correspondence smoke checks) to 73.3\% in our tests, while generic end-to-end browser tests introduce brittleness. Large-scale automated metrics (n=300) reveal that open-weights models achieve 80.8\% performance of top closed model at 8.2$\times$ lower cost per viable app, with validation ablations showing lightweight smoke checks and backend contract tests deliver most reliability lift, whereas broad end-to-end suites often reject working apps.
+Across end-to-end app-building tasks, structured validators and code execution isolation improve the rate of smoke-viable apps (smoke-viability = pass boot + prompt-correspondence smoke checks) to 73.3\% in our tests, while generic end-to-end browser tests introduce brittleness. Large-scale automated metrics (n=300) reveal that open-weights models achieve 79.5\% performance of top closed model at 8.2$\times$ lower cost per smoke-viable app, with validation ablations showing lightweight smoke checks and backend contract tests deliver most reliability lift, whereas broad end-to-end suites often reject working apps.
 
 This paper frames the problem as a software engineering challenge (reliability, maintainability, and cost in agentic development), provides a reproducible evaluation protocol validated at production scale, and distills lessons for practitioners deploying LLM agents. We release the open-source framework (650+ stars) and an artifact to reproduce the main tables.
 \end{abstract}
@@ -65,9 +65,9 @@ software engineering, code generation, LLM agents, validation, environment scaff
 \end{IEEEkeywords}
 
 % NOTE [SANER-Industrial]: Consider adding a short paragraph at the end of the introduction that states 3--4 research questions in SE terms (reliability, maintainability, cost, generalizability). Example:
-% RQ1 (Reliability): Does environment scaffolding increase the share of \emph{viable} apps compared to a plain-LLM baseline at similar budgets?
+% RQ1 (Reliability): Does environment scaffolding increase the share of \emph{smoke-viable} apps compared to a plain-LLM baseline at similar budgets?
 % RQ2 (Maintainability): Does the scaffold improve static analysis/lints and CRUD contract checks?
-% RQ3 (Cost-effectiveness): What are token and wall-clock costs per \emph{viable} app under each validation setup?
+% RQ3 (Cost-effectiveness): What are token and wall-clock costs per \emph{smoke-viable} app under each validation setup?
 % RQ4 (Generalizability): Do results hold across representative stacks/tasks?
 
 \subsection{The Production Reliability Gap}
@@ -143,9 +143,9 @@ Our work advances \emph{environment-first} agent design. The main contributions 
 \begin{itemize}
   \item \textbf{Environment Scaffolding Paradigm.} We formalize \emph{environment scaffolding (ES)} and show how structuring the action space with per-step validation enables reliable code generation without model-specific tricks.
   \item \textbf{Open-Source Framework (app.build).} We release an implementation of ES that targets three stacks (TypeScript/tRPC, PHP/Laravel, Python/NiceGUI) and ships with validators and deployment hooks. The framework has gained 650+ GitHub stars and 89 forks, demonstrating practitioner adoption.
-  \item \textbf{Two-Tier Empirical Evaluation.} We conduct 300 end-to-end generation experiments with automated metrics (success rate, cost, tokens, duration) plus detailed human evaluation on 30 representative prompts with 6-criteria quality rubric. This methodology combines automated consistency checks at scale with manual viability assessment on representative samples.
+  \item \textbf{Two-Tier Empirical Evaluation.} We conduct 300 end-to-end generation experiments with automated metrics (success rate, cost, tokens, duration) plus detailed human evaluation on 30 representative prompts with 6-criteria quality rubric. This methodology combines automated consistency checks at scale with manual smoke-viability assessment on representative samples.
   \item \textbf{Production-Scale Validation.} The framework has been deployed in production since June 2025, generating over 3000 user applications during the first 4 months with hundreds of applications generated daily at peak usage, providing ecological validity beyond controlled experiments.
-  \item \textbf{Cost-Performance Analysis.} We quantify validation overhead through token usage and cost-per-viable-app metrics, showing open-weights models (Qwen3) achieve 70\% success at 8.2x lower cost (\$0.61 vs \$5.01 per viable app), while validation ablations reveal that comprehensive testing increases costs by~\$40 per cohort but catches real defects.
+  \item \textbf{Cost-Performance Analysis.} We quantify validation overhead through token usage and cost-per-smoke-viable-app metrics, showing open-weights models (Qwen3) achieve 68.9\% success at 8.2x lower cost (\$0.61 vs \$5.01 per smoke-viable app), while validation ablations reveal that comprehensive testing increases costs by~\$40 per cohort but catches real defects.
   \item \textbf{Methodological Insight.} We find that improving the \emph{environment} (constraints, tests, repair loops) often matters more than scaling the model for production reliability, with lightweight smoke tests and backend validation providing most gains while E2E browser tests introduce brittleness.
 \end{itemize}
 
@@ -180,19 +180,19 @@ LLM-based code generation enables rapid prototyping but often produces code that
 \section{Experimental Setup}
 \label{sec:experimental-setup}
 
-We designed experiments using a custom prompt dataset and metrics to evaluate viability and quality of generated applications.
+We designed experiments using a custom prompt dataset and metrics to evaluate smoke-viability and quality of generated applications.
 
 \subsection{Evaluation Framework}
 
-Our evaluation methodology addresses the core challenge of assessing prompt-to-app generation systems: validating that generated applications not only compile and boot, but actually implement the requested functionality correctly. We combine manual-heavy viability assessment with automated checks across 300 end-to-end experiments, where every generated application undergoes deterministic validation followed by human review on a representative subset.
+Our evaluation methodology addresses the core challenge of assessing prompt-to-app generation systems: validating that generated applications not only compile and boot, but actually implement the requested functionality correctly. We combine manual-heavy smoke-viability assessment with automated checks across 300 end-to-end experiments, where every generated application undergoes deterministic validation followed by human review on a representative subset.
 
-\textbf{Two-tier evaluation design.} We conduct 300 end-to-end generation runs with automated checks measuring boot success, smoke test passage, cost, token usage, and duration. These automated gates provide fast, deterministic feedback but cannot assess functional correctness or usability. For viability assessment, human evaluators systematically test 30 representative applications using a structured 6-criteria rubric (Section~\ref{sec:scoring}), verifying that generated apps correctly implement requested functionality, handle edge cases, and meet production quality standards. This manual assessment is essential because automated metrics alone cannot detect integration bugs, incorrect business logic, or poor UX that would block production deployment.
+\textbf{Two-tier evaluation design.} We conduct 300 end-to-end generation runs with automated checks measuring boot success, smoke test passage, cost, token usage, and duration. These automated gates provide fast, deterministic feedback but cannot assess functional correctness or usability. For smoke-viability assessment, human evaluators systematically test 30 representative applications using a structured 6-criteria rubric (Section~\ref{sec:scoring}), verifying that generated apps correctly implement requested functionality, handle edge cases, and meet production quality standards. This manual assessment is essential because automated metrics alone cannot detect integration bugs, incorrect business logic, or poor UX that would block production deployment.
 
-\textbf{Viability vs. quality distinction.} We separate binary viability ($V \in \{0,1\}$) from continuous quality ($Q \in [0,10]$). Viability requires only that an application boots successfully and demonstrates basic prompt correspondence---a minimal threshold for deployment consideration. Quality scoring evaluates correctness, completeness, error handling, and code maintainability through systematic human assessment. This distinction reflects industrial practice: automated gates filter non-viable candidates before human review evaluates deployment readiness.
+\textbf{Smoke-viability vs. quality distinction.} We separate binary smoke-viability ($V \in \{0,1\}$) from continuous quality ($Q \in [0,10]$). Smoke-viability requires only that an application boots successfully and demonstrates basic prompt correspondence---a minimal threshold for deployment consideration. Quality scoring evaluates correctness, completeness, error handling, and code maintainability through systematic human assessment. This distinction reflects industrial practice: automated gates filter candidates that are not smoke-viable before human review evaluates deployment readiness.
 
 \textbf{Production-scale validation.} Beyond controlled experiments, we validate the framework through production deployment metrics. Since June 2025, the system has generated over 3000 user applications with peak usage exceeding 220 apps/day (Section~\ref{sec:results}). Production data provides ecological validity showing the framework operates reliably with diverse real-world requirements beyond our curated test set.
 
-\textbf{Cost-performance tradeoffs.} All experiments track token consumption (input/output) and API costs to quantify validation overhead. We report both total cost per generation cohort and cost-per-viable-app to reveal true economics: validation may increase upfront costs but reduces the effective cost of successful outcomes by filtering failures early.
+\textbf{Cost-performance tradeoffs.} All experiments track token consumption (input/output) and API costs to quantify validation overhead. We report both total cost per generation cohort and cost-per-smoke-viable-app to reveal true economics: validation may increase upfront costs but reduces the effective cost of successful outcomes by filtering failures early.
 
 \subsection{Prompt Dataset}
 \label{sec:prompt-dataset-desc}
@@ -202,10 +202,10 @@ The resulting dataset consists of 30 prompts spanning a complexity spectrum (low
 See the full list of prompts in Appendix~\ref{sec:prompt-dataset}.
 
 % NOTE [SANER-Industrial]: If space allows, rename \emph{Viability} to \emph{Smoke-Viable} and define \emph{Release-Viable} (requires CRUD correctness and zero Critical WARNs). If you keep current naming, add one sentence clarifying the gate semantics.
-Each application generated by the agent was evaluated by the following metrics, designed to assess its viability and quality under preset time and cost constraints.
+Each application generated by the agent was evaluated by the following metrics, designed to assess its smoke-viability and quality under preset time and cost constraints.
 
 \begin{itemize}
-\item Viability rate ($V=1$) and non-viability rate ($V=0$)
+\item Smoke-viability rate ($V=1$) and smoke-failed rate ($V=0$)
 \item Perfect quality rate ($Q=10$) and quality distribution (mean/median for $V=1$ apps)
 \item Validation pass rates by check (AB-01, AB-02, AB-03, AB-04, AB-05, AB-06)
 \item Quality scores ($Q$, 0--10) using the rubric in Section~\ref{sec:scoring}
@@ -225,9 +225,9 @@ We designed three experimental configurations to systematically evaluate factors
 \subsection{Assessor Protocol and Scoring}
 \label{sec:scoring}
 
-To systematically assess generated application quality, we implement a structured evaluation protocol comprising six standardized functional checks executed by human assessors. The evaluation reports two independent outcomes: a binary viability indicator ($V$) and a 0--10 quality score ($Q$). The complete assessor handbook with detailed grading criteria and example graded applications is publicly available~\cite{appbuild2025handbook}.
+To systematically assess generated application quality, we implement a structured evaluation protocol comprising six standardized functional checks executed by human assessors. The evaluation reports two independent outcomes: a binary smoke-viability indicator ($V$) and a 0--10 quality score ($Q$). The complete assessor handbook with detailed grading criteria and example graded applications is publicly available~\cite{appbuild2025handbook}.
 
-\textbf{Viability (binary)}:
+\textbf{Smoke-viability (binary)}:
 \begin{equation}
 V = \begin{cases}
 1 & \text{if AB-01 and AB-02 are not FAIL} \\
@@ -301,13 +301,13 @@ The community adoption metrics (650+ stars, 89 forks) position app.build among a
 
 \subsection{Two-Tier Evaluation Methodology}
 
-Our evaluation combines automated checks with manual viability assessment. We conducted \textbf{300 end-to-end generation experiments} across baseline and ablation conditions, collecting objective metrics (success rate, healthcheck pass rate, cost, duration, token usage) for each run. These automated checks enable consistent measurement and cost-effectiveness analysis across configurations. For viability validation, we performed \textbf{detailed human evaluation on 30 representative prompts} using the AB-check rubric (Section~\ref{sec:scoring}), providing nuanced assessment of functional correctness and production readiness that automated metrics cannot capture.
+Our evaluation combines automated checks with manual smoke-viability assessment. We conducted \textbf{300 end-to-end generation experiments} across baseline and ablation conditions, collecting objective metrics (success rate, healthcheck pass rate, cost, duration, token usage) for each run. These automated checks enable consistent measurement and cost-effectiveness analysis across configurations. For smoke-viability validation, we performed \textbf{detailed human evaluation on 30 representative prompts} using the AB-check rubric (Section~\ref{sec:scoring}), providing nuanced assessment of functional correctness and production readiness that automated metrics cannot capture.
 
 This two-tier approach reflects industrial practice: automated metrics enable systematic comparison across model architectures and validation strategies, while human evaluation validates that generated applications actually work for their intended purpose. Automated gates filter obviously broken candidates, but human assessors determine whether apps meet production deployment criteria.
 
 \subsection{Automated Validation Results at Scale (n=300)}
 
-Table~\ref{tab:large-scale-automated} presents aggregated results from 300 automated experiments across all conditions. The baseline configuration (Claude Sonnet 4 with full validation) achieved 86.7\% automated success rate at \$110.20 total cost for 30 apps. Open-weights models show cost-performance tradeoffs: Qwen3-Coder-480B achieved 70\% success at \$12.68 total cost, delivering an 8.2x cost reduction per viable app (\$0.61 vs \$5.01), while validation ablations reveal systematic patterns discussed in subsequent sections.
+Table~\ref{tab:large-scale-automated} presents aggregated results from 300 automated experiments across all conditions. The baseline configuration (Claude Sonnet 4 with full validation) achieved 86.7\% automated success rate at \$110.20 total cost for 30 apps. Open-weights models show cost-performance tradeoffs: Qwen3-Coder-480B achieved 70\% success at \$12.68 total cost, delivering an 8.2x cost reduction per smoke-viable app (\$0.61 vs \$5.01), while validation ablations reveal systematic patterns discussed in subsequent sections.
 
 \begin{table}[!t]
 \caption{Large-Scale Automated Results Across 300 Experiments}
@@ -324,8 +324,8 @@ No Lint & 30 & 93.3\% & 96.7\% & \$70.49 & 496 \\
 No Playwright & 30 & 83.3\% & 93.3\% & \$86.17 & 463 \\
 No Tests & 30 & 93.3\% & 100\% & \$71.05 & 373 \\
 \midrule
-Qwen3-480B & 90 & 70.0\% & 86.7\% & \$12.68 & 629 \\
-GPT-OSS-120B & 90 & 30.0\% & 43.3\% & \$4.55 & 628 \\
+Qwen3-480B & 90 & 68.9\% & 88.9\% & \$12.68 & 629 \\
+GPT-OSS-120B & 90 & 44.4\% & 93.3\% & \$4.55 & 628 \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}\footnotesize
@@ -348,7 +348,7 @@ Detailed telemetry from 300 experiments reveals systematic resource consumption 
 \begin{threeparttable}
 \begin{tabular}{@{}lcccc@{}}
 \toprule
-\textbf{Config} & \textbf{In Tok/App} & \textbf{Out Tok/App} & \textbf{Cost/App} & \textbf{Viable Cost} \\
+\textbf{Config} & \textbf{In Tok/App} & \textbf{Out Tok/App} & \textbf{Cost/App} & \textbf{Smoke-Viable Cost} \\
 \midrule
 Baseline & 923K & 60K & \$3.67 & \$5.01 \\
 No Lint & 531K & 50K & \$2.35 & \$2.52 \\
@@ -360,20 +360,20 @@ GPT-OSS-120B & 732K & 26K & \$0.15 & \$0.51 \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}\footnotesize
-\item Tok/App = tokens per application (K = thousands). Viable Cost = cost per viable app (total cost / viable count). Open models via OpenRouter at reduced rates.
+\item Tok/App = tokens per application (K = thousands). Smoke-Viable Cost = cost per smoke-viable app (total cost / smoke-viable count). Open models via OpenRouter at reduced rates.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-The cost-per-viable-app metric reveals validation overhead: baseline achieves viability at \$5.01 per app (22/30 viable), while removing unit tests reduces this to \$2.54 (24/30 viable) despite similar per-generation costs. This indicates that comprehensive validation both increases initial costs and filters marginal cases, raising the effective cost per successful outcome.
+The cost-per-smoke-viable-app metric reveals validation overhead: baseline achieves smoke-viability at \$5.01 per app (22/30 smoke-viable), while removing unit tests reduces this to \$2.54 (24/30 smoke-viable) despite similar per-generation costs. This indicates that comprehensive validation both increases initial costs and filters marginal cases, raising the effective cost per successful outcome.
 
-Open-weights models demonstrate dramatic cost advantages: Qwen3-Coder-480B generates viable apps at \$0.61 each (8.2x cheaper than Claude baseline), though at reduced success rates (70\% vs 87\%). For large-scale deployment or less critical applications, this represents a viable engineering tradeoff.
+Open-weights models demonstrate dramatic cost advantages: Qwen3-Coder-480B generates smoke-viable apps at \$0.61 each (8.2x cheaper than Claude baseline), though at reduced success rates (68.9\% vs 86.7\%). For large-scale deployment or less critical applications, this represents a viable engineering tradeoff.
 
 Token efficiency varies by validation configuration: linting and unit tests consume substantial input tokens through multi-round validation cycles (baseline: 923K vs no\_tests: 531K), suggesting that validation rigor directly impacts computational cost. The output token counts remain relatively stable (50K-60K), indicating that validation affects iteration count more than generation verbosity.
 
 \subsection{Detailed Quality Assessment (Human Evaluation, n=30)}
 
-Evaluating 30 TypeScript/tRPC applications, we observe that 73.3\% (22/30) achieved viability ($V=1$), with 30.0\% attaining perfect quality ($Q=10$) and 26.7\% non-viable ($V=0$). Once viability criteria are met, generated applications exhibit consistently high quality.
+Evaluating 30 TypeScript/tRPC applications, we observe that 73.3\% (22/30) achieved smoke-viability ($V=1$), with 30.0\% attaining perfect quality ($Q=10$) and 26.7\% not smoke-viable ($V=0$). Once smoke-viability criteria are met, generated applications exhibit consistently high quality.
 
 \begin{table}[!t]
 \caption{Aggregated Evaluation Results for TypeScript/tRPC ($n=30$)}
@@ -426,11 +426,11 @@ Smoke tests (AB-01, AB-02) determine viability. Among viable applications ($V=1$
 
 \subsection{Open vs Closed Model Performance}
 
-We evaluated Claude Sonnet 4 against two open-weights models using the TypeScript/tRPC stack with simplified validation pipeline ensuring the app is bootable and renders correctly. Claude achieved 86.7\% success rate, establishing our closed-model baseline at \$110.20 total cost. Qwen3-Coder-480B-A35B reached 70\% success rate (80.8\% relative performance) while GPT OSS 120B managed only 30\% success rate. Both open models were accessed via OpenRouter, resulting in significantly lower costs: \$12.68 for Qwen3 and \$4.55 for GPT OSS.
+We evaluated Claude Sonnet 4 against two open-weights models using the TypeScript/tRPC stack with simplified validation pipeline ensuring the app is bootable and renders correctly. Claude achieved 86.7\% success rate, establishing our closed-model baseline at \$110.20 total cost. Qwen3-Coder-480B-A35B reached 68.9\% success rate (79.5\% relative performance) while GPT OSS 120B achieved 44.4\% success rate. Both open models were accessed via OpenRouter, resulting in significantly lower costs: \$12.68 for Qwen3 and \$4.55 for GPT OSS.
 
-The performance gap reveals that environment scaffolding alone cannot eliminate the need for capable foundation models. However, leading open-weights models like Qwen3 demonstrate that structured environments can enable production-viable performance at substantially reduced costs. The 8.2x cost reduction per viable app for 19\% performance loss represents a viable tradeoff for many production scenarios.
+The performance gap reveals that environment scaffolding alone cannot eliminate the need for capable foundation models. However, leading open-weights models like Qwen3 demonstrate that structured environments can enable production-viable performance at substantially reduced costs. The 8.2x cost reduction per viable app for 20.5\% performance loss represents a viable tradeoff for many production scenarios.
 
-Operational characteristics differed notably between model types. Open models required more validation retries, evidenced by higher LLM call counts (4,359 for Qwen3, 4,922 for GPT OSS vs 3,413 for Claude). Healthcheck pass rates (86.7\% for Qwen3 vs 96.7\% for Claude) indicate open models generate syntactically correct code but struggle with integration-level correctness, emphasizing the importance of comprehensive validation.
+Operational characteristics differed notably between model types. Open models required more validation retries, evidenced by higher LLM call counts (4,359 for Qwen3, 4,922 for GPT OSS vs 3,413 for Claude). Healthcheck pass rates (88.9\% for Qwen3 vs 96.7\% for Claude) indicate open models generate syntactically correct code but struggle with integration-level correctness, emphasizing the importance of comprehensive validation.
 
 \subsection{Ablation Studies: Impact of Validation Layers}
 
