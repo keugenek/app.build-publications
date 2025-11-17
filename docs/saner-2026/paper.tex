@@ -9,6 +9,7 @@
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{threeparttable} % table notes for self-contained captions
 \usepackage{float}          % for [H] placement specifier
+\usepackage{needspace}      % prevent orphaned section headers
 
 \title{app.build: A Production Framework for Scaling Agentic Prompt-to-App Generation with Environment Scaffolding\thanks{Code available at \protect\url{https://github.com/neondatabase/appdotbuild-agent}}}
 
@@ -253,9 +254,9 @@ where $A$ is the set of applicable checks (excluding NA); all checks use equal w
 \caption{Check Weights and Definitions Used in Scoring}
 \label{tab:check-weights}
 \centering
-\small
+\footnotesize
 \begin{threeparttable}
-\begin{tabular}{@{}llcp{3cm}@{}}
+\begin{tabular}{@{}llcp{2.2cm}@{}}
 \toprule
 \textbf{Check ID} & \textbf{Description} & \textbf{Weight} & \textbf{Notes} \\
 \midrule
@@ -314,7 +315,7 @@ Table~\ref{tab:large-scale-automated} presents aggregated results from 300 autom
 \caption{Large-Scale Automated Results Across 300 Experiments}
 \label{tab:large-scale-automated}
 \centering
-\small
+\footnotesize
 \begin{threeparttable}
 \begin{tabular}{@{}lccccc@{}}
 \toprule
@@ -329,7 +330,7 @@ Qwen3-480B & 90 & 70.0\% & 86.7\% & \$12.68 & 629 \\
 GPT-OSS-120B & 90 & 30.0\% & 43.3\% & \$4.55 & 628 \\
 \bottomrule
 \end{tabular}
-\begin{tablenotes}\footnotesize
+\begin{tablenotes}\scriptsize
 \item Success = automated healthcheck (AB-01) + template validation passed. HC Pass = healthcheck (AB-01) only. Cost = total for cohort. Dur. = mean per-app duration. Open model experiments used simplified validation pipeline (AB-01 + AB-02 only).
 \end{tablenotes}
 \end{threeparttable}
@@ -345,11 +346,12 @@ Detailed telemetry from 300 experiments reveals systematic resource consumption 
 \caption{Resource Consumption Breakdown by Configuration}
 \label{tab:cost-token-breakdown}
 \centering
-\small
+\footnotesize
 \begin{threeparttable}
-\begin{tabular}{@{}lcccc@{}}
+\begin{tabular}{@{}lrrrr@{}}
 \toprule
-\textbf{Config} & \textbf{In Tok/App} & \textbf{Out Tok/App} & \textbf{Cost/App} & \textbf{Viable Cost} \\
+\textbf{Config} & \textbf{In Tok} & \textbf{Out Tok} & \textbf{Cost} & \textbf{Viable} \\
+ & \textbf{/App} & \textbf{/App} & \textbf{/App} & \textbf{Cost} \\
 \midrule
 Baseline & 923K & 60K & \$3.67 & \$5.01 \\
 No Lint & 531K & 50K & \$2.35 & \$2.52 \\
@@ -360,7 +362,7 @@ Qwen3-480B & 728K & 26K & \$0.42 & \$0.61 \\
 GPT-OSS-120B & 732K & 26K & \$0.15 & \$0.51 \\
 \bottomrule
 \end{tabular}
-\begin{tablenotes}\footnotesize
+\begin{tablenotes}\scriptsize
 \item Tok/App = tokens per application (K = thousands). Viable Cost = cost per viable app (total cost / viable count). Open models via OpenRouter at reduced rates.
 \end{tablenotes}
 \end{threeparttable}
@@ -506,14 +508,14 @@ This submission is prepared in collaboration between Databricks (app.build team)
 \bibliography{references}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\clearpage
 
+\needspace{8\baselineskip}
 \section*{Appendix: Prompt Dataset}
 \label{sec:prompt-dataset}
 
-Table~\ref{tab:prompt-dataset} presents the complete set of 30 prompts used in our evaluation, including complexity classifications.
+This appendix provides the complete specification of evaluation prompts used in our experiments. Table~\ref{tab:prompt-dataset} lists all 30 prompts with their complexity classifications, covering low-complexity UI tasks, medium-complexity single-entity CRUD applications, and high-complexity multi-entity workflows with custom business logic.
 
-\begin{table*}[!h]
+\begin{table*}[!htbp]
 \caption{Complete Prompt Dataset Used in Evaluation ($n=30$)}
 \label{tab:prompt-dataset}
 \centering
