@@ -128,16 +128,16 @@ The paper asserted specific numbers without inline citations:
 ### 5. Evaluation Rubric Formalization
 
 #### AB-Check Schema Issues
-- [ ] **Fix AB-05 missing** - Table 2 defines AB-01 through AB-07 but AB-05 is absent
+- [x] **Fix AB-05 missing** - Table 2 defines AB-01 through AB-07 but AB-05 is absent
   - Add AB-05 or renumber AB-06/AB-07 for consistency
-- [ ] **Define check criteria formally** - Operationalize PASS/WARN/FAIL for:
+- [x] **Define check criteria formally** - Operationalize PASS/WARN/FAIL for:
   - AB-01: Boot & render (currently vague "bootable and renders correctly")
   - AB-02: Prompt correspondence
   - AB-03: Create functionality
   - AB-04: View/Edit operations
   - AB-06: Clickable sweep
   - AB-07: Performance (hand-graded [0,1] metric - needs protocol)
-- [ ] **Provide assessor handbook** - Public guide with example graded apps
+- [x] **Provide assessor handbook** - Public guide with example graded apps
 
 #### Complexity Rubric
 - [ ] **Formalize low/medium/high criteria** with:
