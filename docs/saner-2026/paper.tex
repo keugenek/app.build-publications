@@ -331,7 +331,7 @@ GPT-OSS-120B & 90 & 30.0\% & 43.3\% & \$4.55 & 628 \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}\scriptsize
-\item Success = automated healthcheck (AB-01) + template validation passed. HC Pass = healthcheck (AB-01) only. Cost = total for cohort. Dur. = mean per-app duration. Open model experiments used simplified validation pipeline (AB-01 + AB-02 only).
+\item Success = automated healthcheck (AB-01) + template validation (AB-02) passed; excludes template-only apps with zero functionality. HC Pass = healthcheck (AB-01) only; includes both functional apps and non-functional templates. Cost = total for cohort. Dur. = mean per-app duration. Open model experiments used simplified validation pipeline (AB-01 + AB-02 only).
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -432,6 +432,8 @@ Smoke tests (AB-01, AB-02) determine viability. Among viable applications ($V=1$
 We evaluated Claude Sonnet 4 against two open-weights models using the TypeScript/tRPC stack with simplified validation pipeline (AB-01 Boot + AB-02 Prompt Correspondence only) ensuring the app is bootable and renders correctly. Claude achieved 86.7\% success rate, establishing our closed-model baseline at \$110.20 total cost. Qwen3-Coder-480B-A35B reached 70\% success rate (80.8\% relative performance) while GPT OSS 120B managed only 30\% success rate. Both open models were accessed via OpenRouter, resulting in significantly lower costs: \$12.68 for Qwen3 and \$4.55 for GPT OSS.
 
 The performance gap reveals that environment scaffolding alone cannot eliminate the need for capable foundation models. However, leading open-weights models like Qwen3 demonstrate that structured environments can enable production-viable performance at substantially reduced costs. The 8.2x cost reduction per viable app for 19\% performance loss represents a viable tradeoff for many production scenarios.
+
+\textbf{Template detection reveals inflated success rates.} Our evaluation uncovered a critical issue: many apps that pass healthcheck validation are non-functional "Under Construction" templates with zero functionality. For GPT-OSS-120B, 93.3\% (84/90) passed AB-01 (Boot), but only 43.3\% (39/90) passed both AB-01 and AB-02 (Prompt Correspondence)---a \textbf{template failure rate of 53.6\%} where more than half of "successful" apps are placeholder scaffolding. In contrast, Qwen3-Coder-480B-A35B achieved 88.9\% healthcheck pass (80/90) and 68.9\% true success (62/90), yielding only 22.5\% template failures. \emph{The success rates reported in Table~\ref{tab:large-scale-automated} represent cleaned data with template-only apps removed via AB-02 validation}, demonstrating why boot checks alone are insufficient for evaluating code generation quality.
 
 Operational characteristics differed notably between model types. Open models required more validation retries, evidenced by higher LLM call counts (4,359 for Qwen3, 4,922 for GPT OSS vs 3,413 for Claude). AB-01 (Boot) pass rates (86.7\% for Qwen3 vs 96.7\% for Claude) indicate open models generate syntactically correct code but struggle with integration-level correctness, emphasizing the importance of comprehensive validation.
 

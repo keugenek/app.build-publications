@@ -8,6 +8,23 @@ This repository contains paper submissions and supporting materials for app.buil
 
 This submission is a collaborative research effort between **Databricks - app.build team** and **THWS University of Applied Sciences Würzburg-Schweinfurt (CAIRO Lab)**, exploring how environment scaffolding transforms LLMs into production-ready software engineering agents. The research presents empirical evidence from the app.build platform - an open-source prompt-to-app generator that demonstrates systematic reliability improvements through structured environment design.
 
+### Critical Finding: Template Detection Reveals Inflated Success Rates
+
+Our evaluation uncovered a critical methodological issue affecting open-model benchmarking: **many "successful" apps that pass basic healthchecks are actually non-functional "Under Construction" templates**. This finding challenges reported success rates and highlights the importance of comprehensive validation beyond boot checks.
+
+**GPT-OSS-120B Template Issue:**
+- Reported healthcheck pass rate: 93.3% (84/90 apps boot successfully)
+- **REAL success rate (excluding templates): 43.3% (39/90)**
+- **Template failure rate: 53.6% - more than half its "successes" are fake!**
+- **45 out of 84 "successful" runs were just templates with ZERO functionality**
+
+**Qwen3-Coder-480B-A35B (for comparison):**
+- Healthcheck pass rate: 88.9% (80/90 apps boot)
+- **REAL success rate (excluding templates): 68.9% (62/90)**
+- **Template failure rate: 22.5% (18/80 healthcheck-passing apps)**
+
+**Key Insight:** Basic healthcheck validation (AB-01 Boot only) is insufficient for evaluating code generation quality. Template detection (AB-02 Prompt Correspondence) is essential to distinguish functional applications from placeholder scaffolding. This finding emphasizes why environment scaffolding must include multi-layered validation—not just compilation and boot checks, but also functional correctness verification.
+
 ### The app.build Tool
 
 [app.build](https://app.build) is an open-source prompt-to-app generation platform (developed by  Databricks - app.build team) that enables reliable production deployment of AI-generated applications through:
