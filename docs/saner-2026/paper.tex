@@ -434,87 +434,37 @@ Operational characteristics differed notably between model types. Open models re
 
 \subsection{Ablation Studies: Impact of Validation Layers}
 
-To understand how each validation layer contributes to application quality, we conducted controlled ablations on the same 30-prompt cohort. Each ablation removes one validation component while keeping others intact.
+To understand how each validation layer contributes to application quality, we conducted controlled ablations on the same 30-prompt cohort, systematically removing one validation component while keeping others intact. The baseline configuration (all validation layers active) achieved 73.3\% viability with mean quality score $Q=8.06$.
 
-\textbf{Baseline Performance} (all validation layers active):
-\begin{itemize}
-\item Viability: 73.3\% (22/30 apps pass both AB-01 Boot and AB-02 Prompt)
-\item Mean Quality: 8.06 (among all 30 apps)
-\end{itemize}
+\textbf{Unit test removal trades quality for apparent viability.} Disabling backend handler tests increased viability to 80.0\% (+6.7 pp) but reduced mean quality to $Q=7.78$ ($-0.28$). This paradox reflects that unit tests catch critical CRUD errors: apps boot successfully without them but fail on data operations. AB-04 (View/Edit Operations) pass rates dropped from 90\% to 60\%, indicating that backend validation prevents functional regressions that smoke tests cannot detect. The increased viability metric reflects false positives: apps that appear viable but contain latent data integrity bugs.
 
-\textbf{Finding 1: Removing Unit Tests Trades Quality for Viability}
-\begin{itemize}
-\item Viability: 80.0\% (+6.7 pp) -- fewer apps fail smoke tests
-\item Mean Quality: 7.78 ($-0.28$) -- quality degrades despite higher viability
-\item Key degradations: AB-04 View/Edit drops from 90\% to 60\% pass rate
-\item Interpretation: Backend tests catch critical CRUD errors. Without them, apps boot successfully but fail on data operations.
-\end{itemize}
-
-\textbf{Finding 2: Removing Linting Has Mixed Effects}
-\begin{itemize}
-\item Viability: 80.0\% (+6.7 pp)
-\item Mean Quality: 8.25 (+0.19) -- slight improvement
-\item Trade-offs: AB-03 Create drops 8.3 pp, AB-04 View/Edit drops 7.6 pp
-\item Interpretation: ESLint catches legitimate issues but may also block valid patterns. The performance gain suggests some lint rules may be overly restrictive.
-\end{itemize}
+\textbf{Linting removal shows mixed effects with modest gains.} Removing ESLint checks increased viability to 80.0\% (+6.7 pp) and slightly improved quality to $Q=8.25$ (+0.19), suggesting some lint rules may be overly restrictive. However, AB-03 (Create Functionality) dropped 8.3 pp and AB-04 (View/Edit) dropped 7.6 pp, indicating ESLint does catch legitimate structural issues. The net positive quality score indicates that strict linting can reject valid alternative implementations, though the effect size is small.
 
 % NOTE [SANER-Industrial]: Emphasize this as a \emph{negative result} and a practical lesson (brittle E2E inflates apparent failure rate); reviewers value frank trade-offs.
-\textbf{Finding 3: Removing Playwright Tests Significantly Improves Outcomes}
-\begin{itemize}
-\item Viability: 90.0\% (+16.7 pp) -- highest among all configurations
-\item Mean Quality: 8.62 (+0.56) -- meaningful quality improvement
-\item Broad improvements: AB-02 Prompt +11.8 pp, AB-05 Clickable +5.7 pp
-\item Interpretation: Playwright tests appear overly brittle for scaffolded apps. Many apps that fail E2E tests actually work correctly for users.
-\end{itemize}
+\textbf{E2E test removal significantly improves outcomes (a negative result).} Removing Playwright tests produced the strongest effect: viability increased to 90.0\% (+16.7 pp) with quality improving to $Q=8.62$ (+0.56). AB-02 (Prompt Correspondence) improved +11.8 pp and AB-05 (Clickable Sweep) improved +5.7 pp. This counterintuitive result indicates that E2E tests introduce more false rejections than they catch real defects. Manual inspection of failed Playwright runs reveals three root causes of brittleness: (1) \emph{Over-specified selectors}: tests hardcode element IDs or CSS classes that models generate variably across runs, causing spurious failures despite functional correctness; (2) \emph{Race conditions}: E2E assertions check UI state before async data fetching completes, rejecting apps that function correctly under human-realistic interaction delays; (3) \emph{False negatives from implementation variance}: models generate semantically equivalent but structurally different UIs (e.g., modal dialogs vs inline forms) that satisfy requirements but fail brittle assertions expecting specific DOM structure. This finding suggests that comprehensive E2E suites designed for deterministic codebases are poorly suited to probabilistic code generation, where implementation details vary across generation runs while functional correctness remains stable.
 
 \subsection{Synthesis: Optimal Validation Strategy}
 
-Our ablation results reveal clear trade-offs in validation design:
+Our ablation results reveal systematic trade-offs between validation rigor and success metrics. Unit/handler tests prove essential for data integrity: removing them increases perceived viability (+6.7 pp) but causes real functional regressions, particularly in AB-04 (View/Edit Operations, $-30$ pp drop). ESLint provides modest value with measurable false positives; the small net quality gain (+0.19) and mixed per-check effects suggest selective application of rules targeting actual errors rather than style preferences. E2E tests currently cause more harm than good, with removal yielding +16.7 pp viability and +0.56 quality improvement, indicating these tests reject too many working applications due to brittleness rather than correctness issues.
 
-\textbf{Validation Layer Impact Summary}:
-\begin{enumerate}
-\item \textbf{Unit/Handler Tests}: Essential for data integrity. Removing them increases perceived viability but causes real functional regressions (especially AB-04 View/Edit Operations).
-\item \textbf{ESLint}: Provides modest value with some false positives. The small quality impact (+0.19) and mixed per-dimension effects suggest selective application.
-\item \textbf{Playwright/E2E}: Currently causes more harm than good. The +16.7 pp viability gain and quality improvements indicate these tests reject too many working applications.
-\end{enumerate}
-
-\textbf{Recommended Validation Architecture}:
-Based on these findings, we recommend:
-\begin{itemize}
-\item \textbf{Keep}: Lightweight smoke tests (boot + primary route), backend unit tests for CRUD operations
-\item \textbf{Refine}: ESLint with curated rules focusing on actual errors vs style preferences
-\item \textbf{Replace}: Full E2E suite with targeted integration tests for critical paths only
-\end{itemize}
-
-This pragmatic approach balances catching real defects while avoiding false rejections. When quality is paramount and compute budget less constrained, comprehensive validation including strict E2E tests remains viable—trading lower success rates for guaranteed production quality.
+These findings suggest a pragmatic validation architecture optimized for probabilistic code generation: \emph{retain} lightweight smoke tests (boot verification and primary route checks) combined with backend unit tests for CRUD operations, which together provide high-confidence quality gates; \emph{refine} static analysis to focus on structural correctness and known anti-patterns while relaxing stylistic rules that reject valid implementations; \emph{replace} comprehensive E2E suites with targeted integration tests covering only critical user paths, avoiding brittle assertions on implementation details. This configuration balances defect detection against false rejection rates. For scenarios where quality requirements dominate cost constraints, comprehensive validation including strict E2E tests remains viable, trading lower automated success rates ($-16.7$ pp) for stronger guarantees about production correctness.
 
 \subsection{Failure Mode Analysis}
 
-Failure modes in tRPC runs cluster into categories:
+We systematically categorize observed failure modes and map them to AB check coverage. \emph{Boot/Load failures} (template placeholders, incomplete artifacts) are reliably caught by AB-01 (Boot) during server startup. \emph{Prompt correspondence failures} (generic templates from generation failures) are detected by AB-02 when human evaluators identify that apps render successfully but implement incorrect functionality. \emph{CSP/security policy restrictions} (blocked images or media) are partially caught by AB-05 (Clickable Sweep) through visual inspection, though automated checks miss these unless they break critical flows. \emph{UI interaction defects} (unbound event handlers, non-functional controls) are exposed by AB-05 and AB-03 (Create Functionality) through manual interaction; automated E2E tests theoretically detect these but suffer from brittleness as documented in Section~G. \emph{State/integration defects} (data persistence failures across refresh, broken filters, authentication issues) are caught by AB-04 (View/Edit Operations), though backend unit tests provide only partial coverage and miss client-side state management bugs. Finally, \emph{component misuse} (runtime exceptions from incorrect composition) is detected by AB-01 or AB-05 depending on timing, with TypeScript catching some violations at compile time while others surface only during manual testing.
 
-\begin{itemize}
-\item \textbf{Boot/Load failures}: template placeholders or incomplete artifacts
-\item \textbf{Prompt correspondence failures}: generic templates from generation failures
-\item \textbf{CSP/security policy restrictions}: blocked images or media by default policies
-\item \textbf{UI interaction defects}: unbound handlers, non-working controls
-\item \textbf{State/integration defects}: data not persisting across refresh; broken filters; login issues
-\item \textbf{Component misuse}: runtime exceptions from incorrect component composition
-\end{itemize}
-
-These defects align with our layered pipeline design: early gates catch non-viable builds, while later gates expose interaction/state issues before human evaluation.
+\textbf{Validation blind spots and proposed upgrades.} Our AB check suite exhibits systematic coverage gaps across five dimensions. First, \emph{accessibility violations} go undetected; apps may function for able-bodied users but fail WCAG standards. We propose integrating \emph{axe-core} for automated accessibility auditing. Second, \emph{mobile responsiveness} remains unchecked as all validation uses desktop viewports; extending smoke tests to include mobile viewport validation would address this. Third, \emph{performance degradation} under load is not measured; AB-06 assesses only initial load time, missing runtime performance issues. \emph{Lighthouse} performance budgets could provide continuous monitoring. Fourth, \emph{security vulnerabilities} beyond CSP violations (XSS, CSRF, injection attacks) are not detected; static analysis via \emph{semgrep} with OWASP rulesets would provide defense-in-depth. Fifth, \emph{data consistency} in concurrent scenarios and transaction isolation remain untested; implementing multi-client test scenarios would validate state consistency guarantees. These proposed upgrades would strengthen production readiness while maintaining the environment scaffolding paradigm of deterministic, automated validation.
 
 \subsection{Prompt Complexity and Success Rate}
 \label{sec:prompt-complexity}
 
-We categorize prompts along a simple rubric and analyze success impacts:
+We categorize prompts by complexity: \emph{low} (static/single-page UI), \emph{medium} (single-entity CRUD), \emph{high} (multi-entity workflows with custom logic), and analyze success patterns. Medium-complexity CRUD prompts achieve highest quality ($Q=9$--10), reflecting strong scaffolding alignment with data models and handler patterns. Low-complexity UI prompts prove non-uniformly easy: several failed AB-02 (Prompt Correspondence) by generating generic templates rather than task-specific implementations. High-complexity prompts exhibit lower viability due to interaction wiring and state-consistency issues surfaced by AB-04 (View/Edit Operations) and AB-05 (Clickable Sweep).
 
-\begin{itemize}
-\item \textbf{Low complexity}: static or single-page UI tasks (e.g., landing pages, counters)
-\item \textbf{Medium complexity}: single-entity CRUD without advanced flows or auth
-\item \textbf{High complexity}: multi-entity workflows, custom logic, or complex UI interactions
-\end{itemize}
+\textbf{Trajectory patterns reveal scaffolding trade-offs.} Manual inspection of generation logs exposes distinct model reasoning patterns across complexity levels. For medium-complexity CRUD tasks, environment scaffolding provides effective guidance: structured schema definitions constrain data models to valid patterns, type-safe API contracts prevent interface mismatches, and immediate validator feedback enables targeted repairs within 1--2 iterations. Representative trajectory (\texttt{plant-care-tracker}): schema generation passed immediately; API handlers failed unit tests due to missing foreign key constraints, triggering repair with validator feedback; UI generation succeeded on first attempt using type inference from validated API. This demonstrates the intended scaffolding workflow.
 
-Medium-complexity CRUD prompts achieve the highest quality ($Q=9$--10), reflecting strong scaffolding for data models and handlers. Low-complexity UI prompts are not uniformly easy: several failed AB-02 (Prompt Correspondence) with generic templates. High-complexity prompts show lower viability rates due to interaction wiring and state-consistency issues surfaced by AB-04 (View/Edit Operations) and AB-05 (Clickable Sweep).
+Conversely, for low-complexity UI-only tasks, scaffolding introduces bias: models over-engineer solutions using CRUD templates when simple static pages suffice, causing AB-02 failures. The framework's database-first workflow assumes backend requirements even when unnecessary. Failure example (\texttt{birthday-wish-app}): model generated full API routes and database schema for a static greeting card, achieving technical correctness but failing prompt correspondence. This reveals a structural limitation where strong scaffolding can constrain creativity for tasks outside the target domain.
+
+High-complexity tasks expose scaffolding's context limits. Multi-entity relationships and custom business logic require models to maintain architectural context across multiple validation cycles spanning frontend-backend boundaries. Failures cluster in AB-04 (state management) when models lose track of data flow requirements. Validation feedback successfully catches syntax errors but provides limited architectural guidance, forcing models into trial-and-error that exhausts retry budgets before convergence. This suggests that scaffolding effectiveness degrades as task complexity increases beyond the structured patterns the environment encodes.
 
 % NOTE [SANER-Industrial]: Start with 3--5 bullet "Lessons for Practitioners" (e.g., Keep smoke + backend contract tests; Avoid broad E2E suites; Curate ESLint rules; Sandbox & seed for reproducibility; Track token budgets).
 \subsection{Threats to Validity \& Limitations}
