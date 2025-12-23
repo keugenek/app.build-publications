@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.build Agent — Environment Scaffolding (LinkedIn One‑Pager)</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --ink: #0f172a;
+      --muted: #475569;
+      --brand: #2563eb;
+      --accent: #14b8a6;
+      --warn: #f97316;
+      --panel: #ffffff;
+      --border: #e2e8f0;
+      --shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background: #0b1220;
+      display: grid;
+      place-items: center;
+      padding: 32px;
+    }
+
+    .canvas {
+      width: 1080px;
+      height: 1350px;
+      background: var(--bg);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 48px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 38px;
+      margin: 0 0 8px;
+      line-height: 1.15;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin: 0;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    h3 {
+      font-size: 18px;
+      margin: 0 0 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.12);
+      color: var(--brand);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+    }
+
+    .panel h3 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .metric {
+      border-radius: 14px;
+      padding: 12px;
+      background: rgba(20, 184, 166, 0.1);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 20px;
+    }
+
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stack-card {
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px dashed var(--border);
+      background: #f8fafc;
+    }
+
+    .stack-card h4 {
+      margin: 0 0 6px;
+      font-size: 15px;
+    }
+
+    .stack-card ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .dot.brand { background: var(--brand); }
+    .dot.accent { background: var(--accent); }
+    .dot.warn { background: var(--warn); }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <section class="canvas">
+    <header>
+      <div class="pill">app.build Agent • Environment Scaffolding</div>
+      <h1>How app.build turns prompts into production‑ready apps</h1>
+      <h2>Scaffolding + validation loops + stack‑aware tooling = reliable prompt‑to‑app generation</h2>
+    </header>
+
+    <section class="grid">
+      <article class="panel" style="grid-column: span 7;">
+        <h3>1) Orchestrated Scaffolding Pipeline <span class="pill" style="background: rgba(20,184,166,0.12); color: var(--accent);">FSM‑guided stages</span></h3>
+        <svg viewBox="0 0 960 260" role="img" aria-label="Scaffolding pipeline">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stop-color="#2563eb" />
+              <stop offset="100%" stop-color="#14b8a6" />
+            </linearGradient>
+          </defs>
+          <rect x="20" y="40" width="160" height="72" rx="16" fill="#e0e7ff" stroke="#c7d2fe" />
+          <text x="100" y="84" text-anchor="middle" font-size="14" fill="#1e3a8a">User Prompt</text>
+
+          <rect x="220" y="40" width="200" height="72" rx="16" fill="url(#g1)" opacity="0.18" stroke="#93c5fd" />
+          <text x="320" y="70" text-anchor="middle" font-size="13" fill="#1e3a8a">Orchestrator</text>
+          <text x="320" y="88" text-anchor="middle" font-size="11" fill="#1e3a8a">Stage planning + context</text>
+
+          <rect x="470" y="20" width="140" height="56" rx="14" fill="#f8fafc" stroke="#cbd5f5" />
+          <text x="540" y="52" text-anchor="middle" font-size="12" fill="#334155">Schema</text>
+
+          <rect x="470" y="92" width="140" height="56" rx="14" fill="#f8fafc" stroke="#cbd5f5" />
+          <text x="540" y="124" text-anchor="middle" font-size="12" fill="#334155">API / Handlers</text>
+
+          <rect x="470" y="164" width="140" height="56" rx="14" fill="#f8fafc" stroke="#cbd5f5" />
+          <text x="540" y="196" text-anchor="middle" font-size="12" fill="#334155">UI / Client</text>
+
+          <rect x="650" y="40" width="150" height="72" rx="16" fill="#ecfeff" stroke="#5eead4" />
+          <text x="725" y="70" text-anchor="middle" font-size="12" fill="#0f766e">Integrate + Deploy</text>
+          <text x="725" y="88" text-anchor="middle" font-size="10" fill="#0f766e">DB + CI/CD hooks</text>
+
+          <line x1="180" y1="76" x2="220" y2="76" stroke="#94a3b8" stroke-width="3" />
+          <line x1="420" y1="76" x2="470" y2="48" stroke="#94a3b8" stroke-width="2" />
+          <line x1="420" y1="76" x2="470" y2="120" stroke="#94a3b8" stroke-width="2" />
+          <line x1="420" y1="76" x2="470" y2="192" stroke="#94a3b8" stroke-width="2" />
+          <line x1="610" y1="76" x2="650" y2="76" stroke="#94a3b8" stroke-width="3" />
+        </svg>
+        <p class="note">Stages follow a schema → API → UI finite‑state workflow with stack‑specific templates and validators.</p>
+      </article>
+
+      <article class="panel" style="grid-column: span 5;">
+        <h3>2) Generate → Validate → Repair Loop</h3>
+        <svg viewBox="0 0 520 260" role="img" aria-label="Generate validate repair loop">
+          <circle cx="260" cy="130" r="96" fill="#f8fafc" stroke="#cbd5e1" stroke-width="3" />
+          <path d="M260 34 A96 96 0 0 1 351 78" fill="none" stroke="#2563eb" stroke-width="6" />
+          <path d="M351 78 L340 62 L368 66 Z" fill="#2563eb" />
+          <path d="M382 130 A96 96 0 0 1 310 214" fill="none" stroke="#14b8a6" stroke-width="6" />
+          <path d="M310 214 L320 200 L334 222 Z" fill="#14b8a6" />
+          <path d="M260 226 A96 96 0 0 1 168 182" fill="none" stroke="#f97316" stroke-width="6" />
+          <path d="M168 182 L184 176 L170 206 Z" fill="#f97316" />
+          <text x="260" y="90" text-anchor="middle" font-size="14" fill="#1e293b">Generate</text>
+          <text x="260" y="126" text-anchor="middle" font-size="14" fill="#1e293b">Validate</text>
+          <text x="260" y="162" text-anchor="middle" font-size="14" fill="#1e293b">Repair</text>
+          <text x="260" y="194" text-anchor="middle" font-size="11" fill="#64748b">Repeat until pass</text>
+        </svg>
+        <ul class="note">
+          <li>Context minimized per step (only relevant files + constraints).</li>
+          <li>Sandbox resets between iterations to keep runs deterministic.</li>
+          <li>Artifacts accepted only after validators pass.</li>
+        </ul>
+      </article>
+
+      <article class="panel" style="grid-column: span 12;">
+        <h3>3) Validation Stack (per stage)</h3>
+        <svg viewBox="0 0 960 200" role="img" aria-label="Validation layers">
+          <rect x="30" y="20" width="900" height="40" rx="12" fill="#e2e8f0" />
+          <text x="480" y="46" text-anchor="middle" font-size="13" fill="#1e293b">Static Analysis • Linters • Type Checks</text>
+          <rect x="80" y="70" width="800" height="40" rx="12" fill="#dbeafe" />
+          <text x="480" y="96" text-anchor="middle" font-size="13" fill="#1e293b">Unit & Contract Tests • CRUD handlers • API contracts</text>
+          <rect x="130" y="120" width="700" height="40" rx="12" fill="#dcfce7" />
+          <text x="480" y="146" text-anchor="middle" font-size="13" fill="#1e293b">Smoke Tests • Boot • Prompt correspondence</text>
+        </svg>
+        <div class="metrics">
+          <div class="metric">
+            <strong>AB‑01</strong>
+            Boot healthcheck (server boots, UI loads)
+          </div>
+          <div class="metric">
+            <strong>AB‑02</strong>
+            Prompt correspondence (no “template‑only” apps)
+          </div>
+          <div class="metric">
+            <strong>AB‑03‑06</strong>
+            Create, view/edit, UX sweep, performance checks
+          </div>
+        </div>
+      </article>
+
+      <article class="panel" style="grid-column: span 7;">
+        <h3>4) Scoring & Viability Rubric</h3>
+        <svg viewBox="0 0 960 260" role="img" aria-label="AB scoring table">
+          <rect x="20" y="30" width="920" height="200" rx="16" fill="#f8fafc" stroke="#e2e8f0" />
+          <text x="60" y="70" font-size="13" fill="#0f172a">AB‑01</text>
+          <text x="200" y="70" font-size="13" fill="#475569">Boot (hard gate)</text>
+          <text x="60" y="102" font-size="13" fill="#0f172a">AB‑02</text>
+          <text x="200" y="102" font-size="13" fill="#475569">Prompt correspondence (hard gate)</text>
+          <text x="60" y="134" font-size="13" fill="#0f172a">AB‑03</text>
+          <text x="200" y="134" font-size="13" fill="#475569">Create functionality</text>
+          <text x="60" y="166" font-size="13" fill="#0f172a">AB‑04</text>
+          <text x="200" y="166" font-size="13" fill="#475569">View / Edit operations</text>
+          <text x="60" y="198" font-size="13" fill="#0f172a">AB‑05</text>
+          <text x="200" y="198" font-size="13" fill="#475569">Clickable sweep / UX flows</text>
+          <text x="520" y="70" font-size="13" fill="#0f172a">AB‑06</text>
+          <text x="660" y="70" font-size="13" fill="#475569">Performance (normalized)</text>
+          <rect x="520" y="100" width="380" height="120" rx="12" fill="#eef2ff" />
+          <text x="710" y="134" text-anchor="middle" font-size="12" fill="#1e3a8a">Viability = AB‑01 + AB‑02</text>
+          <text x="710" y="156" text-anchor="middle" font-size="11" fill="#1e3a8a">Quality score averages AB‑03 → AB‑06</text>
+          <text x="710" y="178" text-anchor="middle" font-size="11" fill="#1e3a8a">PASS / WARN / FAIL weights</text>
+        </svg>
+        <p class="note">Template detection is critical: boot success alone overstates real functionality.</p>
+      </article>
+
+      <article class="panel" style="grid-column: span 5;">
+        <h3>5) Stack‑Aware Tooling</h3>
+        <div class="stack-grid">
+          <div class="stack-card">
+            <h4>TypeScript / tRPC</h4>
+            <ul>
+              <li>ESLint + TypeScript type checks</li>
+              <li>Handler unit tests</li>
+              <li>Playwright smoke tests (optional)</li>
+            </ul>
+          </div>
+          <div class="stack-card">
+            <h4>PHP / Laravel</h4>
+            <ul>
+              <li>PHPStan static analysis</li>
+              <li>Laravel feature tests</li>
+              <li>DB migrations + seeders</li>
+            </ul>
+          </div>
+          <div class="stack-card">
+            <h4>Python / NiceGUI</h4>
+            <ul>
+              <li>Ruff + Pyright</li>
+              <li>pytest unit tests</li>
+              <li>Smoke/boot checks</li>
+            </ul>
+          </div>
+        </div>
+        <div class="note">Validators are run per stage inside isolated sandboxes with provisioned Postgres.</div>
+      </article>
+
+      <article class="panel" style="grid-column: span 12;">
+        <h3>6) What the evidence shows (300 experiments + production)</h3>
+        <div class="metrics">
+          <div class="metric" style="background: rgba(37,99,235,0.1);">
+            <strong>300</strong>
+            End‑to‑end generation runs with automated validators
+          </div>
+          <div class="metric" style="background: rgba(249,115,22,0.1);">
+            <strong>30</strong>
+            Human‑reviewed apps using the AB rubric
+          </div>
+          <div class="metric" style="background: rgba(20,184,166,0.1);">
+            <strong>3,000+</strong>
+            Real user apps generated in production (4 months)
+          </div>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <strong>73.3%</strong>
+            Viable apps with full scaffolding (AB‑01 + AB‑02)
+          </div>
+          <div class="metric">
+            <strong>Template trap</strong>
+            Boot‑only checks inflate success without AB‑02
+          </div>
+          <div class="metric">
+            <strong>Validation tradeoffs</strong>
+            Unit tests = quality, E2E tests = brittle
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <footer class="footer">
+      <div class="legend">
+        <span><span class="dot brand"></span> Scaffolded flow</span>
+        <span><span class="dot accent"></span> Validation gates</span>
+        <span><span class="dot warn"></span> Repair loop</span>
+      </div>
+      <div>Sources: app.build papers (docs/saner‑2026) + evaluation dataset in this repo.</div>
+    </footer>
+  </section>
+</body>
+</html>
