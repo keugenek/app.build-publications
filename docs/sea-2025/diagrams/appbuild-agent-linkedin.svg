@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500">
+  <defs>
+    <style>
+      .title { font: 700 38px "Inter", "Segoe UI", Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 500 20px "Inter", "Segoe UI", Arial, sans-serif; fill: #334155; }
+      .section-title { font: 700 24px "Inter", "Segoe UI", Arial, sans-serif; fill: #0f172a; }
+      .label { font: 600 16px "Inter", "Segoe UI", Arial, sans-serif; fill: #0f172a; }
+      .text { font: 400 15px "Inter", "Segoe UI", Arial, sans-serif; fill: #334155; }
+      .small { font: 400 13px "Inter", "Segoe UI", Arial, sans-serif; fill: #475569; }
+      .chip { font: 600 13px "Inter", "Segoe UI", Arial, sans-serif; fill: #0f172a; }
+      .box { fill: #ffffff; stroke: #cbd5f5; stroke-width: 2; rx: 18; }
+      .accent { fill: #eef2ff; stroke: #818cf8; stroke-width: 2; rx: 18; }
+      .accent-green { fill: #ecfdf3; stroke: #22c55e; stroke-width: 2; rx: 18; }
+      .accent-amber { fill: #fffbeb; stroke: #f59e0b; stroke-width: 2; rx: 18; }
+      .accent-blue { fill: #eff6ff; stroke: #3b82f6; stroke-width: 2; rx: 18; }
+      .accent-rose { fill: #fff1f2; stroke: #f43f5e; stroke-width: 2; rx: 18; }
+      .muted { fill: #f8fafc; stroke: #e2e8f0; stroke-width: 2; rx: 18; }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12" fill="none" stroke="#475569" stroke-width="2" />
+    </marker>
+    <marker id="arrow-green" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12" fill="none" stroke="#16a34a" stroke-width="2" />
+    </marker>
+  </defs>
+
+  <rect x="40" y="40" width="1120" height="1420" rx="32" fill="#f8fafc" />
+
+  <text x="80" y="120" class="title">app.build Agent: Environment Scaffolding in Action</text>
+  <text x="80" y="160" class="subtitle">How the agent scaffolds generation, validates every step, and ships production-ready apps.</text>
+
+  <g id="overview">
+    <rect x="80" y="200" width="1040" height="210" class="box" />
+    <text x="110" y="240" class="section-title">1) Environment Scaffolding (ES) Overview</text>
+    <text x="110" y="275" class="text">ES reframes prompt-to-app generation as a constrained, tool-rich workflow.</text>
+    <text x="110" y="300" class="text">The model operates inside an orchestrated sandbox with deterministic checks, feedback,</text>
+    <text x="110" y="325" class="text">and repair loops—turning probabilistic output into verifiable artifacts.</text>
+
+    <rect x="720" y="235" width="360" height="140" class="accent" />
+    <text x="740" y="265" class="label">Key ES Principles</text>
+    <text x="740" y="295" class="small">• Structured sub-tasks (finite state machine)</text>
+    <text x="740" y="320" class="small">• Isolated sandboxes per step</text>
+    <text x="740" y="345" class="small">• Validation after every generation</text>
+    <text x="740" y="370" class="small">• Automated repair before proceeding</text>
+  </g>
+
+  <g id="fsm">
+    <rect x="80" y="440" width="1040" height="300" class="box" />
+    <text x="110" y="480" class="section-title">2) Scaffolding Workflow (FSM-Guided)</text>
+
+    <rect x="120" y="525" width="200" height="80" class="accent-blue" />
+    <text x="150" y="555" class="label">User Spec</text>
+    <text x="150" y="580" class="small">Prompt → intent</text>
+
+    <rect x="360" y="525" width="200" height="80" class="accent" />
+    <text x="380" y="555" class="label">Orchestrator</text>
+    <text x="380" y="580" class="small">FSM plans stages</text>
+
+    <rect x="600" y="500" width="200" height="70" class="accent-green" />
+    <text x="620" y="530" class="label">Schema</text>
+    <text x="620" y="555" class="small">DB + models</text>
+
+    <rect x="600" y="590" width="200" height="70" class="accent-green" />
+    <text x="620" y="620" class="label">API</text>
+    <text x="620" y="645" class="small">Handlers + routes</text>
+
+    <rect x="600" y="680" width="200" height="70" class="accent-green" />
+    <text x="620" y="710" class="label">UI</text>
+    <text x="620" y="735" class="small">Views + flows</text>
+
+    <rect x="860" y="525" width="220" height="80" class="accent-amber" />
+    <text x="880" y="555" class="label">Accepted Artifacts</text>
+    <text x="880" y="580" class="small">Merged to repo</text>
+
+    <line x1="320" y1="565" x2="360" y2="565" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+    <line x1="560" y1="565" x2="600" y2="565" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+    <line x1="800" y1="565" x2="860" y2="565" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+
+    <path d="M 700 570 L 700 590" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+    <path d="M 700 660 L 700 680" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" />
+
+    <text x="120" y="650" class="small">Same FSM for all stacks:</text>
+    <text x="120" y="675" class="small">TypeScript/tRPC • PHP/Laravel • Python/NiceGUI</text>
+  </g>
+
+  <g id="validation">
+    <rect x="80" y="770" width="1040" height="360" class="box" />
+    <text x="110" y="810" class="section-title">3) Validation Pipeline (Multi-Layered)</text>
+
+    <rect x="110" y="845" width="260" height="120" class="accent-rose" />
+    <text x="130" y="875" class="label">AB-01: Boot</text>
+    <text x="130" y="900" class="small">App builds + runs</text>
+    <text x="130" y="925" class="small">Docker healthchecks</text>
+
+    <rect x="400" y="845" width="260" height="120" class="accent-rose" />
+    <text x="420" y="875" class="label">AB-02: Prompt Fit</text>
+    <text x="420" y="900" class="small">UI + flows match intent</text>
+    <text x="420" y="925" class="small">Template detection gate</text>
+
+    <rect x="690" y="845" width="360" height="120" class="accent" />
+    <text x="710" y="875" class="label">Layered Checks (per stack)</text>
+    <text x="710" y="900" class="small">• Lint + type checks (ESLint, PHPStan, ruff/pyright)</text>
+    <text x="710" y="925" class="small">• Unit/handler tests</text>
+    <text x="710" y="950" class="small">• Playwright UI smoke tests</text>
+
+    <rect x="110" y="1015" width="460" height="90" class="accent-green" />
+    <text x="130" y="1045" class="label">Pass → Promote</text>
+    <text x="130" y="1070" class="small">Artifacts accepted & stitched into repo</text>
+
+    <rect x="600" y="1015" width="450" height="90" class="accent-amber" />
+    <text x="620" y="1045" class="label">Fail → Repair Loop</text>
+    <text x="620" y="1070" class="small">Deterministic feedback sent to LLM, re-generate step</text>
+
+    <path d="M 240 965 L 240 1015" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)" />
+    <path d="M 530 965 L 530 1015" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)" />
+    <path d="M 870 965 L 870 1015" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)" />
+  </g>
+
+  <g id="scoring">
+    <rect x="80" y="1160" width="1040" height="210" class="box" />
+    <text x="110" y="1200" class="section-title">4) Quality Gates & Outcomes</text>
+
+    <rect x="110" y="1235" width="430" height="110" class="muted" />
+    <text x="130" y="1265" class="label">Viability = Hard Gates</text>
+    <text x="130" y="1290" class="small">Requires AB-01 (Boot) + AB-02 (Prompt Fit)</text>
+    <text x="130" y="1315" class="small">Failing either → non-viable app</text>
+
+    <rect x="580" y="1235" width="470" height="110" class="muted" />
+    <text x="600" y="1265" class="label">Quality = Layered Checks</text>
+    <text x="600" y="1290" class="small">AB-03/04/06/07 evaluate CRUD, UX, and behavior</text>
+    <text x="600" y="1315" class="small">Higher scores require passing deeper tests</text>
+  </g>
+
+  <g id="footer">
+    <rect x="80" y="1390" width="1040" height="80" class="accent-blue" />
+    <text x="110" y="1430" class="label">Outcome</text>
+    <text x="230" y="1430" class="text">Reliable, production-ready apps from open or closed LLMs by scaling environments—not just models.</text>
+  </g>
+</svg>
