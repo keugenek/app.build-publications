@@ -115,17 +115,64 @@ The emergence of agentic coding systems---AI agents capable of autonomously gene
 \section{Related Work}
 \label{sec:related}
 
-\subsection{Code Generation Benchmarks}
+We survey evaluation approaches across four categories: function-level benchmarks, repository-level agent benchmarks, interactive agent environments, and evaluation harnesses. Table~\ref{tab:related-comparison} summarizes key frameworks and identifies the gap our work addresses.
 
-Function-level benchmarks including HumanEval~\cite{chen2021evaluating} and MBPP~\cite{austin2021program} evaluate isolated code generation but fail to capture system-level concerns. Repository-level benchmarks like SWE-bench~\cite{jimenez2024swe} advance evaluation to real-world software engineering but focus on bug fixing rather than application generation.
+\subsection{Function-Level Code Generation Benchmarks}
 
-\subsection{Agent Evaluation Frameworks}
+\textbf{HumanEval}~\cite{chen2021evaluating} introduced pass@k evaluation on 164 Python functions, becoming the standard metric for code generation. \textbf{MBPP}~\cite{austin2021program} expanded to 974 problems but remains algorithm-focused. Both benchmarks are now saturated---top models achieve $>$90\% on HumanEval---raising concerns about contamination and real-world relevance.
 
-WebArena~\cite{zhou2024webarena} and GAIA~\cite{mialon2023gaia} evaluate agents in interactive environments but do not address code deployment. SWE-agent~\cite{yang2024swe} demonstrates the importance of agent-computer interfaces but evaluates only patch correctness.
+\textbf{BigCodeBench}\footnote{\url{https://github.com/bigcode-project/bigcodebench}} addresses these limitations with diverse library calls and complex instructions, while \textbf{LiveCodeBench}\footnote{\url{https://livecodebench.github.io/}} provides dynamic, contamination-resistant evaluation. Recent work on \textbf{HumanEval Pro and MBPP Pro}~\cite{humanevalpro2024} introduces self-invoking code generation to test progressive reasoning.
 
-\subsection{DevOps Metrics}
+\textit{Gap:} Function-level benchmarks do not evaluate deployment, integration, or operational readiness.
 
-DORA metrics~\cite{forsgren2018accelerate} (deployment frequency, lead time, change failure rate, time to restore) provide industry-standard measures of software delivery performance. We adapt these concepts for agentic systems, measuring whether AI agents can achieve the same deployment capabilities as human teams.
+\subsection{Repository-Level Agent Benchmarks}
+
+\textbf{SWE-bench}~\cite{jimenez2024swe} evaluates agents on 2,294 real GitHub issues, with \textbf{SWE-bench Verified}\footnote{\url{https://openai.com/index/introducing-swe-bench-verified/}} providing 500 human-verified samples where top models achieve $\sim$72\%. The harder \textbf{SWE-bench Pro}\footnote{\url{https://scale.com/blog/swe-bench-pro}} reveals performance drops to $\sim$23\% on production-grade issues.
+
+\textbf{SWE-agent}~\cite{yang2024swe} demonstrates that custom agent-computer interfaces significantly enhance performance through Docker-based harnesses and tool augmentation. \textbf{REPOCOD}\footnote{\url{https://arxiv.org/abs/2410.21647}} tests complete method implementation with only 6\% resolution rate, while \textbf{DevQualityEval}\footnote{\url{https://github.com/symflower/eval-dev-quality}} evaluates multi-language software engineering tasks on private datasets to avoid contamination.
+
+\textit{Gap:} Repository-level benchmarks focus on patch correctness, not autonomous deployment capability.
+
+\subsection{Interactive Agent Benchmarks}
+
+\textbf{WebArena}~\cite{zhou2024webarena} evaluates 812 web tasks across e-commerce, forums, and content management, where best agents achieve 61.7\% versus 78\% human performance. \textbf{GAIA}~\cite{mialon2023gaia} tests general AI assistants on 466 multi-step reasoning questions requiring tool use, with agents reaching 80.7\% versus 92\% human baseline.
+
+\textbf{AgentBench}~\cite{agentbench2023} spans 8 environments (OS, databases, web) revealing significant gaps between commercial and open-source models. \textbf{OSWorld}\footnote{\url{https://os-world.github.io/}} (NeurIPS 2024) benchmarks multimodal agents in real computer environments, where recent advances have achieved superhuman performance (76\% vs 72\% human baseline).
+
+\textit{Gap:} Interactive benchmarks evaluate general agent capabilities, not software deployment pipelines.
+
+\subsection{Agent Evaluation Harnesses and Frameworks}
+
+\textbf{Inspect AI}\footnote{\url{https://inspect.aisi.org.uk/}} from the UK AI Safety Institute provides 100+ pre-built evaluations with sandboxing, MCP tool support, and multi-agent primitives. It has been adopted by frontier labs and safety organizations for standardized agent evaluation.
+
+\textbf{DeepEval}\footnote{\url{https://github.com/confident-ai/deepeval}} offers CI/CD integration with LLM-as-judge metrics including task completion, tool correctness, and hallucination detection. \textbf{Databricks Agent Evaluation} integrates with MLflow for tracking groundedness, correctness, and coherence of agentic applications.
+
+The emerging \textbf{AgentOps} paradigm extends DevOps principles to AI agents, addressing observability, tracing, and lifecycle management specific to autonomous systems.
+
+\subsection{DevOps and Deployment Metrics}
+
+\textbf{DORA metrics}~\cite{forsgren2018accelerate}---deployment frequency, lead time, change failure rate, and mean time to restore---provide industry-standard measures of software delivery performance. \textbf{MLOps 2.0} architectures integrate CI/CD with Continuous Data Validation (CDV) for reliable ML delivery.
+
+\textit{Gap:} No existing framework combines code generation evaluation with DORA-mapped deployment metrics and agentic DevX scores (runability, deployability).
+
+\begin{table}[t]
+\caption{Comparison of agent evaluation approaches. Klaudbiusz uniquely combines deployment-centric metrics with DORA mapping and trajectory-based optimization.}
+\label{tab:related-comparison}
+\centering
+\small
+\begin{tabular}{lccccc}
+\toprule
+Framework & Code Gen & Deploy & DORA & DevX & Trajectory \\
+\midrule
+HumanEval/MBPP & \checkmark & -- & -- & -- & -- \\
+SWE-bench & \checkmark & -- & -- & -- & -- \\
+WebArena/GAIA & -- & -- & -- & -- & -- \\
+Inspect AI & \checkmark & -- & -- & -- & -- \\
+DeepEval & \checkmark & -- & -- & -- & -- \\
+\textbf{Klaudbiusz (Ours)} & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 %%
 %% The Klaudbiusz Framework
