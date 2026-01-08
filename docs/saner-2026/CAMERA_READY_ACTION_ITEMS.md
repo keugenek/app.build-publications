@@ -21,14 +21,14 @@
 
 ### Critical (Must Fix Before Submission)
 
-- [ ] **#1: Add Section I Introduction Header**
+- [x] **#1: Add Section I Introduction Header**
   - **Location:** `paper.tex:75`
   - **Issue:** Paper lacks proper "Introduction" section header. Content starts with `\subsection{The Production Reliability Gap}` without a parent section.
   - **Reviewer:** R2, R3
   - **Fix:** Add `\section{Introduction}` before line 75
   - **Assignee:** _unassigned_
 
-- [ ] **#2: Restructure Front Matter**
+- [x] **#2: Restructure Front Matter**
   - **Location:** `paper.tex:75-160`
   - **Issue:** Current structure makes it harder to get cohesive overview of problem, research questions, approach, and paper roadmap.
   - **Reviewer:** R3
@@ -50,32 +50,32 @@
   - **Fix:** Regenerate figures with minimum 8pt font when printed at column width
   - **Assignee:** _unassigned_
 
-- [ ] **#4: Define All Acronyms on First Use**
+- [x] **#4: Define All Acronyms on First Use**
   - **Location:** Throughout `paper.tex`
   - **Issue:** Most acronyms are not explained.
   - **Reviewer:** R1
   - **Fix:** Add definitions for the following on first use:
-    - [ ] LLM - Large Language Model
-    - [ ] CRUD - Create, Read, Update, Delete
-    - [ ] FSM - Finite State Machine
-    - [ ] API - Application Programming Interface
-    - [ ] UI - User Interface
-    - [ ] E2E - End-to-End
-    - [ ] CI/CD - Continuous Integration/Continuous Deployment
-    - [ ] CSP - Content Security Policy
-    - [ ] DOM - Document Object Model
-    - [ ] XSS - Cross-Site Scripting
-    - [ ] CSRF - Cross-Site Request Forgery
-    - [ ] WCAG - Web Content Accessibility Guidelines
-    - [ ] SRS - Spaced Repetition System (in prompt dataset table)
-    - [ ] tRPC - Clarify it's a TypeScript RPC framework
+    - [x] LLM - Large Language Model
+    - [x] CRUD - Create, Read, Update, Delete
+    - [ ] FSM - Finite State Machine (in table, may need table note)
+    - [x] API - Application Programming Interface
+    - [x] UI - User Interface
+    - [x] E2E - End-to-End
+    - [x] CI/CD - Continuous Integration/Continuous Deployment
+    - [x] CSP - Content Security Policy
+    - [x] DOM - Document Object Model
+    - [x] XSS - Cross-Site Scripting
+    - [x] CSRF - Cross-Site Request Forgery
+    - [x] WCAG - Web Content Accessibility Guidelines
+    - [x] SRS - Spaced Repetition System (in prompt dataset table)
+    - [ ] tRPC - Clarify it's a TypeScript RPC framework (library name)
   - **Assignee:** _unassigned_
 
 ---
 
 ### Important (Should Fix)
 
-- [ ] **#5: Remove Verbatim Repetitions**
+- [x] **#5: Remove Verbatim Repetitions**
   - **Location:** Abstract (line 55-56) and Section text (line 77)
   - **Issue:** Some statements repeated essentially verbatim multiple times.
   - **Reviewer:** R1
@@ -149,4 +149,4 @@
 
 ---
 
-_Last updated: 2026-01-08_
+_Last updated: 2026-01-08 (fixes #1, #2, #4, #5 applied)_
