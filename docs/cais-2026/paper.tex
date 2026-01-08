@@ -39,7 +39,7 @@
 %%
 %% Title
 %%
-\title{Klaudbiusz: An Open-Source Evaluation Framework for Autonomous Databricks Application Generation with Trajectory-Based Optimization}
+\title{Klaudbiusz: Agent-Agnostic Tooling for Databricks Application Generation with Trajectory-Based Optimization and Composite Evaluation}
 
 %%
 %% Authors (anonymous for review)
@@ -54,7 +54,7 @@
 %% Abstract
 %%
 \begin{abstract}
-We present Klaudbiusz, an open-source evaluation framework for measuring autonomous deployability of AI-generated Databricks applications. As agentic coding systems mature, the field lacks standardized, objective metrics for assessing whether generated code can be deployed without human intervention. Our framework introduces AppEval-100, a composite score built on four pillars: Reliability (build, runtime, type safety, tests), SQL Quality (execution correctness, efficiency, safety---inspired by BIRD and Spider), Web Quality (task completion, visual correctness, interactivity, accessibility---inspired by WebArena), and Agentic DevX (runability, deployability on 0--5 scales). Unlike existing benchmarks that evaluate SQL or web tasks in isolation, AppEval-100 provides the first composite evaluation for full-stack data applications. We map metrics to industry-standard DORA measures and complement evaluation with a trajectory optimizer that analyzes agent execution traces using a map-reduce LLM approach. We design a 100-prompt benchmark with $\pm$9\% confidence intervals across three difficulty tiers. Evaluated on 20 Databricks applications, we achieve 100\% build/runtime success with 6--9 minute generation latency at \$0.74 per application. We release the complete framework including evaluation harness, trajectory analyzer, and MLflow integration.
+We present Klaudbiusz, an open-source, agent-agnostic toolset for autonomous generation of Databricks data applications. Rather than building a specific agent, we provide reusable infrastructure---environment scaffolding, templates, and MCP tool integrations---that any agentic coding system can leverage. To continuously improve this toolset, we introduce a trajectory analyzer that processes agent execution traces via map-reduce LLM analysis, identifying friction points and generating actionable recommendations. To measure outcomes, we develop AppEval-100, a composite evaluation score built on four pillars: Reliability, SQL Quality (inspired by BIRD/Spider), Web Quality (inspired by WebArena), and Agentic DevX. Unlike existing benchmarks that evaluate SQL or web tasks in isolation, AppEval-100 provides the first composite evaluation for full-stack data applications, mapped to industry-standard DORA delivery metrics. We design a 100-prompt benchmark with $\pm$9\% confidence intervals across three difficulty tiers. Evaluated on 20 Databricks applications, we achieve 100\% build/runtime success with 6--9 minute generation latency at \$0.74 per application. We release the complete framework including scaffolding tools, trajectory analyzer, evaluation harness, and MLflow integration.
 \end{abstract}
 
 %%
@@ -81,7 +81,7 @@ We present Klaudbiusz, an open-source evaluation framework for measuring autonom
 %%
 %% Keywords
 %%
-\keywords{agentic code generation, evaluation framework, autonomous deployment, Databricks, trajectory optimization}
+\keywords{agent-agnostic tooling, agentic code generation, evaluation framework, trajectory optimization, Databricks}
 
 \maketitle
 
@@ -93,21 +93,21 @@ We present Klaudbiusz, an open-source evaluation framework for measuring autonom
 
 The emergence of agentic coding systems---AI agents capable of autonomously generating, testing, and deploying software applications---represents a paradigm shift in software engineering. While benchmarks like HumanEval~\cite{chen2021evaluating} and SWE-bench~\cite{jimenez2024swe} have advanced our understanding of code generation quality, they focus primarily on functional correctness rather than production readiness.
 
-\textbf{The Autonomous Deployability Gap.} We identify a critical gap in current evaluation methodologies: the absence of standardized metrics for measuring whether AI-generated code can be \emph{autonomously deployed} without human intervention. Traditional metrics assess whether code runs correctly; we argue the field needs metrics that assess whether an AI agent can complete the full deployment lifecycle.
+\textbf{The Infrastructure Gap.} We observe that agent performance depends heavily on the quality of surrounding infrastructure: environment scaffolding, templates, tool integrations, and validation pipelines. Yet most work focuses on improving agents themselves rather than the reusable tooling that enables them. We argue for an \emph{agent-agnostic} approach: build excellent infrastructure that any agent can leverage.
 
-\textbf{Core Principle.} Our work is guided by a simple axiom: \emph{If an AI agent cannot autonomously deploy its own generated code, that code is not production-ready.}
+\textbf{Core Principle.} Our work is guided by a simple axiom: \emph{If an AI agent cannot autonomously deploy code using provided tooling, the tooling needs improvement---not necessarily the agent.}
 
-\textbf{Contributions.} We make the following contributions:
+\textbf{Three-Pillar Approach.} We address this through three interconnected contributions:
 
 \begin{enumerate}
-    \item \textbf{9-Metric Evaluation Framework.} We introduce Klaudbiusz, an evaluation framework with 9 zero-bias, objective metrics organized into three categories: core functionality, platform integration, and agentic DevX.
+    \item \textbf{Agent-Agnostic Toolset.} We introduce Klaudbiusz, an open-source infrastructure for Databricks application generation comprising environment scaffolding, TypeScript/tRPC templates, MCP tool integrations, and containerized execution via Dagger. Any agentic system can leverage these tools.
 
-    \item \textbf{Trajectory Optimizer.} We present a map-reduce approach for analyzing agent execution traces to identify friction points and generate actionable recommendations for improving scaffolding and tools.
+    \item \textbf{Trajectory Analyzer.} To continuously improve this toolset, we present a map-reduce LLM approach for analyzing agent execution traces. The analyzer identifies friction points, inefficient patterns, and tool failures, generating actionable recommendations for infrastructure improvement.
 
-    \item \textbf{Open-Source Release.} We release the complete framework with MLflow integration, enabling reproducible benchmarking of agentic code generation systems.
-
-    \item \textbf{Empirical Validation.} We demonstrate 90\% autonomous deployment readiness on 20 Databricks data applications with 6--9 minute generation latency.
+    \item \textbf{Composite Evaluation (AppEval-100).} To measure outcomes, we develop a 4-pillar evaluation framework combining Reliability, SQL Quality, Web Quality, and Agentic DevX into a single composite score mapped to DORA delivery metrics.
 \end{enumerate}
+
+\textbf{Empirical Validation.} Evaluated on 20 Databricks applications, we achieve 100\% build/runtime success with 6--9 minute generation latency at \$0.74 per application.
 
 %%
 %% Related Work
@@ -193,16 +193,27 @@ DeepEval & \checkmark & -- & -- & -- & -- \\
 %%
 %% The Klaudbiusz Framework
 %%
-\section{The Klaudbiusz Framework}
+\section{The Klaudbiusz Toolset}
 \label{sec:framework}
 
-\subsection{Design Principles}
+\subsection{Agent-Agnostic Design}
 
-Our framework is built on two core principles:
+Klaudbiusz provides reusable infrastructure that any agentic coding system can leverage, rather than a specific agent implementation. The toolset comprises:
 
-\textbf{Zero-Bias Evaluation.} All metrics are objective, reproducible, and automatable. We explicitly exclude subjective assessments of code quality, maintainability, or aesthetics.
+\begin{itemize}
+    \item \textbf{Environment Scaffolding.} Pre-configured TypeScript + tRPC project templates with Databricks SDK integration, ensuring consistent structure across generated applications.
+    \item \textbf{MCP Tool Integrations.} Model Context Protocol tools for file operations, database queries, and deployment actions that agents can invoke.
+    \item \textbf{Containerized Execution.} Dagger-based sandboxed builds providing isolation and reproducibility across environments.
+    \item \textbf{Validation Pipelines.} Automated checks for build, runtime, type safety, and deployment readiness.
+\end{itemize}
 
-\textbf{Autonomous Deployability.} We measure whether generated applications can be deployed without human intervention, treating deployment capability as a first-class metric: \emph{if an AI agent cannot autonomously run and deploy what it generated, that artifact is not production-ready.}
+\subsection{Evaluation Design Principles}
+
+Our evaluation framework is built on two core principles:
+
+\textbf{Zero-Bias Metrics.} All metrics are objective, reproducible, and automatable. We explicitly exclude subjective assessments of code quality, maintainability, or aesthetics.
+
+\textbf{Tooling-Centric Feedback.} When agents fail, we ask ``what tooling improvement would help?'' rather than ``what's wrong with the agent?'' This framing drives continuous infrastructure improvement.
 
 \subsection{The 13-Metric Rubric}
 
@@ -572,11 +583,11 @@ By establishing standardized metrics for autonomous deployability, we enable:
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented Klaudbiusz, an open-source evaluation framework introducing 9 zero-bias metrics for measuring autonomous deployability of AI-generated applications. Our trajectory optimizer provides actionable feedback for improving agent scaffolding and tools. Evaluated on 20 Databricks applications, we achieve 90\% autonomous deployment readiness.
+We presented Klaudbiusz, an open-source, agent-agnostic toolset for autonomous Databricks application generation. Rather than building a specific agent, we provide reusable infrastructure---scaffolding, templates, and MCP tools---that any agentic system can leverage. Our trajectory analyzer enables continuous improvement of this toolset by identifying friction points in agent execution traces. AppEval-100 provides composite evaluation combining Reliability, SQL Quality, Web Quality, and Agentic DevX, mapped to industry-standard DORA metrics.
 
-The path to reliable agentic code generation requires not just better models, but principled evaluation frameworks that measure what matters for production deployment. We release Klaudbiusz to enable the community to benchmark and improve agentic systems systematically.
+The path to reliable agentic code generation requires not just better models, but better tooling. We release Klaudbiusz to enable the community to build and improve agent-agnostic infrastructure systematically.
 
-\textbf{Open Source Release.} Framework, evaluation harness, and trajectory analyzer available at: [URL redacted for review]
+\textbf{Open Source Release.} Toolset, trajectory analyzer, and evaluation harness available at: [URL redacted for review]
 
 %%
 %% Acknowledgments (hidden for review)
