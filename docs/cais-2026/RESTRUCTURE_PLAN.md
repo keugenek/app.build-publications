@@ -55,7 +55,7 @@ All three are core contributions that deserve balanced coverage.
 - Pillar 3 (MLOps - debugging/monitoring compound AI systems)
 - Strong fit: This is exactly "debugging compound AI" - understanding why agent+tools fail together
 
-### Pillar 3: AppEval - Composite Evaluation (Equal Contribution)
+### Pillar 3: AppEval - Composite Evaluation
 
 **Thesis**: Novel evaluation framework that measures what matters for compound AI: not just "does code work" but "can agents operate it".
 
@@ -106,7 +106,7 @@ All three are core contributions that deserve balanced coverage.
 - State machine: Scaffolded → Validated (checksum) → Deployed
 - Agent compatibility: Claude SDK (primary), Cursor, Codex, LiteLLM/open-source
 
-### 4. Agentic Trajectory Analyzer (1.5 columns) ← MAIN NOVELTY
+### 4. Agentic Trajectory Analyzer (1.5 columns)
 - Motivation: When compound system fails, what to fix? Model? Tools? Template?
 - Architecture (figure):
   - Map: Haiku parallel trajectory analysis (friction extraction)
@@ -120,13 +120,12 @@ All three are core contributions that deserve balanced coverage.
 - Cost model: N×Haiku + bounded Opus = affordable at scale
 - Future: DSPy-style automatic optimization
 
-### 5. AppEval Framework (1 column) ← EQUAL CONTRIBUTION
+### 5. AppEval Framework (1 column)
 - 9-metric framework across 4 pillars (table)
 - **Agentic DevX novelty**: Runability + Deployability - "can another agent operate this?"
 - DORA alignment: mapping to industry DevOps metrics
 - AppEval-100 composite formula (brief)
 - Automation: Docker, type checker, Playwright, VLM
-- This is a contribution, not just supporting evidence
 
 ### 6. Results (0.75 column)
 - Generation: 90% build success, $0.74/app, 6-9 min
