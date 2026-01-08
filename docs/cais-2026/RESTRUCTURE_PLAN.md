@@ -2,11 +2,12 @@
 
 ## Current Problem
 
-Paper is eval-centric (AppEval-100 dominates) but the real innovation is:
+Paper structure is imbalanced - AppEval-100 takes most space while other contributions are underrepresented:
 1. Installable domain knowledge package for agents (currently MCP, future: Skills)
 2. Agentic trajectory analyzer for tooling improvement
+3. AppEval framework with novel Agentic DevX metrics
 
-Evals are supporting evidence, not the main contribution.
+All three are core contributions that deserve balanced coverage.
 
 ## Target Narrative (3 Pillars)
 
