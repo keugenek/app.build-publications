@@ -195,33 +195,33 @@ No additional handwritten comments identified on this page.
 
 ## Summary of Action Items
 
-| Priority | Comment | Action Required |
-|----------|---------|-----------------|
-| High | #4 | Clarify "installable domain knowledge" definition |
-| High | #13 | Add code examples for context layers |
-| High | #16 | Explain checksum mechanism technically |
-| High | #17 | Fill in [PLACEHOLDER] in table |
-| High | #22 | Explain agentic synthesis phase in more detail |
-| High | #23 | Expand or condense Section 3.4 Concrete Improvements |
-| Medium | #3 | Expand evals/regression suite in feedback loop |
-| Medium | #7 | Address agent step inefficiency concern |
-| Medium | #8 | Support or acknowledge vendor lock-in opinion |
-| Medium | #14 | Clarify CLI vs tool calling differences |
-| Medium | #19 | Add "repetitions" to trajectory signals |
-| Medium | #20 | Add concrete examples of traces in synthesis phase |
-| Medium | #21 | Clarify recommendation generation process |
-| Medium | #24 | Clarify which production tooling/GEPA reference |
-| Medium | #25 | Nuance agent capability claim (can but slow) |
-| Low | #1 | Clarify vanilla baseline |
-| Low | #2 | Add benchmark reference |
-| Low | #9 | Clarify data web apps scope |
-| Low | #10 | Consider LoC metrics |
-| Low | #11 | Emphasize pluggable templates |
-| Low | #12 | Elaborate on multi-part context assembly |
-| Low | #15 | Clarify design choice framing |
-| Low | #18 | Keep/expand examples (positive feedback) |
-| N/A | #26 | Results section is good (positive) |
-| N/A | #27 | Evaluation gap paragraph is good (positive) |
+| Priority | Comment | Action Required | Status | Evidence/Link |
+|----------|---------|-----------------|--------|---------------|
+| High | #4 | Clarify "installable domain knowledge" definition | **DONE** | Added Section 2 with `.mdc` rule files explanation, code example from `database-queries.mdc` |
+| High | #13 | Add code examples for context layers | **DONE** | Added `lstlisting` code block showing Drizzle ORM patterns |
+| High | #16 | Explain checksum mechanism technically | **DONE** | Explained MD5 hash mechanism, referenced `check_template_failed()` in `analysis/analyze_benchmark.py:37-56` |
+| High | #17 | Fill in [PLACEHOLDER] in table | **DONE** | Replaced with "LiteLLM + Qwen3" with production validation data (70% success at $0.61/app) |
+| High | #22 | Explain agentic synthesis phase in more detail | **DONE** | Added detailed subsection with 50-turn exploration, example trace through synthesis |
+| High | #23 | Expand or condense Section 3.4 Concrete Improvements | **DONE** | Expanded with Table 3 showing Pattern → Diagnosis → Fix with evidence |
+| Medium | #3 | Expand evals/regression suite in feedback loop | **DONE** | Added "Regression Suite" to feedback loop diagram |
+| Medium | #7 | Address agent step inefficiency concern | **DONE** | Added to Section 2.1 Motivation: "capable agents often spend excessive steps on fixing issues" |
+| Medium | #8 | Support or acknowledge vendor lock-in opinion | **DONE** | Changed to "in our view" and explained practical advantage |
+| Medium | #14 | Clarify CLI vs tool calling differences | **DONE** | Added Cloudflare/Anthropic citations explaining CLI pattern effectiveness |
+| Medium | #19 | Add "repetitions" to trajectory signals | **DONE** | Added "**Repetitions** (same action attempted multiple times)" to Map Phase |
+| Medium | #20 | Add concrete examples of traces in synthesis phase | **DONE** | Added "Example trace through synthesis" with QUALIFY syntax scenario |
+| Medium | #21 | Clarify recommendation generation process | **DONE** | Explained 50-turn exploration with Read/Glob/Grep access |
+| Medium | #24 | Clarify which production tooling/GEPA reference | **DONE** | Added GEPA and DSPy citations with explanation of applicability |
+| Medium | #25 | Nuance agent capability claim (can but slow) | **DONE** | Added "An agent *can sometimes* do this too, but it's slow and inefficient" |
+| Low | #1 | Clarify vanilla baseline | N/A | Paper structure differs from images |
+| Low | #2 | Add benchmark reference | N/A | Paper already has benchmark comparisons |
+| Low | #9 | Clarify data web apps scope | **DONE** | Added "**Scope:** Our current implementation targets data-centric web applications" |
+| Low | #10 | Consider LoC metrics | **DONE** | Added "Lines of code for the complete scaffolding: ~2,400 across 14 rule files" |
+| Low | #11 | Emphasize pluggable templates | **DONE** | Added "Templates are *pluggable*—users can swap template sets" |
+| Low | #12 | Elaborate on multi-part context assembly | **DONE** | Added "especially important when context is assembled from multiple parts" |
+| Low | #15 | Clarify design choice framing | **DONE** | Added "In our design" prefix to state machine section |
+| Low | #18 | Keep/expand examples (positive feedback) | **DONE** | Kept and expanded with additional examples |
+| N/A | #26 | Results section is good (positive) | - | No action needed |
+| N/A | #27 | Evaluation gap paragraph is good (positive) | - | No action needed |
 
 ---
 
@@ -238,3 +238,58 @@ No additional handwritten comments identified on this page.
   - Need more explanation of technical mechanisms (checksum, synthesis phase)
   - Claims about agent capabilities should be nuanced
   - Section 3.4 needs to be either expanded or condensed
+
+---
+
+## Changes Made (2026-01-19)
+
+### Paper Edits (`paper.tex`)
+
+1. **Added new Section 2: Installable Domain Knowledge**
+   - Subsection 2.1: Motivation (addresses #7, #8, #9)
+   - Subsection 2.2: Architecture with Context Layers, Tools, State Machine
+   - Code example from `database-queries.mdc` (addresses #13)
+   - Checksum explanation with MD5 implementation reference (addresses #16)
+   - Subsection 2.3: Agent Compatibility table with Qwen3 data (addresses #17)
+
+2. **Expanded Section: Agentic Trajectory Analyzer**
+   - Added "Repetitions" to Map Phase signals (addresses #19)
+   - Added example trace through synthesis (addresses #20, #21)
+   - Expanded Concrete Improvements with implementation table (addresses #23)
+   - Added Cost Model subsection
+   - Added Future Direction with GEPA/DSPy references (addresses #24)
+   - Added regression suite to feedback loop (addresses #3)
+
+3. **Updated Agentic DevX Section**
+   - Nuanced agent capability claim (addresses #25)
+   - Added "Why This Matters" explanation
+
+4. **Framework section updates**
+   - Emphasized pluggable templates (addresses #11)
+
+### Bibliography Edits (`references.bib`)
+
+Added citations:
+- `gepa2024` - GEPA prompt optimization
+- `khattab2023dspy` - DSPy
+- `cloudflare2024codemode` - Cloudflare CLI pattern
+- `anthropic2024tools` - Anthropic tool use
+- `jiang2024survey` - Code generation survey
+- `paul2024benchmarks` - AI coding assistants survey
+- `wang2024openhands` - OpenHands
+
+### Evidence Sources Used
+
+1. **Codebase analysis:**
+   - `/analysis/analyze_benchmark.py:37-56` - checksum mechanism
+   - `/analysis/dataset/openmodels/*/source_code/server/.cursor/rules/` - context layer implementation
+   - `database-queries.mdc` - Drizzle ORM patterns example
+
+2. **Results data:**
+   - Qwen3-Coder-480B: 70% success at $0.61/app
+   - Claude Sonnet 4: 86.7% success at $5.01/app
+   - Template detection via MD5 hash `eeb92b801087f89346a7ad3c1baa5163`
+
+3. **Prior work:**
+   - SANER 2026 paper for production metrics (650+ stars, 3000+ apps)
+   - EACL 2026 paper for ablation study details
