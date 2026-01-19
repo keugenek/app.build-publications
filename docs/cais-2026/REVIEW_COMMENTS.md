@@ -126,6 +126,73 @@ Extracted from handwritten review notes on printed draft.
 
 ---
 
+## Page 6 - Figure 3: Two-Phase Trajectory Analyzer
+
+### Comment 20: "examples" and "traces" (Figure 3 - Agentic Synthesis Phase)
+**Location:** Near the Agentic Synthesis Phase diagram
+**Comment:** "examples" with arrow pointing down, "traces"
+**Action:** Provide concrete examples of traces flowing through the synthesis phase.
+
+### Comment 21: "recommendations" (Progressive context discovery box)
+**Location:** Near "Up to 50 turns of exploration / Progressive context discovery" box
+**Comment:** "recommendations"
+**Action:** Clarify how recommendations are generated from the exploration process.
+
+### Comment 22: "explain" (Agentic synthesis phase paragraph)
+**Location:** Margin near the agentic synthesis phase description
+**Comment:** "explain"
+**Context:** "Agentic synthesis phase. Aggregated patterns go to a reasoning model (we use Claude Opus) with read-only access to: Template and CLI tools source code (via Read/Glob/Grep) - Tool definitions (extracted from MCP server) - Evaluation metrics (per-app scores, optional)"
+**Action:** Provide more detailed explanation of the synthesis phase process.
+
+---
+
+## Page 7 - Sections 3.4-3.6 and Section 4.1-4.2
+
+### Comment 23: "unclear - expand or mention briefly" (Section 3.4 Concrete Improvements)
+**Location:** Top of page near section 3.4 title
+**Comment:** "unclear - expand or mention briefly"
+**Context:** Table showing Pattern Observed → Diagnosis → Fix Applied
+**Action:** Either expand the concrete improvements section with more detail, or mention it more briefly. Current level of detail may be awkward middle ground.
+
+### Comment 24: "which?" (Section 3.6 Future Direction)
+**Location:** Margin near discussion of production tooling
+**Comment:** "which?"
+**Context:** "Recent work on reflective prompt evolution (GEPA) shows prompts can be automatically optimized through self-reflection."
+**Action:** Clarify which specific production tooling or techniques are being referenced.
+
+### Comment 25: "Can sometimes but slow" (Section 4.2 Motivation)
+**Location:** Bottom of page, near agent capability discussion
+**Comment:** "Can sometimes but slow"
+**Context:** "An agent cannot. It needs explicit .env.example files, documented commands, health endpoints for verification."
+**Action:** Nuance the claim - agents CAN sometimes figure things out, but it's slow/inefficient. The point is about efficiency, not impossibility.
+
+---
+
+## Page 8 - Sections 4.3-4.6 (Runability and Deployability)
+
+No additional handwritten comments identified on this page.
+
+---
+
+## Page 9 - Figure 4 and Section 4.7 DORA Alignment
+
+### Comment 26: Checkmark (Section 5. Results)
+**Location:** Left margin near Section 5. Results header
+**Comment:** Checkmark (✓)
+**Interpretation:** Positive feedback - Results section is good.
+
+---
+
+## Page 10 - Sections 5.2-5.3 and Section 6 Related Work
+
+### Comment 27: Bracket/Checkmark (Section 6 - Evaluation gap paragraph)
+**Location:** Left margin near "Evaluation gap" paragraph
+**Comment:** Bracket or checkmark marking the paragraph
+**Context:** "Evaluation gap. Existing benchmarks evaluate code correctness (HumanEval, SWE-bench), task completion (WebArena, GAIA), or SQL quality (BIRD, Spider). None ask whether generated code can be operated by other agents—a critical question for compound AI systems where one agent's output becomes another's input."
+**Interpretation:** Positive feedback - this paragraph effectively articulates the evaluation gap contribution.
+
+---
+
 ## Summary of Action Items
 
 | Priority | Comment | Action Required |
@@ -134,11 +201,17 @@ Extracted from handwritten review notes on printed draft.
 | High | #13 | Add code examples for context layers |
 | High | #16 | Explain checksum mechanism technically |
 | High | #17 | Fill in [PLACEHOLDER] in table |
+| High | #22 | Explain agentic synthesis phase in more detail |
+| High | #23 | Expand or condense Section 3.4 Concrete Improvements |
 | Medium | #3 | Expand evals/regression suite in feedback loop |
 | Medium | #7 | Address agent step inefficiency concern |
 | Medium | #8 | Support or acknowledge vendor lock-in opinion |
 | Medium | #14 | Clarify CLI vs tool calling differences |
 | Medium | #19 | Add "repetitions" to trajectory signals |
+| Medium | #20 | Add concrete examples of traces in synthesis phase |
+| Medium | #21 | Clarify recommendation generation process |
+| Medium | #24 | Clarify which production tooling/GEPA reference |
+| Medium | #25 | Nuance agent capability claim (can but slow) |
 | Low | #1 | Clarify vanilla baseline |
 | Low | #2 | Add benchmark reference |
 | Low | #9 | Clarify data web apps scope |
@@ -147,6 +220,8 @@ Extracted from handwritten review notes on printed draft.
 | Low | #12 | Elaborate on multi-part context assembly |
 | Low | #15 | Clarify design choice framing |
 | Low | #18 | Keep/expand examples (positive feedback) |
+| N/A | #26 | Results section is good (positive) |
+| N/A | #27 | Evaluation gap paragraph is good (positive) |
 
 ---
 
@@ -155,4 +230,11 @@ Extracted from handwritten review notes on printed draft.
 - These comments appear to be from an internal review session
 - Several comments seek more concrete examples and technical details
 - The "in our opinion" note suggests some claims need stronger evidence
-- Positive feedback on the trajectory examples (Comment #18)
+- Positive feedback on:
+  - Trajectory examples (Comment #18)
+  - Results section (Comment #26)
+  - Evaluation gap articulation (Comment #27)
+- Key themes:
+  - Need more explanation of technical mechanisms (checksum, synthesis phase)
+  - Claims about agent capabilities should be nuanced
+  - Section 3.4 needs to be either expanded or condensed
