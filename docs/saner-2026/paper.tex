@@ -1,10 +1,11 @@
-\documentclass[10pt,conference]{IEEEtran}
+\documentclass[conference]{IEEEtran}
 \IEEEoverridecommandlockouts
 % The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
 \usepackage{textcomp}
+\usepackage{xcolor}
 \usepackage{url}
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{threeparttable} % table notes for self-contained captions
@@ -14,45 +15,42 @@
 \title{app.build: A Production Framework for Scaling Agentic Prompt-to-App Generation with Environment Scaffolding\thanks{Code available at \protect\url{https://github.com/neondatabase/appdotbuild-agent}}}
 
 \author{\IEEEauthorblockN{1\textsuperscript{st} Evgenii Kniazev\textsuperscript{*}}
-\IEEEauthorblockA{Databricks\\
-Email: eng-appbuild@databricks.com}
+\IEEEauthorblockA{\textit{Databricks}\\
+eng-appbuild@databricks.com}
 \and
 \IEEEauthorblockN{2\textsuperscript{nd} Arseny Kravchenko\textsuperscript{*}}
-\IEEEauthorblockA{Databricks\\
-Email: eng-appbuild@databricks.com}
+\IEEEauthorblockA{\textit{Databricks}\\
+eng-appbuild@databricks.com}
 \and
 \IEEEauthorblockN{3\textsuperscript{rd} Igor Rekun\textsuperscript{*}}
-\IEEEauthorblockA{Databricks\\
-Email: eng-appbuild@databricks.com}
+\IEEEauthorblockA{\textit{Databricks}\\
+eng-appbuild@databricks.com}
 \and
 \IEEEauthorblockN{4\textsuperscript{th} James Broadhead}
-\IEEEauthorblockA{Databricks\\
-Email: eng-appbuild@databricks.com}
+\IEEEauthorblockA{\textit{Databricks}\\
+eng-appbuild@databricks.com}
 \and
 \IEEEauthorblockN{5\textsuperscript{th} Nikita Shamgunov}
-\IEEEauthorblockA{Databricks\\
-Email: eng-appbuild@databricks.com}
+\IEEEauthorblockA{\textit{Databricks}\\
+eng-appbuild@databricks.com}
 \and
 \IEEEauthorblockN{6\textsuperscript{th} Pranav Sah}
-\IEEEauthorblockA{THWS University of Applied Sciences,\\
-Würzburg-Schweinfurt (CAIRO)}
+\IEEEauthorblockA{\textit{THWS University of Applied Sciences,}\\
+\textit{Würzburg-Schweinfurt (CAIRO)}}
 \and
 \IEEEauthorblockN{7\textsuperscript{th} Pratik Nichite}
-\IEEEauthorblockA{THWS University of Applied Sciences,\\
-Würzburg-Schweinfurt (CAIRO)}
+\IEEEauthorblockA{\textit{THWS University of Applied Sciences,}\\
+\textit{Würzburg-Schweinfurt (CAIRO)}}
 \and
 \IEEEauthorblockN{8\textsuperscript{th} Ivan Yamshchikov}
-\IEEEauthorblockA{THWS University of Applied Sciences,\\
-Würzburg-Schweinfurt (CAIRO)}
+\IEEEauthorblockA{\textit{THWS University of Applied Sciences,}\\
+\textit{Würzburg-Schweinfurt (CAIRO)}}
 \thanks{*These authors contributed equally to this work.}
 }
 
 \begin{document}
 
 \maketitle
-
-\noindent\fbox{\parbox{\columnwidth}{\small\textit{This work has been submitted to the IEEE for possible publication. Copyright may be transferred without notice, after which this version may no longer be accessible. Accepted at IEEE SANER 2026. This is the author preprint; camera-ready version forthcoming.}}}
-\vspace{1em}
 
 \begin{abstract}
 Engineering teams increasingly experiment with LLM agents to synthesize full-stack web applications, yet production reliability and code generation reproducibility remain the blocking issues. Ongoing improvements of foundational models alone do not reliably translate into deployable software; what matters in practice is the environment that constrains, validates, and repairs model outputs.
@@ -510,7 +508,7 @@ To support reproducibility, we release the following artifacts:
 \item \textbf{Docker environment:} Reproducible sandbox configurations included in the framework repository
 \end{itemize}
 
-\section*{Acknowledgments}
+\section*{Acknowledgment}
 
 This submission is prepared in collaboration between Databricks (app.build team) and THWS University of Applied Sciences Würzburg-Schweinfurt (CAIRO). We thank the app.build community for their contributions and feedback which have been invaluable in shaping this work. Special thanks to Databricks executive team for supporting the open-source initiative and providing resources for this research. We also thank David Gomes for advocating for the community-centered vision that guided this project.
 
@@ -521,7 +519,7 @@ This submission is prepared in collaboration between Databricks (app.build team)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \needspace{8\baselineskip}
-\section*{Appendix: Prompt Dataset}
+\appendix[Prompt Dataset]
 \label{sec:prompt-dataset}
 
 This appendix provides the complete specification of evaluation prompts used in our experiments. Table~\ref{tab:prompt-dataset} lists all 30 prompts with their complexity classifications, covering low-complexity UI tasks, medium-complexity single-entity CRUD applications, and high-complexity multi-entity workflows with custom business logic.
