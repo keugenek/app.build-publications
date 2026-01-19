@@ -149,7 +149,7 @@ To validate agent-agnosticism, we tested the package across multiple backends. T
 | Claude Agent SDK | Automated | Primary production use |
 | Cursor | Manual | IDE integration |
 | Codex | Manual | Alternative agent |
-| LiteLLM + [PLACEHOLDER] | Automated | Open-source models |
+| LiteLLM + Qwen3-Coder-480B | Automated | Open-source models (70% success at $0.61/app) |
 
 The LiteLLM backend demonstrates that the approach isn't tied to specific vendors—we wrap any model with function calling into our generation pipeline.
 
@@ -278,7 +278,7 @@ This is distinct from the trajectory analyzer's role. The analyzer improves the 
 
 ### 4.2 Motivation
 
-Consider an agent that generates a working application. A human developer can run it: they'll figure out missing environment variables, install unlisted dependencies, work around unclear documentation. An agent cannot. It needs explicit `.env.example` files, documented commands, health endpoints for verification.
+Consider an agent that generates a working application. A human developer can run it: they'll figure out missing environment variables, install unlisted dependencies, work around unclear documentation. An agent *can sometimes* do this too, but it's slow and inefficient—spending many turns on trial-and-error that explicit configuration would eliminate. It needs explicit `.env.example` files, documented commands, health endpoints for verification.
 
 Existing metrics miss this distinction. Build success (binary) doesn't capture whether the build process is agent-friendly. We need metrics that ask: **can another agent operate this?**
 

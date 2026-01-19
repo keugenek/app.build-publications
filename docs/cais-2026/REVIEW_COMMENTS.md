@@ -241,6 +241,23 @@ No additional handwritten comments identified on this page.
 
 ---
 
+## Merge from Main (2026-01-19)
+
+Merged `origin/main` which included:
+- `RESTRUCTURE_PLAN.md` - Paper restructuring plan with 3-pillar approach
+- `paper_draft_v2.md` - New markdown draft following restructure
+
+**Alignment check:** Our paper.tex edits align well with the restructure plan:
+- Section 2: Installable Domain Knowledge ✓
+- Section 3: Agentic Trajectory Analyzer (expanded) ✓
+- Section 4: Agentic DevX Metrics ✓
+
+**Additional fixes to paper_draft_v2.md:**
+- Fixed [PLACEHOLDER] → "LiteLLM + Qwen3-Coder-480B (70% success at $0.61/app)"
+- Applied "can sometimes but slow" nuance to Section 4.2 Motivation
+
+---
+
 ## Changes Made (2026-01-19)
 
 ### Paper Edits (`paper.tex`)

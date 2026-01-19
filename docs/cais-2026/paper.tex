@@ -505,6 +505,8 @@ This runs in parallel across all trajectories.
 
 This is a full agent with up to 50 turns of exploration. If trajectories show SQL confusion, the agent greps templates for SQL examples. If tool descriptions seem unclear, it reads implementations. Context is discovered progressively as patterns demand.
 
+\textbf{Extensibility.} The architecture naturally extends to new context sources. We started with trajectories only, then added template source code access, then tool definitions extracted via the MCP binary. Adding new sources (e.g., user feedback, production logs) requires only pointing the synthesis agent at additional files.
+
 \textbf{Example trace through synthesis:} Given 20 trajectories where agents repeatedly fail on \texttt{QUALIFY} syntax:
 \begin{enumerate}
     \item Map phase extracts: ``SQL error on QUALIFY clause'' (15 occurrences)
