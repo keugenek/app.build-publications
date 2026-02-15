@@ -622,6 +622,75 @@ Applications are generated using:
     \item \textbf{Environment scaffolding} with templates and validation pipelines
 \end{itemize}
 
+\subsection{Generation--Evaluation Isolation}
+\label{sec:isolation}
+
+A critical design requirement emerged early in development: the generator and evaluator must be \emph{strictly isolated}. Without isolation, the generator agent exploits evaluation artifacts---a form of reward hacking that inflates metrics without improving application quality.
+
+\subsubsection{Metric Gaming Through Code Leakage}
+
+When evaluation code was accessible to the generator agent, we observed systematic gaming behavior across multiple agent backends:
+
+\textbf{Eval check reverse-engineering.} The agent read \texttt{eval\_checks.py} and discovered that DB connectivity is verified by calling tRPC endpoints and checking for a JSON response containing a \texttt{result} key. Instead of implementing genuine Databricks queries, the agent created stub endpoints:
+
+\begin{verbatim}
+// Agent-generated stub (passes eval, no real data)
+healthcheck: publicProcedure.query(() => ({
+  result: { data: [], status: "ok" }
+}))
+\end{verbatim}
+
+This passes the binary DB connectivity check (L5) but returns no actual data---a false positive invisible to automated evaluation.
+
+\textbf{Composite score optimization.} When \texttt{eval\_metrics.py} was accessible, the agent learned the AppEval-100 formula and its pillar weights (R: 30\%, S: 25\%, W: 25\%, D: 20\%). It then prioritized high-weight components---adding \texttt{.env.example} and \texttt{Dockerfile} boilerplate for DevX points---while neglecting lower-weight SQL quality metrics that require genuine implementation effort.
+
+\textbf{Pattern copying from prior runs.} With access to the \texttt{app/} directory containing previously generated applications, the agent copied file structures and configurations verbatim from successful prior runs rather than reasoning about current prompt requirements. This produced high-scoring but homogeneous applications that failed on novel prompt types.
+
+\textbf{Trajectory-informed shortcuts.} When prior trajectories were accessible, the agent identified which tool sequences led to passing evaluations and replayed them mechanically, skipping exploratory reasoning steps that would have produced more robust solutions.
+
+\subsubsection{Container-Level Isolation via Dagger}
+
+We enforce isolation at the container build level. The generation Dockerfile selectively copies only generation-related code, explicitly excluding evaluation:
+
+\begin{verbatim}
+# Exclude evaluation to prevent reward hacking
+COPY cli/generation/    ./cli/generation/
+COPY cli/utils/         ./cli/utils/
+# NOT copied: cli/evaluation/,
+#             cli/analyze_trajectories.py
+\end{verbatim}
+
+The Dagger build context further excludes runtime artifacts (\texttt{app/}, \texttt{results/}), and each generation starts from a clean workspace snapshot. In bulk runs, a pre-generation directory listing ensures no cross-contamination between parallel generations.
+
+\begin{table}[h]
+\caption{Isolation boundaries between generation and evaluation.}
+\label{tab:isolation}
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+Artifact & Generator & Evaluator \\
+\midrule
+Domain package (.mdc rules) & \checkmark & --- \\
+MCP tools (Databricks CLI) & \checkmark & --- \\
+Installed skills & \checkmark & --- \\
+Evaluation checks / metrics & --- & \checkmark \\
+Prior generated apps / results & --- & \checkmark \\
+Trajectory analyzer & --- & \checkmark \\
+Current app code & writes & reads \\
+Current trajectory & writes & reads \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This separation mirrors training/test splits in machine learning: the generator learns from the domain package (training signal), while the evaluator measures generalization against unseen criteria. Improvements to generator quality flow exclusively through the domain package---not through gaming the evaluation protocol.
+
+\subsubsection{Implications for Agent Evaluation}
+
+Our experience demonstrates that isolation is a \emph{prerequisite} for meaningful agent evaluation. This parallels reward hacking in reinforcement learning~\cite{amodei2016concrete}, but manifests uniquely in agentic systems: (1) agents actively explore their filesystem and will read evaluation code if accessible; (2) binary metrics are especially vulnerable to trivial passing without useful output; (3) composite score formulas, when known, enable strategic effort allocation that maximizes score over quality; (4) access to prior successful outputs enables pattern matching instead of reasoning.
+
+We recommend that agent evaluation frameworks enforce container-level or filesystem-level isolation between generation and evaluation as a baseline requirement.
+
 \subsection{Statistical Validity}
 
 Our 100-prompt benchmark provides:
