@@ -2,7 +2,7 @@
 
 **Abstract**
 
-When AI agents fail to build production applications, should we improve the agent or its environment? Our prior work found that environment quality—templates, tools, guidance—matters more than model selection. We present a feedback loop for iterative tooling improvement: (1) an **installable domain knowledge** architecture packages expertise as agent-consumable artifacts; (2) agents use this package to generate applications, producing execution trajectories; (3) an **agentic trajectory analyzer** processes these trajectories to identify friction and recommend fixes to the package; (4) **Agentic DevX metrics** serve as the final quality gate, measuring whether generated applications can be operated by other agents. We believe this approach generalizes across domains; we validate it on Databricks data applications across multiple agent backends (Claude Agent SDK, Cursor, Codex, LiteLLM with open-source models). On 20 applications, we achieve 90% one-shot build success at $0.74/app. The trajectory analyzer identified concrete improvements—batch operations, clearer tool descriptions, missing examples—that we implemented, demonstrating the feedback loop in action. The architecture is designed for automatic optimization: the analyzer's recommendations target tool descriptions, prompts, and examples—artifacts amenable to techniques like GEPA or DSPy-style prompt tuning, potentially closing the loop without human intervention.
+When AI agents fail to build production applications, should we improve the agent or its environment? Recent work suggests that environment quality—templates, tools, guidance—matters more than model selection [Kniazev 2025]. We present a feedback loop for iterative tooling improvement: (1) an **installable domain knowledge** architecture packages expertise as agent-consumable artifacts; (2) agents use this package to generate applications, producing execution trajectories; (3) an **agentic trajectory analyzer** processes these trajectories to identify friction and recommend fixes to the package; (4) **Agentic DevX metrics** serve as the final quality gate, measuring whether generated applications can be operated by other agents. We believe this approach generalizes across domains; we validate it on Databricks data applications across multiple agent backends (Claude Agent SDK, Cursor, Codex, LiteLLM with open-source models). On 20 applications, we achieve 90% one-shot build success at $0.74/app. The trajectory analyzer identified concrete improvements—batch operations, clearer tool descriptions, missing examples—that we implemented, demonstrating the feedback loop in action. The architecture is designed for automatic optimization: the analyzer's recommendations target tool descriptions, prompts, and examples—artifacts amenable to techniques like GEPA or DSPy-style prompt tuning, potentially closing the loop without human intervention.
 
 **Keywords:** agent-agnostic tooling, agentic code generation, trajectory analysis, developer experience metrics, feedback loop
 
@@ -12,7 +12,7 @@ When AI agents fail to build production applications, should we improve the agen
 
 AI agents can generate functional software, but they lack domain-specific knowledge required for production applications. The conventional response is building better agents. We take a different approach: improve what agents have access to.
 
-This approach emerged from our prior work [Kniazev 2025]: when comparing agent performance across environments while holding the model constant, we found that environment quality (templates, tools, guidance) had larger effects than model upgrades. An agent with excellent tooling outperforms a better model with poor tooling.
+This approach is motivated by recent findings [Kniazev 2025]: when comparing agent performance across environments while holding the model constant, environment quality (templates, tools, guidance) had larger effects than model upgrades. An agent with excellent tooling outperforms a better model with poor tooling.
 
 Accepting that tooling matters raises a question: how do we improve it systematically? Manual inspection doesn't scale. End-state metrics (build pass/fail) don't reveal causes. We need a feedback loop that:
 
@@ -495,7 +495,7 @@ This demonstrates the feedback loop:
 
 ## 7. Related Work
 
-**Environment matters more than model.** Our prior work [Kniazev 2025] compared agent performance across different environments. Template quality, tool descriptions, and embedded guidance had larger effects than model upgrades. This motivates our focus on improving tooling rather than agents.
+**Environment matters more than model.** Recent work [Kniazev 2025] compared agent performance across different environments. Template quality, tool descriptions, and embedded guidance had larger effects than model upgrades. This motivates the focus on improving tooling rather than agents.
 
 **Evaluation gap.** Existing benchmarks evaluate code correctness (HumanEval [Chen 2021], SWE-bench [Jimenez 2024]), task completion (WebArena [Zhou 2024], GAIA [Mialon 2023]), or SQL quality (BIRD [2023], Spider [Yu 2018]). None ask whether generated code can be operated by other agents—a critical question for compound AI systems where one agent's output becomes another's input.
 
