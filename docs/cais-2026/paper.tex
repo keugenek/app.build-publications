@@ -22,6 +22,18 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, backgrounds, calc}
+
+%% TikZ styles
+\tikzset{
+  sysblock/.style={rectangle, draw, fill=blue!8, text width=2.2cm, minimum height=0.9cm, align=center, rounded corners=2pt, font=\small},
+  pillarbox/.style={rectangle, draw, fill=orange!12, text width=2cm, minimum height=0.8cm, align=center, rounded corners=2pt, font=\small\bfseries},
+  procbox/.style={rectangle, draw, fill=green!8, text width=2cm, minimum height=0.7cm, align=center, rounded corners=2pt, font=\small},
+  databox/.style={trapezium, trapezium left angle=70, trapezium right angle=110, draw, fill=yellow!10, text width=1.6cm, minimum height=0.6cm, align=center, font=\small},
+  arr/.style={-{Stealth[length=2.5mm]}, thick},
+  darr/.style={-{Stealth[length=2.5mm]}, thick, dashed},
+}
 
 %% Code listing style
 \lstset{
@@ -106,6 +118,28 @@ The emergence of agentic coding systems---AI agents capable of autonomously gene
 
     \item \textbf{Composite Evaluation (AppEval-100).} To measure outcomes, we develop a 4-pillar evaluation framework combining Reliability, SQL Quality, Web Quality, and Agentic DevX into a single composite score mapped to DORA delivery metrics.
 \end{enumerate}
+
+Figure~\ref{fig:overview} illustrates the interplay of these contributions.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[node distance=1.1cm and 0.9cm]
+  \node[sysblock, fill=purple!10, text width=2.6cm] (agent) {Any Agent\\{\scriptsize (Cursor, Claude\\Code, Codex)}};
+  \node[sysblock, right=1.4cm of agent, text width=2.6cm] (pkg) {Domain Package\\{\scriptsize (scaffolding,\\templates, tools)}};
+  \node[sysblock, below=1.0cm of $(agent)!0.5!(pkg)$] (app) {Generated\\Application};
+  \node[sysblock, fill=green!10, below left=1.0cm and 0.2cm of app, text width=2.4cm] (eval) {Evaluator\\{\scriptsize (AppEval-100)}};
+  \node[sysblock, fill=red!8, below right=1.0cm and 0.2cm of app, text width=2.4cm] (traj) {Trajectory\\Analyzer};
+  \draw[arr] (agent) -- node[above, font=\scriptsize] {uses} (pkg);
+  \draw[arr] (agent) -- (app);
+  \draw[arr] (pkg) -- (app);
+  \draw[arr] (app) -- (eval);
+  \draw[arr] (app) -- (traj);
+  \draw[arr, bend left=20] (eval.south) to node[below, font=\scriptsize] {scores} (traj.south);
+  \draw[darr, bend left=30] (traj.east) to node[right, font=\scriptsize, text width=1.4cm, align=center] {improves\\tooling} (pkg.south east);
+\end{tikzpicture}
+\caption{System overview. Agents use the domain package to generate applications. The evaluator scores outputs via AppEval-100; the trajectory analyzer identifies friction points and feeds improvements back into the package.}
+\label{fig:overview}
+\end{figure}
 
 \textbf{Empirical Validation.} Evaluated on 20 Databricks applications, we achieve 100\% build/runtime success with 6--9 minute generation latency at \$0.74 per application.
 
@@ -320,7 +354,30 @@ Our evaluation framework is built on two core principles:
 
 \subsection{The 13-Metric Rubric}
 
-We organize our metrics into four categories spanning core functionality, platform integration, agentic DevX, and generation efficiency.
+We organize our metrics into four pillars (Figure~\ref{fig:pillars}) spanning core functionality, platform integration, agentic DevX, and generation efficiency.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[node distance=0.3cm]
+  \node[rectangle, draw, fill=yellow!20, text width=3.8cm, minimum height=0.7cm, align=center, rounded corners=3pt, font=\bfseries] (composite) {AppEval-100};
+  \node[pillarbox, below left=0.7cm and 1.6cm of composite] (r) {Reliability\\(30\%)};
+  \node[pillarbox, below left=0.7cm and 0.0cm of composite] (s) {SQL Quality\\(25\%)};
+  \node[pillarbox, below right=0.7cm and 0.0cm of composite] (w) {Web Quality\\(25\%)};
+  \node[pillarbox, below right=0.7cm and 1.6cm of composite] (d) {DevX\\(20\%)};
+  \node[below=0.2cm of r, font=\scriptsize, text width=2cm, align=center] {L1--L7\\Build, Runtime\\Type, Tests, DB};
+  \node[below=0.2cm of s, font=\scriptsize, text width=2cm, align=center] {S1--S4\\Execution, VES\\Complexity, Safety};
+  \node[below=0.2cm of w, font=\scriptsize, text width=2cm, align=center] {W1--W4\\Tasks, Visual\\Interactive, A11y};
+  \node[below=0.2cm of d, font=\scriptsize, text width=2cm, align=center] {D8--D9\\Runability\\Deployability};
+  \draw[arr] (r) -- (composite);
+  \draw[arr] (s) -- (composite);
+  \draw[arr] (w) -- (composite);
+  \draw[arr] (d) -- (composite);
+  \node[rectangle, draw, fill=red!8, font=\scriptsize, right=0.2cm of composite, text width=1.1cm, align=center, rounded corners=2pt] (gate) {Soft\\Penalty\\Gate};
+  \draw[arr] (gate) -- (composite);
+\end{tikzpicture}
+\caption{AppEval-100 four-pillar architecture. Each pillar aggregates domain-specific metrics into a normalized score. A soft penalty gate down-weights the composite when critical checks fail.}
+\label{fig:pillars}
+\end{figure}
 
 \subsubsection{Core Functionality (L1--L4, Binary)}
 
@@ -498,7 +555,33 @@ Trajectories---the sequence of reasoning, tool calls, and results---show where t
 
 \subsection{Two-Phase Architecture}
 
-We employ a map-reduce approach optimized for cost and quality:
+We employ a map-reduce approach optimized for cost and quality (Figure~\ref{fig:mapreduce}):
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[node distance=0.4cm and 0.4cm]
+  \node[databox, text width=1cm] (t1) {Trace 1};
+  \node[databox, text width=1cm, right=0.2cm of t1] (t2) {Trace 2};
+  \node[right=0.2cm of t2, font=\small] (dots) {$\cdots$};
+  \node[databox, text width=1cm, right=0.2cm of dots] (tn) {Trace N};
+  \node[sysblock, fill=blue!10, below=0.6cm of t1, text width=1.4cm] (m1) {Map\\{\scriptsize (Haiku)}};
+  \node[sysblock, fill=blue!10, below=0.6cm of t2, text width=1.4cm] (m2) {Map\\{\scriptsize (Haiku)}};
+  \node[sysblock, fill=blue!10, below=0.6cm of tn, text width=1.4cm] (mn) {Map\\{\scriptsize (Haiku)}};
+  \node[sysblock, fill=orange!15, below=0.6cm of m2, text width=3cm] (agg) {Aggregate Patterns};
+  \node[sysblock, fill=red!10, below=0.6cm of agg, text width=3.4cm] (synth) {Agentic Synthesis\\{\scriptsize (Opus, 50 turns)\\+ source code access}};
+  \node[sysblock, fill=green!15, below=0.6cm of synth, text width=3.4cm] (rec) {Recommendations\\+ Evidence};
+  \draw[arr] (t1) -- (m1);
+  \draw[arr] (t2) -- (m2);
+  \draw[arr] (tn) -- (mn);
+  \draw[arr] (m1) |- (agg);
+  \draw[arr] (m2) -- (agg);
+  \draw[arr] (mn) |- (agg);
+  \draw[arr] (agg) -- (synth);
+  \draw[arr] (synth) -- (rec);
+\end{tikzpicture}
+\caption{Two-phase trajectory analysis. The map phase extracts patterns cheaply in parallel; the agentic synthesis phase explores source code and produces actionable recommendations with evidence.}
+\label{fig:mapreduce}
+\end{figure}
 
 \textbf{Map Phase (Cheap Model).} Each trajectory is processed independently by a fast model (we use Claude Haiku, $\sim$\$0.001/trajectory), extracting:
 \begin{itemize}
@@ -569,11 +652,25 @@ Recent work on reflective prompt evolution (GEPA~\cite{gepa2024}) shows prompts 
 
 \subsection{Feedback Loop}
 
-The trajectory analyzer enables a continuous improvement cycle with optional regression testing:
+The trajectory analyzer enables a continuous improvement cycle (Figure~\ref{fig:feedback-loop}) with optional regression testing.
 
-\begin{center}
-Generate $\rightarrow$ Evaluate $\rightarrow$ Analyze Trajectories $\rightarrow$ Improve Scaffolding $\rightarrow$ Regression Suite $\rightarrow$ Repeat
-\end{center}
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[node distance=0.7cm and 0.7cm]
+  \node[procbox] (gen) {Generate\\Apps};
+  \node[procbox, right=0.7cm of gen] (eval) {Evaluate\\(AppEval)};
+  \node[procbox, right=0.7cm of eval] (analyze) {Analyze\\Trajectories};
+  \node[procbox, below=0.7cm of analyze] (improve) {Improve\\Package};
+  \node[procbox, below=0.7cm of gen] (regress) {Regression\\Suite};
+  \draw[arr] (gen) -- (eval);
+  \draw[arr] (eval) -- (analyze);
+  \draw[arr] (analyze) -- (improve);
+  \draw[arr] (improve) -- (regress);
+  \draw[arr] (regress) -- (gen);
+\end{tikzpicture}
+\caption{Continuous improvement feedback loop. Trajectory analysis identifies friction points that feed into package improvements, validated by regression testing before the next generation cycle.}
+\label{fig:feedback-loop}
+\end{figure}
 
 %%
 %% Experimental Setup
@@ -703,7 +800,23 @@ Current trajectory & writes & reads \\
 \end{tabular}
 \end{table}
 
-This separation mirrors training/test splits in machine learning: the generator learns from the domain package (training signal), while the evaluator measures generalization against unseen criteria. Improvements flow exclusively through the domain package---not through gaming the evaluation protocol.
+Figure~\ref{fig:isolation} illustrates the information flow. This separation mirrors training/test splits in machine learning: the generator learns from the domain package (training signal), while the evaluator measures generalization against unseen criteria. Improvements flow exclusively through the domain package---not through gaming the evaluation protocol.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[node distance=0.5cm and 1.5cm]
+  \node[sysblock, fill=blue!12, text width=2.6cm, minimum height=1.4cm] (gen) {Generator\\{\scriptsize Domain package\\MCP tools\\Installed skills}};
+  \node[above=0.1cm of gen, font=\small\bfseries] {Generation Container};
+  \node[sysblock, fill=green!12, text width=2.6cm, minimum height=1.4cm, right=2.8cm of gen] (ev) {Evaluator\\{\scriptsize Eval checks\\Metrics code\\Prior results}};
+  \node[above=0.1cm of ev, font=\small\bfseries] {Evaluation Container};
+  \node[databox, below=0.9cm of $(gen)!0.5!(ev)$, text width=2.2cm] (art) {App Code +\\Trajectory};
+  \draw[arr] (gen.south) -- node[left, font=\scriptsize] {writes} (art.north west);
+  \draw[arr] (art.north east) -- node[right, font=\scriptsize] {reads} (ev.south);
+  \draw[thick, red, dashed] (ev.west) -- node[above, font=\scriptsize, red] {\texttimes~blocked} (gen.east);
+\end{tikzpicture}
+\caption{Isolation boundaries. The generator writes code and execution traces; the evaluator reads them. Evaluation code is never accessible to the generator, preventing reward hacking.}
+\label{fig:isolation}
+\end{figure}
 
 \subsubsection{Implications for Agent Evaluation}
 
@@ -823,22 +936,29 @@ These insights feed back into template and tool improvements via the optimize $\
 \section{Discussion}
 \label{sec:discussion}
 
+\subsection{Agent-Agnostic vs Agent-Specific}
+
+Our results suggest that improving the \emph{environment} can yield gains comparable to improving the \emph{agent}. The jump from 73\% viability (Evals 1.0, with minimal tooling) to 100\% build/runtime success (Evals 2.0, with scaffolding and validation gates) came entirely from infrastructure improvements---the underlying model remained constant. This echoes SWE-agent's finding that custom interfaces significantly enhance performance~\cite{yang2024swe}, but generalizes it: rather than building one custom interface per task, we build installable domain packages that work across agents.
+
+The Qwen3-Coder-480B result (70\% success at \$0.61/app) further supports this. An open-source model with no Databricks-specific training achieves meaningful results purely through our tooling. The gap to Claude Sonnet 4 (86.7\% at \$5.01/app) represents both model capability differences and an opportunity for further tooling improvement.
+
+\subsection{The DevX Dimension}
+
+The Agentic DevX metrics (D8, D9) represent what we believe is a genuinely novel evaluation dimension. As compound AI systems become prevalent---where one agent's output is another's input---the quality of machine-readable documentation, configuration, and operational scaffolding matters as much as code correctness. Our low D8/D9 scores (3.0/5, 2.5/5) despite 100\% build success illustrate this gap: applications \emph{work}, but they are not easy for other agents to \emph{operate}.
+
 \subsection{Limitations}
 
-\textbf{Platform Specificity.} Our current implementation targets Databricks applications. Extending to other platforms requires platform-specific metrics (e.g., AWS Lambda, Vercel).
+\textbf{Platform Specificity.} Our current implementation targets Databricks applications. The architecture generalizes (context layers, CLI tools, state machines), but platform-specific metrics would need adaptation for AWS Lambda, Vercel, or other targets.
 
-\textbf{Binary Metrics.} Several metrics are binary, potentially missing nuanced quality differences. Future work could introduce continuous variants.
+\textbf{Dataset Size.} Twenty applications provide initial validation but may miss edge cases. The full 100-prompt benchmark is designed to address this with $\pm$9\% confidence intervals.
 
-\textbf{Dataset Size.} Our evaluation of 20 applications provides initial validation but may not capture edge cases. Scaling to larger datasets is ongoing.
+\textbf{Partial Metric Coverage.} Several metrics (L4, L6, L7, S1--S4, W1--W4) are designed but not yet fully automated. We report them transparently to establish the complete framework while acknowledging current coverage limits.
 
-\subsection{Broader Impact}
+\textbf{Single Domain.} While agent-agnosticism is validated across four backends, domain-agnosticism requires testing on non-Databricks targets---planned future work.
 
-By establishing standardized metrics for autonomous deployability, we enable:
-\begin{itemize}
-    \item Reproducible benchmarking of agentic code generation systems
-    \item Objective comparison across different approaches
-    \item Systematic improvement through trajectory-based feedback
-\end{itemize}
+\subsection{Broader Implications}
+
+Our work points toward a future where domain expertise is distributed as installable packages rather than embedded in proprietary agents. This has implications for: (1)~\emph{agent interoperability}---standardized tooling enables agents to be swapped without retraining; (2)~\emph{evaluation standards}---composite metrics like AppEval-100 could become industry benchmarks for deployment readiness; and (3)~\emph{feedback automation}---trajectory analysis combined with automatic prompt optimization could create self-improving toolsets.
 
 %%
 %% Conclusion
@@ -846,11 +966,13 @@ By establishing standardized metrics for autonomous deployability, we enable:
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented Klaudbiusz, an open-source, agent-agnostic toolset for autonomous Databricks application generation. Rather than building a specific agent, we provide reusable infrastructure---scaffolding, templates, and MCP tools---that any agentic system can leverage. Our trajectory analyzer enables continuous improvement of this toolset by identifying friction points in agent execution traces. AppEval-100 provides composite evaluation combining Reliability, SQL Quality, Web Quality, and Agentic DevX, mapped to industry-standard DORA metrics.
+We presented Klaudbiusz, an open-source, agent-agnostic toolset for autonomous Databricks application generation. Our three contributions---installable domain packages, trajectory-based optimization, and composite evaluation via AppEval-100---address the infrastructure gap in agentic code generation. Rather than building better agents, we build better environments for existing agents to work in.
+
+Evaluated on 20 applications, we achieve 100\% build/runtime success at \$0.74 per application while identifying clear paths to production readiness through type safety and DevX improvements. The trajectory analyzer closes the feedback loop, turning agent struggles into actionable tooling improvements.
 
 The path to reliable agentic code generation requires not just better models, but better tooling. We release Klaudbiusz to enable the community to build and improve agent-agnostic infrastructure systematically.
 
-\textbf{Open Source Release.} Toolset, trajectory analyzer, and evaluation harness available at: [URL redacted for review]
+\textbf{Open Source.} Toolset, trajectory analyzer, and evaluation harness: [URL redacted for review].
 
 %%
 %% Acknowledgments (hidden for review)
