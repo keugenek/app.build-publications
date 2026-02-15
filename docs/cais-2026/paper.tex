@@ -557,7 +557,7 @@ A critical design requirement is that the generator and evaluator must be \emph{
 
 Agentic coding systems actively explore their filesystem via tools like \texttt{Read}, \texttt{Glob}, and \texttt{Grep}. When evaluation code resides in the same workspace, the following attack surfaces emerge:
 
-\textbf{Scenario 1: Eval check reverse-engineering.} Our DB connectivity check verifies connectivity by calling tRPC endpoints and parsing JSON responses. An agent with read access could discover this check and create minimal stubs that pass the binary metric without implementing genuine queries:
+\textbf{Scenario 1: Eval check reverse-engineering.} Our DB connectivity check (\texttt{eval\_checks.py:39--70})\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/cli/evaluation/eval_checks.py\#L39-L70}} verifies connectivity by calling tRPC endpoints and parsing JSON responses. An agent with read access could discover this check and create minimal stubs that pass the binary metric without implementing genuine queries:
 
 \begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
 // Hypothetical stub (passes L5, no real data)
@@ -566,14 +566,14 @@ healthcheck: publicProcedure.query(() => ({
 }))
 \end{lstlisting}
 
-\textbf{Scenario 2: Composite score optimization.} An agent that reads evaluation weights could prioritize boilerplate (\texttt{.env.example}, \texttt{Dockerfile}) for DevX points while neglecting metrics requiring genuine implementation.
+\textbf{Scenario 2: Composite score optimization.} The evaluation weights are defined in \texttt{eval\_metrics.py}\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/cli/evaluation/eval_metrics.py\#L44-L88}}. An agent that reads this file could prioritize boilerplate (\texttt{.env.example}, \texttt{Dockerfile}) for DevX points while neglecting metrics requiring genuine implementation.
 
 \textbf{Scenario 3: Pattern copying from prior runs.} If prior generations are accessible, an agent could copy file structures verbatim rather than reasoning about current requirements.
 
 \subsection{Container-Level Isolation via Dagger}
 \label{sec:isolation-container}
 
-We enforce isolation at the container build level. The generation Dockerfile selectively copies only generation-related code:
+We enforce isolation at the container build level. The generation Dockerfile\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/Dockerfile\#L58-L64}} selectively copies only generation-related code:
 
 \begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
 # Exclude evaluation to prevent reward hacking
@@ -583,7 +583,7 @@ COPY cli/utils/         ./cli/utils/
 #             cli/analyze_trajectories.py
 \end{lstlisting}
 
-Each generation starts from a clean workspace. In bulk runs, a pre-generation directory snapshot prevents cross-contamination between parallel generations.
+Each generation starts from a clean workspace. In bulk runs, a pre-generation directory snapshot\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/cli/generation/container_runner.py\#L76}} prevents cross-contamination between parallel generations.
 
 %% --- TikZ Figure 5: Isolation Boundaries ---
 \begin{figure}[t]
