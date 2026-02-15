@@ -340,6 +340,7 @@ We organize our metrics into four categories spanning core functionality, platfo
 \end{itemize}
 
 \subsubsection{Agentic DevX (D8--D9, 0--5 Score)}
+\label{sec:devx}
 
 These metrics capture what agents need but humans can work around. Consider an agent that generates a working application. A human developer can run it: they'll figure out missing environment variables, install unlisted dependencies, work around unclear documentation. An agent \emph{can sometimes} do this too, but it's slow and inefficient---spending many turns on trial-and-error that explicit configuration would eliminate. The agent needs explicit \texttt{.env.example} files, documented commands, and health endpoints for verification.
 
@@ -364,6 +365,10 @@ These metrics capture what agents need but humans can work around. Consider an a
 
 \textbf{Why This Matters.} Existing metrics miss this distinction. Build success (binary) doesn't capture whether the build process is agent-friendly. We need metrics that ask: can another agent operate this output? This is a novel evaluation dimension absent from existing benchmarks---critical for compound AI systems where one agent's output becomes another's input.
 
+\textbf{Implementation.} D8 and D9 are currently evaluated as \emph{artifact-based proxy metrics}: checklist-style checks for the presence and correctness of artifacts\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/cli/evaluation/evaluate_app.py\#L590-L740}} (README with setup instructions, \texttt{.env.example}, \texttt{npm start} script, Dockerfile, multi-stage build, \texttt{HEALTHCHECK}, absence of hardcoded secrets). These are necessary but not sufficient conditions---a README can exist but be incorrect.
+
+To address this gap, we plan to augment proxy checks with \emph{statistical agent simulation}: running the same task (install, start, deploy) with multiple eval agents configured with diverse developer personas (junior frontend, senior backend, data scientist, AI agent with different capability levels). The score becomes the success rate across persona-runs (e.g., 4/5 succeed $\rightarrow$ 0.8). Variance across personas indicates documentation quality: if only the senior backend persona succeeds, the setup instructions are insufficient. At Haiku-level costs (\textasciitilde\$0.001/attempt), running 15 attempts per app (5 personas $\times$ 3 runs) costs \$0.015/app---negligible compared to generation costs.
+
 \subsubsection{Efficiency Metrics (E10--E13, Numeric)}
 
 \begin{itemize}
@@ -375,25 +380,29 @@ These metrics capture what agents need but humans can work around. Consider an a
 
 \subsubsection{SQL Quality Pillar (S1--S4)}
 
-Inspired by BIRD~\cite{bird2023} and Spider~\cite{yu2018spider}, we evaluate SQL quality within generated applications:
+Inspired by BIRD~\cite{bird2023} and Spider~\cite{yu2018spider}, we evaluate SQL quality \emph{in situ}---within generated full-stack applications rather than against isolated query benchmarks. SQL queries are extracted from generated code\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/cli/evaluation/eval_checks.py\#L150-L190}} (inline from TypeScript for tRPC apps, or from \texttt{config/queries/*.sql} for DBX SDK apps) and evaluated:
 
 \begin{itemize}
-    \item \textbf{S1: Execution Correctness (EX).} Fraction of generated SQL queries that execute without error and return expected results. Range: $[0,1]$.
-    \item \textbf{S2: Valid Efficiency Score (VES).} Adapted from BIRD, rewards both correctness \emph{and} query efficiency relative to a reference solution. Range: $[0,1]$.
-    \item \textbf{S3: Query Complexity.} Distribution across difficulty tiers (easy/medium/hard/extra-hard) based on Spider schema complexity.
-    \item \textbf{S4: SQL Safety.} Absence of destructive operations (DROP, TRUNCATE), proper parameterization, and injection resistance. Range: $[0,1]$.
+    \item \textbf{S1: Execution Correctness (EX).} Fraction of extracted SQL queries that execute without error against Databricks and return non-empty results. Range: $[0,1]$.
+    \item \textbf{S2: Valid Efficiency Score (VES).} Adapted from BIRD~\cite{bird2023}: rewards both correctness \emph{and} query efficiency relative to a reference solution. $\text{VES} = \text{correctness} \times \min(1, t_{\text{ref}} / t_{\text{actual}})$. Range: $[0,1]$.
+    \item \textbf{S3: Query Complexity.} Distribution across difficulty tiers (easy/medium/hard/extra-hard) based on SQL AST features (JOINs, subqueries, window functions) via \texttt{sqlglot}. Reported as context, not scored.
+    \item \textbf{S4: SQL Safety.} Static analysis for destructive operations (\texttt{DROP}, \texttt{TRUNCATE}, \texttt{DELETE} without \texttt{WHERE}), parameterization, and injection resistance. Range: $[0,1]$.
 \end{itemize}
+
+The key distinction from existing text-to-SQL benchmarks is that S1--S4 evaluate queries in their deployment context---connected to real Databricks schemas, embedded in application logic, and subject to runtime constraints. The extraction infrastructure is implemented; automated scoring against Databricks is planned for the 100-prompt benchmark.
 
 \subsubsection{Web Quality Pillar (W1--W4)}
 
-Inspired by WebArena~\cite{zhou2024webarena} and VisualWebArena~\cite{visualwebarena2024}, we evaluate web/UI quality:
+Inspired by WebArena~\cite{zhou2024webarena} and VisualWebArena~\cite{visualwebarena2024}, we design a \emph{use-case-based} web evaluation framework with accessibility-tagged acceptance criteria:
 
 \begin{itemize}
-    \item \textbf{W1: Task Completion Rate.} Fraction of user-facing tasks that complete successfully (navigation, form submission, data display). Range: $[0,1]$.
-    \item \textbf{W2: Visual Rendering Correctness.} VLM-assessed visual fidelity---charts render correctly, layouts are responsive, no broken elements. Range: $[0,1]$.
-    \item \textbf{W3: Interactive Element Functionality.} Buttons, filters, and controls respond correctly to user input. Range: $[0,1]$.
-    \item \textbf{W4: Accessibility Score.} WCAG compliance via automated tools (axe-core); keyboard navigation, ARIA labels, contrast ratios. Range: $[0,1]$.
+    \item \textbf{W1: Task Completion Rate.} Per-prompt acceptance criteria generated as testable user stories (e.g., for a ``customer churn dashboard'': can the user filter by date range? does the table show customer data?). Evaluated via Playwright test scripts. Range: $[0,1]$.
+    \item \textbf{W2: Visual Rendering Correctness.} Extends our current binary VLM check\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/cli/evaluation/evaluate_app.py\#L509-L588}} to a structured multi-aspect rubric: charts render with labels, layout is responsive, no overlapping elements, text is readable. Range: $[0,1]$.
+    \item \textbf{W3: Interactive Element Functionality.} Playwright-based interaction testing: click buttons, fill forms, toggle filters, verify DOM changes and network requests. Range: $[0,1]$.
+    \item \textbf{W4: Accessibility Score.} WCAG 2.1 AA compliance via \texttt{axe-core} integration with Playwright. Measures: keyboard navigation, ARIA labels, contrast ratios, focus indicators. Score: $1 - (v_{\text{critical}} / n_{\text{elements}})$, clamped to $[0,1]$.
 \end{itemize}
+
+Acceptance criteria map to WCAG categories (Perceivable, Operable, Understandable, Robust), enabling systematic accessibility tracking across generated applications. The current implementation provides binary UI validation (L7); the full W pillar is designed for the 100-prompt benchmark expansion.
 
 \subsection{AppEval-100 Composite Score}
 
@@ -448,6 +457,10 @@ We map our metrics to industry-standard DORA~\cite{forsgren2018accelerate} measu
 \end{itemize}
 
 \textbf{Production Gate:} L1--L7 pass, D8$\geq$4, D9$\geq$4, type-safety pass, and DORA guardrails (Lead Time P50 $\leq$10 min, CFR $\leq$15\%, MTTR $\leq$15 min).
+
+\textbf{Statistical DevX and DORA.} With statistical agent simulation (Section~\ref{sec:devx}), DORA metrics gain direct empirical grounding: Change Failure Rate becomes $1 - \text{D9}_{\text{statistical}}$ (fraction of persona-runs that fail deployment), and Lead Time becomes the median time across personas from \texttt{git clone} to successful health check. Variance across personas measures predictability---a key DORA dimension.
+
+\textbf{Validation plan.} To verify that AppEval-100 predicts real-world delivery performance, we plan to deploy generated applications to staging environments and track actual DORA metrics over 30 days, correlating with evaluation scores. Our hypothesis: AppEval-100 $> 70$ correlates with DORA ``High'' performance (deployment frequency: daily, lead time: $<$1 day, CFR: $<$15\%, MTTR: $<$1 hour).
 
 \subsection{MLflow Integration}
 
