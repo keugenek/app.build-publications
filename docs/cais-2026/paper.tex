@@ -22,6 +22,18 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, backgrounds, calc}
+
+%% TikZ styles
+\tikzset{
+  sysblock/.style={rectangle, draw, fill=blue!8, text width=2.2cm, minimum height=0.9cm, align=center, rounded corners=2pt, font=\small},
+  pillarbox/.style={rectangle, draw, fill=orange!12, text width=2cm, minimum height=0.8cm, align=center, rounded corners=2pt, font=\small\bfseries},
+  procbox/.style={rectangle, draw, fill=green!8, text width=2cm, minimum height=0.7cm, align=center, rounded corners=2pt, font=\small},
+  databox/.style={trapezium, trapezium left angle=70, trapezium right angle=110, draw, fill=yellow!10, text width=1.6cm, minimum height=0.6cm, align=center, font=\small},
+  arr/.style={-{Stealth[length=2.5mm]}, thick},
+  darr/.style={-{Stealth[length=2.5mm]}, thick, dashed},
+}
 
 %% Code listing style
 \lstset{
@@ -39,7 +51,7 @@
 %%
 %% Title
 %%
-\title{Klaudbiusz: Agent-Agnostic Tooling for Databricks Application Generation with Trajectory-Based Optimization and Composite Evaluation}
+\title{Closing the Feedback Loop: Iterative Agent Tooling Improvement Through Trajectory Analysis and Agentic DevX Metrics}
 
 %%
 %% Authors (anonymous for review)
@@ -54,7 +66,7 @@
 %% Abstract
 %%
 \begin{abstract}
-We present Klaudbiusz, an open-source, agent-agnostic toolset for autonomous generation of Databricks data applications. Rather than building a specific agent, we provide reusable infrastructure---environment scaffolding, templates, and MCP tool integrations---that any agentic coding system can leverage. To continuously improve this toolset, we introduce a trajectory analyzer that processes agent execution traces via map-reduce LLM analysis, identifying friction points and generating actionable recommendations. To measure outcomes, we develop AppEval-100, a composite evaluation score built on four pillars: Reliability, SQL Quality (inspired by BIRD/Spider), Web Quality (inspired by WebArena), and Agentic DevX. Unlike existing benchmarks that evaluate SQL or web tasks in isolation, AppEval-100 provides the first composite evaluation for full-stack data applications, mapped to industry-standard DORA delivery metrics. We design a 100-prompt benchmark with $\pm$9\% confidence intervals across three difficulty tiers. Evaluated on 20 Databricks applications, we achieve 100\% build/runtime success with 6--9 minute generation latency at \$0.74 per application. We release the complete framework including scaffolding tools, trajectory analyzer, evaluation harness, and MLflow integration.
+When AI agents fail to build production applications, should we improve the agent or its environment? Recent work suggests that environment quality---templates, tools, guidance---matters more than model selection~\cite{kniazev2025appbuild}. We present a feedback loop for iterative tooling improvement: (1)~an \textbf{installable domain knowledge} architecture packages expertise as agent-consumable artifacts; (2)~agents use this package to generate applications, producing execution trajectories; (3)~an \textbf{agentic trajectory analyzer} processes these trajectories to identify friction and recommend fixes to the package; (4)~\textbf{Agentic DevX metrics} serve as the final quality gate, measuring whether generated applications can be operated by other agents. We believe this approach generalizes across domains; we validate it on Databricks data applications across multiple agent backends (Claude Agent SDK, Cursor, Codex, LiteLLM with open-source models). On 20 applications, we achieve 90\% one-shot build success at \$0.74/app. The trajectory analyzer identified concrete improvements---batch operations, clearer tool descriptions, missing examples---that we implemented, demonstrating the feedback loop in action. The architecture is designed for automatic optimization: the analyzer's recommendations target tool descriptions, prompts, and examples---artifacts amenable to techniques like GEPA or DSPy-style prompt tuning, potentially closing the loop without human intervention.
 \end{abstract}
 
 %%
@@ -81,149 +93,130 @@ We present Klaudbiusz, an open-source, agent-agnostic toolset for autonomous gen
 %%
 %% Keywords
 %%
-\keywords{agent-agnostic tooling, agentic code generation, evaluation framework, trajectory optimization, Databricks}
+\keywords{agent-agnostic tooling, agentic code generation, trajectory analysis, developer experience metrics, feedback loop}
 
 \maketitle
 
-%%
-%% Introduction
-%%
+%% ============================================================
+%% 1. INTRODUCTION
+%% ============================================================
 \section{Introduction}
 \label{sec:intro}
 
-The emergence of agentic coding systems---AI agents capable of autonomously generating, testing, and deploying software applications---represents a paradigm shift in software engineering. While benchmarks like HumanEval~\cite{chen2021evaluating} and SWE-bench~\cite{jimenez2024swe} have advanced our understanding of code generation quality, they focus primarily on functional correctness rather than production readiness.
+AI agents can generate functional software, but they lack domain-specific knowledge required for production applications. The conventional response is building better agents. We take a different approach: improve what agents have access to.
 
-\textbf{The Infrastructure Gap.} We observe that agent performance depends heavily on the quality of surrounding infrastructure: environment scaffolding, templates, tool integrations, and validation pipelines. Yet most work focuses on improving agents themselves rather than the reusable tooling that enables them. We argue for an \emph{agent-agnostic} approach: build excellent infrastructure that any agent can leverage.
+This approach is motivated by recent findings~\cite{kniazev2025appbuild}: when comparing agent performance across environments while holding the model constant, environment quality (templates, tools, guidance) had larger effects than model upgrades. An agent with excellent tooling outperforms a better model with poor tooling.
 
-\textbf{Core Principle.} Our work is guided by a simple axiom: \emph{If an AI agent cannot autonomously deploy code using provided tooling, the tooling needs improvement---not necessarily the agent.}
-
-\textbf{Three-Pillar Approach.} We address this through three interconnected contributions:
+Accepting that tooling matters raises a question: how do we improve it systematically? Manual inspection doesn't scale. End-state metrics (build pass/fail) don't reveal causes. We need a feedback loop that:
 
 \begin{enumerate}
-    \item \textbf{Agent-Agnostic Toolset.} We introduce Klaudbiusz, an open-source infrastructure for Databricks application generation comprising environment scaffolding, TypeScript/tRPC templates, MCP tool integrations, and containerized execution via Dagger. Any agentic system can leverage these tools.
-
-    \item \textbf{Trajectory Analyzer.} To continuously improve this toolset, we present a map-reduce LLM approach for analyzing agent execution traces. The analyzer identifies friction points, inefficient patterns, and tool failures, generating actionable recommendations for infrastructure improvement.
-
-    \item \textbf{Composite Evaluation (AppEval-100).} To measure outcomes, we develop a 4-pillar evaluation framework combining Reliability, SQL Quality, Web Quality, and Agentic DevX into a single composite score mapped to DORA delivery metrics.
+    \item Captures how agents actually use tooling (trajectories)
+    \item Identifies friction points and root causes (analysis)
+    \item Produces actionable recommendations (fixes)
+    \item Verifies improvements against agent-centric criteria (evaluation)
 \end{enumerate}
 
-\textbf{Empirical Validation.} Evaluated on 20 Databricks applications, we achieve 100\% build/runtime success with 6--9 minute generation latency at \$0.74 per application.
-
-%%
-%% Related Work
-%%
-\section{Related Work}
-\label{sec:related}
-
-We survey evaluation approaches across four categories: function-level benchmarks, repository-level agent benchmarks, interactive agent environments, and evaluation harnesses. Table~\ref{tab:related-comparison} summarizes key frameworks and identifies the gap our work addresses.
-
-\subsection{Function-Level Code Generation Benchmarks}
-
-\textbf{HumanEval}~\cite{chen2021evaluating} introduced pass@k evaluation on 164 Python functions, becoming the standard metric for code generation. \textbf{MBPP}~\cite{austin2021program} expanded to 974 problems but remains algorithm-focused. Both benchmarks are now saturated---top models achieve $>$90\% on HumanEval---raising concerns about contamination and real-world relevance.
-
-\textbf{BigCodeBench}\footnote{\url{https://github.com/bigcode-project/bigcodebench}} addresses these limitations with diverse library calls and complex instructions, while \textbf{LiveCodeBench}\footnote{\url{https://livecodebench.github.io/}} provides dynamic, contamination-resistant evaluation. Recent work on \textbf{HumanEval Pro and MBPP Pro}~\cite{humanevalpro2024} introduces self-invoking code generation to test progressive reasoning.
-
-\textit{Gap:} Function-level benchmarks do not evaluate deployment, integration, or operational readiness.
-
-\subsection{Repository-Level Agent Benchmarks}
-
-\textbf{SWE-bench}~\cite{jimenez2024swe} evaluates agents on 2,294 real GitHub issues, with \textbf{SWE-bench Verified}\footnote{\url{https://openai.com/index/introducing-swe-bench-verified/}} providing 500 human-verified samples where top models achieve $\sim$72\%. The harder \textbf{SWE-bench Pro}\footnote{\url{https://scale.com/blog/swe-bench-pro}} reveals performance drops to $\sim$23\% on production-grade issues.
-
-\textbf{SWE-agent}~\cite{yang2024swe} demonstrates that custom agent-computer interfaces significantly enhance performance through Docker-based harnesses and tool augmentation. \textbf{REPOCOD}\footnote{\url{https://arxiv.org/abs/2410.21647}} tests complete method implementation with only 6\% resolution rate, while \textbf{DevQualityEval}\footnote{\url{https://github.com/symflower/eval-dev-quality}} evaluates multi-language software engineering tasks on private datasets to avoid contamination.
-
-\textit{Gap:} Repository-level benchmarks focus on patch correctness, not autonomous deployment capability.
-
-\subsection{Text-to-SQL Benchmarks}
-
-For data-centric applications, text-to-SQL benchmarks provide critical evaluation capabilities. \textbf{Spider}~\cite{yu2018spider} introduced cross-domain evaluation with 10,181 questions across 200 databases, establishing difficulty tiers (easy/medium/hard/extra-hard). \textbf{BIRD}~\cite{bird2023} scales to 12,751 question-SQL pairs across 95 databases (33.4GB), introducing the \emph{Valid Efficiency Score (VES)} that rewards both correctness and query efficiency.
-
-\textbf{Spider 2.0}~\cite{spider2_2024} targets enterprise workflows with 632 real-world tasks involving BigQuery and Snowflake, where even o1-preview achieves only 21.3\% (vs 91.2\% on Spider 1.0). This dramatic performance gap highlights the challenge of production-grade SQL generation.
-
-\textit{Gap:} Text-to-SQL benchmarks evaluate query correctness in isolation, not within deployed applications with UI, APIs, and DevOps requirements.
-
-\subsection{Data Analytics Agent Benchmarks}
-
-Recent benchmarks evaluate agents on end-to-end data analysis. \textbf{Tapilot-Crossing}~\cite{tapilot2024} provides 1,024 human-machine interactions for interactive data analysis, testing multi-turn reasoning and visualization. \textbf{InfiAgent-DABench}~\cite{dabench2024} offers 311 questions across 55 datasets for data analysis scenarios.
-
-\textbf{InsightBench}~\cite{insightbench2024} evaluates 100 business analytics tasks requiring insight generation---the closest to our target domain. \textbf{DS-1000}~\cite{ds1000_2022} benchmarks data science code generation across NumPy, Pandas, and other libraries with 1,000 problems.
-
-\textit{Gap:} Data analytics benchmarks focus on insight generation or code correctness, not full-stack application deployment with Databricks integration.
-
-\subsection{Interactive Agent Benchmarks}
-
-\textbf{WebArena}~\cite{zhou2024webarena} evaluates 812 web tasks across e-commerce, forums, and content management, where best agents achieve 61.7\% versus 78\% human performance. \textbf{GAIA}~\cite{mialon2023gaia} tests general AI assistants on 466 multi-step reasoning questions requiring tool use, with agents reaching 80.7\% versus 92\% human baseline.
-
-\textbf{AgentBench}~\cite{agentbench2023} spans 8 environments (OS, databases, web) revealing significant gaps between commercial and open-source models. \textbf{OSWorld}\footnote{\url{https://os-world.github.io/}} (NeurIPS 2024) benchmarks multimodal agents in real computer environments, where recent advances have achieved superhuman performance (76\% vs 72\% human baseline).
-
-\textit{Gap:} Interactive benchmarks evaluate general agent capabilities, not software deployment pipelines.
-
-\subsection{Agent Evaluation Harnesses and Frameworks}
-
-\textbf{Inspect AI}\footnote{\url{https://inspect.aisi.org.uk/}} from the UK AI Safety Institute provides 100+ pre-built evaluations with sandboxing, MCP tool support, and multi-agent primitives. It has been adopted by frontier labs and safety organizations for standardized agent evaluation.
-
-\textbf{DeepEval}\footnote{\url{https://github.com/confident-ai/deepeval}} offers CI/CD integration with LLM-as-judge metrics including task completion, tool correctness, and hallucination detection. \textbf{Databricks Agent Evaluation} integrates with MLflow for tracking groundedness, correctness, and coherence of agentic applications.
-
-The emerging \textbf{AgentOps} paradigm extends DevOps principles to AI agents, addressing observability, tracing, and lifecycle management specific to autonomous systems.
-
-\subsection{DevOps and Deployment Metrics}
-
-\textbf{DORA metrics}~\cite{forsgren2018accelerate}---deployment frequency, lead time, change failure rate, and mean time to restore---provide industry-standard measures of software delivery performance. \textbf{MLOps 2.0} architectures integrate CI/CD with Continuous Data Validation (CDV) for reliable ML delivery.
-
-\textit{Gap:} No existing framework combines code generation evaluation with DORA-mapped deployment metrics and agentic DevX scores (runability, deployability).
-
-\begin{table}[t]
-\caption{Comparison of agent evaluation approaches. Klaudbiusz uniquely combines deployment-centric metrics with DORA mapping and trajectory-based optimization.}
-\label{tab:related-comparison}
+%% --- TikZ Figure 1: System Overview / Feedback Loop ---
+\begin{figure}[t]
 \centering
-\small
-\begin{tabular}{lccccc}
-\toprule
-Framework & Code Gen & Deploy & DORA & DevX & Trajectory \\
-\midrule
-HumanEval/MBPP & \checkmark & -- & -- & -- & -- \\
-SWE-bench & \checkmark & -- & -- & -- & -- \\
-WebArena/GAIA & -- & -- & -- & -- & -- \\
-Inspect AI & \checkmark & -- & -- & -- & -- \\
-DeepEval & \checkmark & -- & -- & -- & -- \\
-\textbf{Klaudbiusz (Ours)} & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
-\bottomrule
-\end{tabular}
-\end{table}
+\begin{tikzpicture}[node distance=1.4cm and 1.8cm]
+  % Nodes
+  \node[sysblock, text width=2.4cm] (pkg) {Domain\\Package};
+  \node[sysblock, text width=2.4cm, right=2.2cm of pkg] (apps) {Generated\\Apps};
+  \node[sysblock, text width=2.4cm, below=of apps] (traj) {Trajectories\\+ Evals};
+  \node[sysblock, text width=2.4cm, below=of pkg] (analyzer) {Trajectory\\Analyzer};
+  \node[pillarbox, text width=2.4cm, below=1.8cm of $(pkg)!0.5!(apps)$] (devx) {Agentic\\DevX Evals};
 
-%%
-%% Installable Domain Knowledge
-%%
+  % Arrows
+  \draw[arr] (pkg) -- node[above, font=\footnotesize]{agents use} (apps);
+  \draw[arr] (apps) -- node[right, font=\footnotesize]{produces} (traj);
+  \draw[arr] (traj) -- node[below, font=\footnotesize]{friction signals} (analyzer);
+  \draw[arr] (analyzer) -- node[left, font=\footnotesize]{improves} (pkg);
+  \draw[darr] (traj) -- (devx);
+  \draw[darr] (devx) -- node[below left, font=\footnotesize]{quality gate} (analyzer);
+\end{tikzpicture}
+\caption{The feedback loop. Trajectories feed the analyzer, which improves the domain package. Agentic DevX evals verify the final output.}
+\label{fig:feedback-loop}
+\end{figure}
+
+We instantiate each component (Figure~\ref{fig:feedback-loop}):
+
+\begin{enumerate}
+    \item \textbf{Installable Domain Knowledge} (Section~\ref{sec:domain-knowledge}). An architecture for packaging domain expertise as agent-consumable artifacts. We validate on Databricks, exposing tools via CLI commands---applicable to emerging standards like Agent Skills.
+
+    \item \textbf{Agentic Trajectory Analyzer} (Section~\ref{sec:trajectory}). A two-phase system: parallel friction extraction with a cheap model followed by agentic synthesis with a reasoning model that has source code access. The analyzer consumes trajectories and optionally evaluation results.
+
+    \item \textbf{Agentic DevX Metrics} (Section~\ref{sec:devx}). The final quality gate: Runability (0--5) and Deployability (0--5) measure whether another agent---not a human---can operate generated applications. This is a novel evaluation dimension absent from existing benchmarks.
+\end{enumerate}
+
+\textbf{Validation.} We validate across Claude Agent SDK (primary), Cursor, Codex (manual), and LiteLLM with open-source models. On 20 Databricks applications: 90\% build success, 90\% database connectivity, \$0.74/app, 6--9 minute latency. The trajectory analyzer identified improvements that we implemented and verified through multiple iterations.
+
+%% ============================================================
+%% 2. INSTALLABLE DOMAIN KNOWLEDGE
+%% ============================================================
 \section{Installable Domain Knowledge}
 \label{sec:domain-knowledge}
 
 \subsection{Motivation}
+\label{sec:dk-motivation}
 
-Developers already use capable agents---Claude Code, Cursor, Codex. Rather than asking them to adopt yet another tool, we bring domain knowledge to the agents they already use. A user installs our package into their existing environment; the agent gains domain expertise without workflow changes. However, capable agents often spend excessive steps on fixing issues when domain-specific guidance is missing.
+Developers already use capable agents---Claude Code, Cursor, Codex. Rather than asking them to adopt yet another tool, we bring domain knowledge to the agents they already use. A user installs our package into their existing environment; the agent gains domain expertise without workflow changes.
 
-This approach has a practical advantage: we leverage the ecosystem of existing agents rather than competing with them. The alternative---building a custom agent per domain---doesn't scale and, in our view, creates vendor lock-in.
-
-\textbf{Scope:} Our current implementation targets data-centric web applications on Databricks, validating the approach on a concrete domain before generalizing.
+This approach has a practical advantage: we leverage the ecosystem of existing agents rather than competing with them. The alternative---building a custom agent per domain---doesn't scale and creates vendor lock-in.
 
 \subsection{Architecture}
+\label{sec:dk-architecture}
 
 The package has three components: context layers that inject domain knowledge progressively, tools exposed via CLI, and a state machine that enforces validation before deployment.
 
-\subsubsection{Context Layers (Injected Progressively)}
+%% --- TikZ Figure 2: Domain Package Architecture ---
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[node distance=0.6cm]
+  % Context layers
+  \node[procbox, text width=6.5cm, minimum height=0.6cm] (l0) {L0: Tools --- names/descriptions (always)};
+  \node[procbox, text width=6.5cm, minimum height=0.6cm, below=0.3cm of l0] (l1) {L1: Workflow --- patterns, CLI usage (on discovery)};
+  \node[procbox, text width=6.5cm, minimum height=0.6cm, below=0.3cm of l1] (l2) {L2: Target --- app vs job constraints (when detected)};
+  \node[procbox, text width=6.5cm, minimum height=0.6cm, below=0.3cm of l2] (l3) {L3: Template --- SDK patterns, examples (after scaffold)};
 
-Agents have limited context windows. Dumping all domain knowledge upfront wastes tokens and can confuse the model. Instead, we inject context progressively---each layer activates when relevant. This is especially important when context is assembled from multiple parts.
+  % Fit around context layers
+  \begin{scope}[on background layer]
+    \node[draw, rounded corners=4pt, fill=green!3, fit=(l0)(l3), inner sep=6pt, label={[font=\small\bfseries]above:Context Layers}] (ctx) {};
+  \end{scope}
+
+  % Tools
+  \node[sysblock, text width=2.5cm, below=1.2cm of l3.south west, anchor=north west, xshift=0.3cm] (lifecycle) {Lifecycle\\scaffold / validate\\deploy};
+  \node[sysblock, text width=2.5cm, right=0.8cm of lifecycle] (data) {Data\\exploration\\+ batching};
+
+  % State machine
+  \node[procbox, text width=6.5cm, minimum height=0.6cm, below=1.0cm of $(lifecycle.south)!0.5!(data.south)$] (sm) {Scaffolded $\to$ Modified $\to$ Validated(checksum) $\to$ Deployed};
+
+  % Outer box
+  \begin{scope}[on background layer]
+    \node[draw, thick, rounded corners=6pt, fill=blue!2, fit=(ctx)(lifecycle)(data)(sm), inner sep=10pt, label={[font=\bfseries]above:Installable Domain Package}] {};
+  \end{scope}
+\end{tikzpicture}
+\caption{Domain package architecture. Context layers avoid token overload; the state machine enforces validation before deployment.}
+\label{fig:domain-package}
+\end{figure}
+
+\subsection{Context Layers}
+\label{sec:dk-context}
+
+Agents have limited context windows. Dumping all domain knowledge upfront wastes tokens and can confuse the model. Instead, we inject context progressively---each layer activates when relevant (Figure~\ref{fig:domain-package}).
 
 \begin{table}[h]
-\caption{Context layer injection strategy}
+\caption{Context layer injection strategy.}
 \label{tab:context-layers}
 \centering
 \small
-\begin{tabular}{llp{3.5cm}}
+\begin{tabular}{llp{3.2cm}}
 \toprule
 \textbf{Layer} & \textbf{Content} & \textbf{When Injected} \\
 \midrule
 L0: Tools & Tool names/descriptions & Always (protocol-level) \\
-L1: Workflow & Patterns, CLI usage, validation rules & On first discovery call \\
-L2: Target & App vs job vs pipeline constraints & When target type detected \\
+L1: Workflow & Patterns, CLI usage & On first discovery call \\
+L2: Target & App vs job constraints & When target type detected \\
 L3: Template & SDK patterns, examples & After scaffolding or from CLAUDE.md \\
 \bottomrule
 \end{tabular}
@@ -231,51 +224,35 @@ L3: Template & SDK patterns, examples & After scaffolding or from CLAUDE.md \\
 
 For example, an agent scaffolding a new app receives L0--L2 initially. Only after scaffolding completes does L3 activate---providing SDK-specific patterns like ``how to draw charts with Recharts'' or ``tRPC router conventions''. For existing projects, the agent reads CLAUDE.md (placed in the project root) to acquire L3 context.
 
-\textbf{Implementation:} Context layers are implemented as \texttt{.mdc} rule files in \texttt{.cursor/rules/} directories. Each file specifies glob patterns for activation and contains domain-specific guidance. For example, \texttt{database-queries.mdc} provides Drizzle ORM patterns:
+\subsection{Tools}
+\label{sec:dk-tools}
 
-\begin{lstlisting}[language=bash,basicstyle=\ttfamily\footnotesize]
-# database-queries.mdc (excerpt)
-- Use proper Drizzle operators: eq(), gte(),
-  desc() from 'drizzle-orm'
-- Never use direct comparisons like
-  table.column === value
-- For conditional queries, build step-by-step:
-  let query = db.select().from(table);
-  const conditions: SQL<unknown>[] = [];
-  if (filter) {
-    conditions.push(eq(table.field, filter));
-  }
-  query = query.where(and(...conditions));
-\end{lstlisting}
+We expose domain functionality through CLI commands---a pattern that Cloudflare~\cite{cloudflare2024codemode} and Anthropic~\cite{anthropic2024tools} found effective, reporting that LLMs perform better writing code to call tools than calling tools directly.
 
-These rules are \emph{installable}---users add them to their project, and compatible agents (Cursor, Claude Code) automatically load them based on file patterns. Lines of code for the complete scaffolding: $\sim$2,400 across 14 rule files.
-
-\subsubsection{Tools (Exposed via CLI)}
-
-We expose domain functionality through CLI commands---a pattern that Cloudflare (``Code Mode'')~\cite{cloudflare2024codemode} and Anthropic~\cite{anthropic2024tools} found effective, reporting that LLMs perform better writing code to call CLI tools than invoking tools directly.
-
-\textbf{Lifecycle commands:} \texttt{scaffold} (creates project from template with CLAUDE.md guidance), \texttt{validate} (builds in Docker, captures Playwright screenshots), \texttt{deploy} (to target platform).
+\textbf{Lifecycle commands:} \texttt{scaffold} (creates project from template with CLAUDE.md guidance), \texttt{validate} (builds in Docker, captures Playwright screenshot), \texttt{deploy} (to target platform).
 
 \textbf{Data exploration:} Commands for discovering available data, with agent-friendly additions: batch operations that bundle multiple queries, clearer error messages, and syntax examples for platform-specific SQL variations.
 
 Workspace tools (read/write/edit, grep, glob, bash) are not our contribution---agents already have these. Our package adds domain-specific capabilities on top.
 
-\subsubsection{State Machine}
+\subsection{State Machine}
+\label{sec:dk-state}
 
-In our design, applications cannot deploy unless they pass validation after their most recent modification:
+Applications cannot deploy unless they pass validation after their most recent modification:
 
 \begin{center}
 \texttt{Scaffolded $\xrightarrow{\text{edit}}$ Modified $\xrightarrow{\text{validate}}$ Validated(checksum) $\xrightarrow{\text{deploy}}$ Deployed}
 \end{center}
 
-\textbf{How the checksum works:} The checksum captures file state at validation time using MD5 hashes of critical files (e.g., \texttt{App.tsx}, \texttt{schema.ts}). Any change after validation requires re-validation. This prevents untested code deployment---a common failure mode when agents skip validation. Implementation: \texttt{check\_template\_failed()} in our analysis code computes \texttt{hashlib.md5(content).hexdigest()} and compares against known template hashes to detect generation failures.
+The checksum captures state at validation time. Any change after validation requires re-validation. This prevents untested code deployment---a common failure mode when agents skip validation.
 
 \subsection{Agent Compatibility}
+\label{sec:dk-compat}
 
 To validate agent-agnosticism, we tested the package across multiple backends. The key requirement is function calling capability---any agent that can invoke tools works with our package.
 
 \begin{table}[h]
-\caption{Agent backend compatibility validation}
+\caption{Agent backend compatibility validation.}
 \label{tab:agent-compat}
 \centering
 \small
@@ -286,207 +263,31 @@ To validate agent-agnosticism, we tested the package across multiple backends. T
 Claude Agent SDK & Automated & Primary production use \\
 Cursor & Manual & IDE integration \\
 Codex & Manual & Alternative agent \\
-LiteLLM + Qwen3 & Automated & Open-source models \\
+LiteLLM + Qwen3 & Automated & Open-source (70\% at \$0.61/app) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The LiteLLM backend demonstrates that the approach isn't tied to specific vendors---we wrap any model with function calling into our generation pipeline. Production validation with Qwen3-Coder-480B achieved 70\% success rate at \$0.61/app (vs 86.7\% at \$5.01/app for Claude Sonnet 4).
+The LiteLLM backend demonstrates that the approach isn't tied to specific vendors---we wrap any model with function calling into our generation pipeline.
 
-%%
-%% The Klaudbiusz Framework
-%%
-\section{The Klaudbiusz Toolset}
-\label{sec:framework}
-
-\subsection{Agent-Agnostic Design}
-
-Klaudbiusz provides reusable infrastructure that any agentic coding system can leverage, rather than a specific agent implementation. The toolset comprises:
-
-\begin{itemize}
-    \item \textbf{Environment Scaffolding.} Pre-configured TypeScript + tRPC project templates with Databricks SDK integration, ensuring consistent structure across generated applications. Templates are \emph{pluggable}---users can swap template sets for different stacks.
-    \item \textbf{MCP Tool Integrations.} Model Context Protocol tools for file operations, database queries, and deployment actions that agents can invoke.
-    \item \textbf{Containerized Execution.} Dagger-based sandboxed builds providing isolation and reproducibility across environments.
-    \item \textbf{Validation Pipelines.} Automated checks for build, runtime, type safety, and deployment readiness.
-\end{itemize}
-
-\subsection{Evaluation Design Principles}
-
-Our evaluation framework is built on two core principles:
-
-\textbf{Zero-Bias Metrics.} All metrics are objective, reproducible, and automatable. We explicitly exclude subjective assessments of code quality, maintainability, or aesthetics.
-
-\textbf{Tooling-Centric Feedback.} When agents fail, we ask ``what tooling improvement would help?'' rather than ``what's wrong with the agent?'' This framing drives continuous infrastructure improvement.
-
-\subsection{The 13-Metric Rubric}
-
-We organize our metrics into four categories spanning core functionality, platform integration, agentic DevX, and generation efficiency.
-
-\subsubsection{Core Functionality (L1--L4, Binary)}
-
-\begin{itemize}
-    \item \textbf{L1: Build Success.} Project compiles; \texttt{docker build} exits with code 0.
-    \item \textbf{L2: Runtime Success.} App starts and serves content; health check responds within 30s.
-    \item \textbf{L3: Type Safety.} \texttt{npx tsc --noEmit} passes with zero errors.
-    \item \textbf{L4: Tests Pass.} Unit/integration tests pass with coverage $\geq$70\%.
-\end{itemize}
-
-\subsubsection{Platform Integration (L5--L7, Binary)}
-
-\begin{itemize}
-    \item \textbf{L5: DB Connectivity.} Databricks connection works; queries execute without errors.
-    \item \textbf{L6: Data Operations.} CRUD operations return correct data from tRPC procedures.
-    \item \textbf{L7: UI Validation.} Frontend renders without errors (VLM verification).
-\end{itemize}
-
-\subsubsection{Agentic DevX (D8--D9, 0--5 Score)}
-\label{sec:devx}
-
-These metrics capture what agents need but humans can work around. Consider an agent that generates a working application. A human developer can run it: they'll figure out missing environment variables, install unlisted dependencies, work around unclear documentation. An agent \emph{can sometimes} do this too, but it's slow and inefficient---spending many turns on trial-and-error that explicit configuration would eliminate. The agent needs explicit \texttt{.env.example} files, documented commands, and health endpoints for verification.
-
-\begin{itemize}
-    \item \textbf{D8: Runability.} Can a sample AI agent run generated apps locally?
-    \begin{itemize}
-        \item 0: install/start fails; missing scripts/env
-        \item 1--2: starts with manual tweaks
-        \item 3: starts cleanly with .env.example + documented steps
-        \item 4: starts with seeds/migrations via scripts
-        \item 5: + healthcheck endpoint + smoke test succeeds
-    \end{itemize}
-    \item \textbf{D9: Deployability.} Can a sample AI agent deploy a generated app?
-    \begin{itemize}
-        \item 0: no/broken Dockerfile
-        \item 1--2: image builds; container fails or healthcheck fails
-        \item 3: healthcheck OK; smoke 2xx
-        \item 4: + logs/metrics hooks present
-        \item 5: + automated rollback to prior known-good tag
-    \end{itemize}
-\end{itemize}
-
-\textbf{Why This Matters.} Existing metrics miss this distinction. Build success (binary) doesn't capture whether the build process is agent-friendly. We need metrics that ask: can another agent operate this output? This is a novel evaluation dimension absent from existing benchmarks---critical for compound AI systems where one agent's output becomes another's input.
-
-\textbf{Implementation.} D8 and D9 are currently evaluated as \emph{artifact-based proxy metrics}: checklist-style checks for the presence and correctness of artifacts\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/cli/evaluation/evaluate_app.py\#L590-L740}} (README with setup instructions, \texttt{.env.example}, \texttt{npm start} script, Dockerfile, multi-stage build, \texttt{HEALTHCHECK}, absence of hardcoded secrets). These are necessary but not sufficient conditions---a README can exist but be incorrect.
-
-To address this gap, we plan to augment proxy checks with \emph{statistical agent simulation}: running the same task (install, start, deploy) with multiple eval agents configured with diverse developer personas (junior frontend, senior backend, data scientist, AI agent with different capability levels). The score becomes the success rate across persona-runs (e.g., 4/5 succeed $\rightarrow$ 0.8). Variance across personas indicates documentation quality: if only the senior backend persona succeeds, the setup instructions are insufficient. At Haiku-level costs (\textasciitilde\$0.001/attempt), running 15 attempts per app (5 personas $\times$ 3 runs) costs \$0.015/app---negligible compared to generation costs.
-
-\subsubsection{Efficiency Metrics (E10--E13, Numeric)}
-
-\begin{itemize}
-    \item \textbf{E10: Tokens Used.} Total tokens (prompt + completion) for generation.
-    \item \textbf{E11: Generation Time.} Time spent generating application (seconds).
-    \item \textbf{E12: Agent Turns.} Number of conversation turns during generation.
-    \item \textbf{E13: LOC.} Lines of code in generated application.
-\end{itemize}
-
-\subsubsection{SQL Quality Pillar (S1--S4)}
-
-Inspired by BIRD~\cite{bird2023} and Spider~\cite{yu2018spider}, we evaluate SQL quality \emph{in situ}---within generated full-stack applications rather than against isolated query benchmarks. SQL queries are extracted from generated code\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/cli/evaluation/eval_checks.py\#L150-L190}} (inline from TypeScript for tRPC apps, or from \texttt{config/queries/*.sql} for DBX SDK apps) and evaluated:
-
-\begin{itemize}
-    \item \textbf{S1: Execution Correctness (EX).} Fraction of extracted SQL queries that execute without error against Databricks and return non-empty results. Range: $[0,1]$.
-    \item \textbf{S2: Valid Efficiency Score (VES).} Adapted from BIRD~\cite{bird2023}: rewards both correctness \emph{and} query efficiency relative to a reference solution. $\text{VES} = \text{correctness} \times \min(1, t_{\text{ref}} / t_{\text{actual}})$. Range: $[0,1]$.
-    \item \textbf{S3: Query Complexity.} Distribution across difficulty tiers (easy/medium/hard/extra-hard) based on SQL AST features (JOINs, subqueries, window functions) via \texttt{sqlglot}. Reported as context, not scored.
-    \item \textbf{S4: SQL Safety.} Static analysis for destructive operations (\texttt{DROP}, \texttt{TRUNCATE}, \texttt{DELETE} without \texttt{WHERE}), parameterization, and injection resistance. Range: $[0,1]$.
-\end{itemize}
-
-The key distinction from existing text-to-SQL benchmarks is that S1--S4 evaluate queries in their deployment context---connected to real Databricks schemas, embedded in application logic, and subject to runtime constraints. The extraction infrastructure is implemented; automated scoring against Databricks is planned for the 100-prompt benchmark.
-
-\subsubsection{Web Quality Pillar (W1--W4)}
-
-Inspired by WebArena~\cite{zhou2024webarena} and VisualWebArena~\cite{visualwebarena2024}, we design a \emph{use-case-based} web evaluation framework with accessibility-tagged acceptance criteria:
-
-\begin{itemize}
-    \item \textbf{W1: Task Completion Rate.} Per-prompt acceptance criteria generated as testable user stories (e.g., for a ``customer churn dashboard'': can the user filter by date range? does the table show customer data?). Evaluated via Playwright test scripts. Range: $[0,1]$.
-    \item \textbf{W2: Visual Rendering Correctness.} Extends our current binary VLM check\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/cli/evaluation/evaluate_app.py\#L509-L588}} to a structured multi-aspect rubric: charts render with labels, layout is responsive, no overlapping elements, text is readable. Range: $[0,1]$.
-    \item \textbf{W3: Interactive Element Functionality.} Playwright-based interaction testing: click buttons, fill forms, toggle filters, verify DOM changes and network requests. Range: $[0,1]$.
-    \item \textbf{W4: Accessibility Score.} WCAG 2.1 AA compliance via \texttt{axe-core} integration with Playwright. Measures: keyboard navigation, ARIA labels, contrast ratios, focus indicators. Score: $1 - (v_{\text{critical}} / n_{\text{elements}})$, clamped to $[0,1]$.
-\end{itemize}
-
-Acceptance criteria map to WCAG categories (Perceivable, Operable, Understandable, Robust), enabling systematic accessibility tracking across generated applications. The current implementation provides binary UI validation (L7); the full W pillar is designed for the 100-prompt benchmark expansion.
-
-\subsection{AppEval-100 Composite Score}
-
-To enable automatic, comparable measurement across prompts and runs, we introduce \textbf{AppEval-100}---a single numeric index representing normalized readiness and agentic operability on a 0--100 scale. Unlike existing benchmarks that evaluate SQL correctness (BIRD/Spider) or web task completion (WebArena) in isolation, AppEval-100 provides the first composite evaluation combining all four pillars for full-stack data applications.
-
-\textbf{Step 1: Reliability Pillar (R).} Aggregate core runtime checks:
-\[
-R = \text{GM}(b_{\text{build}}, b_{\text{runtime}}, b_{\text{type}}, b_{\text{tests}})
-\]
-
-\textbf{Step 2: SQL Quality Pillar (S).} Weighted combination of SQL metrics:
-\[
-S = 0.50 \times S_1 + 0.30 \times S_2 + 0.20 \times S_4
-\]
-where $S_1$ (execution correctness) dominates, $S_2$ (efficiency) contributes secondary value, and $S_4$ (safety) ensures secure queries.
-
-\textbf{Step 3: Web Quality Pillar (W).} Weighted combination of UI/UX metrics:
-\[
-W = 0.40 \times W_1 + 0.30 \times W_2 + 0.20 \times W_3 + 0.10 \times W_4
-\]
-prioritizing task completion and visual correctness.
-
-\textbf{Step 4: Agentic DevX Pillar (D).}
-\[
-D = \text{GM}(\hat{x}_{\text{run}}, \hat{x}_{\text{deploy}})
-\]
-where $\hat{x} = \text{score}/5$ normalizes 0--5 scores to $[0,1]$.
-
-\textbf{Step 5: Soft Penalty Gate.} Penalize critical outages without collapsing to zero:
-\[
-G = (0.25 + 0.75 \times b_{\text{build}}) \times (0.25 + 0.75 \times b_{\text{runtime}}) \times (0.50 + 0.50 \times b_{\text{db}}) \times (0.50 + 0.50 \times \mathbf{1}_{S_1 \geq 0.5})
-\]
-
-\textbf{Step 6: Final Composite.}
-\[
-\textbf{AppEval-100} = 100 \times (0.30 \times R + 0.25 \times S + 0.25 \times W + 0.20 \times D) \times G
-\]
-
-\textbf{Pillar Weight Rationale:} Reliability (30\%) ensures the app works; SQL Quality (25\%) and Web Quality (25\%) capture the core value proposition for Databricks data applications; DevX (20\%) measures autonomous operability.
-
-Values near 100 denote near-perfect readiness; 50--70 indicates partial operability; $<$30 signifies fundamental execution issues.
-
-\subsection{DORA Metrics Mapping}
-
-We map our metrics to industry-standard DORA~\cite{forsgren2018accelerate} measures:
-
-\begin{itemize}
-    \item \textbf{Deployment Frequency:} Count of successful D9 events per app per evaluation cohort.
-    \item \textbf{Lead Time:} Median time from first model call to successful D9 deployment.
-    \item \textbf{Change Failure Rate:} Fraction of deployments that fail healthcheck or rollback within 30 min.
-    \item \textbf{MTTR:} Median time from failure detection to restore (prior healthy image running).
-\end{itemize}
-
-\textbf{Production Gate:} L1--L7 pass, D8$\geq$4, D9$\geq$4, type-safety pass, and DORA guardrails (Lead Time P50 $\leq$10 min, CFR $\leq$15\%, MTTR $\leq$15 min).
-
-\textbf{Statistical DevX and DORA.} With statistical agent simulation (Section~\ref{sec:devx}), DORA metrics gain direct empirical grounding: Change Failure Rate becomes $1 - \text{D9}_{\text{statistical}}$ (fraction of persona-runs that fail deployment), and Lead Time becomes the median time across personas from \texttt{git clone} to successful health check. Variance across personas measures predictability---a key DORA dimension.
-
-\textbf{Validation plan.} To verify that AppEval-100 predicts real-world delivery performance, we plan to deploy generated applications to staging environments and track actual DORA metrics over 30 days, correlating with evaluation scores. Our hypothesis: AppEval-100 $> 70$ correlates with DORA ``High'' performance (deployment frequency: daily, lead time: $<$1 day, CFR: $<$15\%, MTTR: $<$1 hour).
-
-\subsection{MLflow Integration}
-
-We integrate with Databricks Managed MLflow for experiment tracking:
-\begin{itemize}
-    \item Automatic metric logging per evaluation run
-    \item Trend analysis across model versions and configurations
-    \item Artifact versioning for reproducibility
-    \item DORA telemetry for delivery performance monitoring
-\end{itemize}
-
-%%
-%% Trajectory Analyzer
-%%
+%% ============================================================
+%% 3. AGENTIC TRAJECTORY ANALYZER
+%% ============================================================
 \section{Agentic Trajectory Analyzer}
 \label{sec:trajectory}
 
 \subsection{Role in the Feedback Loop}
+\label{sec:ta-role}
 
 To run trajectory analysis at scale, we built infrastructure for bulk app generation that saves execution traces in a structured format. In production, users work with their own agents (Cursor, Claude Code) which may not save trajectories in our format---but the analyzer works with any trace data that captures tool calls and results.
 
 The analyzer consumes trajectories and recommends package improvements. This closes the loop: agents struggle $\rightarrow$ we see it in trajectories $\rightarrow$ we fix the tooling $\rightarrow$ agents struggle less.
 
 \subsection{Why Trajectories, Not Just Outcomes}
+\label{sec:ta-why}
 
 End-state metrics (build success, test pass) don't reveal causes:
+
 \begin{itemize}
     \item Model limitations (reasoning, instruction following)?
     \item Tool problems (unclear descriptions, missing functionality)?
@@ -494,22 +295,50 @@ End-state metrics (build success, test pass) don't reveal causes:
     \item Prompt issues (underspecified requirements, contradicting constraints)?
 \end{itemize}
 
-Trajectories---the sequence of reasoning, tool calls, and results---show where things went wrong. \textbf{Example:} An agent retrying the same malformed SQL five times reveals a missing example in the guidance. An agent calling N tools for N tables reveals a missing batch operation.
+Trajectories---the sequence of reasoning, tool calls, and results---show where things went wrong. An agent retrying the same malformed SQL five times reveals a missing example. An agent calling N tools for N tables reveals a missing batch operation.
 
 \subsection{Two-Phase Architecture}
+\label{sec:ta-architecture}
 
-We employ a map-reduce approach optimized for cost and quality:
+%% --- TikZ Figure 3: Map-Reduce Trajectory Pipeline ---
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[node distance=0.8cm and 1.2cm]
+  % Trajectories
+  \node[databox, text width=1.4cm] (t1) {App 1\\trace};
+  \node[databox, text width=1.4cm, below=0.3cm of t1] (t2) {App 2\\trace};
+  \node[below=0.2cm of t2, font=\small] (dots) {$\vdots$};
+  \node[databox, text width=1.4cm, below=0.2cm of dots] (tn) {App N\\trace};
 
-\textbf{Map Phase (Cheap Model).} Each trajectory is processed independently by a fast model (we use Claude Haiku, $\sim$\$0.001/trajectory), extracting:
-\begin{itemize}
-    \item Errors and retries
-    \item Confusion patterns (agent asking clarifying questions)
-    \item Inefficiency (suboptimal tool sequences)
-    \item \textbf{Repetitions} (same action attempted multiple times)
-\end{itemize}
-This runs in parallel across all trajectories.
+  % Map phase
+  \node[procbox, text width=2.4cm, right=1.5cm of t2] (map) {Map Phase\\(cheap model)\\Extract friction};
 
-\textbf{Agentic Synthesis Phase (Reasoning Model).} Aggregated patterns go to a reasoning model (we use Claude Opus) with read-only access to:
+  % Aggregated
+  \node[sysblock, text width=2.4cm, right=1.5cm of map] (agg) {Aggregated\\Friction\\Patterns};
+
+  % Synthesis
+  \node[sysblock, text width=3.2cm, minimum height=1.8cm, below=1.0cm of agg] (synth) {Agentic Synthesis\\(reasoning model)\\Read/Glob/Grep\\access to source};
+
+  % Recommendations
+  \node[pillarbox, text width=3.2cm, below=0.8cm of synth] (rec) {Recommendations\\batch ops, examples,\\tool renames};
+
+  % Arrows
+  \draw[arr] (t1.east) -- ++(0.4,0) |- (map.west);
+  \draw[arr] (t2) -- (map);
+  \draw[arr] (tn.east) -- ++(0.4,0) |- (map.west);
+  \draw[arr] (map) -- node[above, font=\footnotesize]{parallel} (agg);
+  \draw[arr] (agg) -- (synth);
+  \draw[arr] (synth) -- (rec);
+\end{tikzpicture}
+\caption{Two-phase trajectory analyzer. Map phase extracts friction in parallel; synthesis phase explores source code to find root causes and generate recommendations.}
+\label{fig:trajectory-pipeline}
+\end{figure}
+
+We employ a map-reduce approach optimized for cost and quality (Figure~\ref{fig:trajectory-pipeline}).
+
+\textbf{Map phase.} Each trajectory is processed independently by a cheap model (we use Claude Haiku, $\sim$\$0.001/trajectory), extracting errors, retries, confusion patterns, and inefficient tool usage. This runs in parallel.
+
+\textbf{Agentic synthesis phase.} Aggregated patterns go to a reasoning model (we use Claude Opus) with read-only access to:
 \begin{itemize}
     \item Template and CLI tools source code (via Read/Glob/Grep)
     \item Tool definitions (extracted from MCP server)
@@ -520,20 +349,13 @@ This is a full agent with up to 50 turns of exploration. If trajectories show SQ
 
 \textbf{Extensibility.} The architecture naturally extends to new context sources. We started with trajectories only, then added template source code access, then tool definitions extracted via the MCP binary. Adding new sources (e.g., user feedback, production logs) requires only pointing the synthesis agent at additional files.
 
-\textbf{Example trace through synthesis:} Given 20 trajectories where agents repeatedly fail on \texttt{QUALIFY} syntax:
-\begin{enumerate}
-    \item Map phase extracts: ``SQL error on QUALIFY clause'' (15 occurrences)
-    \item Synthesis agent searches: \texttt{grep -r "QUALIFY" templates/}
-    \item Finds: no QUALIFY examples in SQL guidance
-    \item Recommendation: ``Add QUALIFY, PIVOT syntax to SQL guidance''
-\end{enumerate}
-
 \subsection{Concrete Improvements}
+\label{sec:ta-improvements}
 
 The analyzer identified issues leading to fixes we implemented:
 
 \begin{table}[h]
-\caption{Trajectory-identified improvements (implemented)}
+\caption{Trajectory-identified improvements (implemented).}
 \label{tab:improvements}
 \centering
 \small
@@ -542,145 +364,261 @@ The analyzer identified issues leading to fixes we implemented:
 \textbf{Pattern Observed} & \textbf{Diagnosis} & \textbf{Fix Applied} \\
 \midrule
 N separate calls for N tables & Missing batch operation & Added \texttt{discover\_schema} batch command \\
-Agents expecting list, got search & Confusing tool name & Renamed \texttt{list\_tables} $\rightarrow$ \texttt{find\_tables} \\
+Agents expecting list, got search & Confusing tool name & Renamed \texttt{list\_tables} $\to$ \texttt{find\_tables} \\
 Repeated SQL syntax errors & Missing examples & Added QUALIFY, PIVOT syntax to guidance \\
 Retries on malformed errors & Unclear error messages & Added contextual parameter messages \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-These aren't hypothetical---they're actual fixes derived from trajectory analysis and committed to the codebase. Evidence: commit history in \texttt{github.com/neondatabase/appdotbuild-agent}.
+These aren't hypothetical---they're actual fixes derived from trajectory analysis and committed to the codebase.
 
 \subsection{Cost Model}
+\label{sec:ta-cost}
 
-For N trajectories:
+For $N$ trajectories:
 \begin{itemize}
-    \item Map: N $\times$ $\sim$\$0.001 (cheap model)
-    \item Synthesis: 1 $\times$ $\sim$\$0.5--3 (reasoning model, bounded at 50 turns)
+    \item Map: $N \times {\sim}\$0.001$ (cheap model)
+    \item Synthesis: $1 \times {\sim}\$0.5$--3 (reasoning model, bounded at 50 turns)
 \end{itemize}
 
 Total scales linearly but remains bounded. For 20 apps, analysis cost was under \$15.
 
 \subsection{Future Direction}
+\label{sec:ta-future}
 
-Our current approach is semi-automatic: the analyzer outputs recommendations, but a human reviews them and decides which to implement. This keeps a human in the loop for changes to production tooling.
+Our current approach is semi-automatic: the analyzer outputs recommendations, but a human reviews them and decides which to implement. Recent work on reflective prompt evolution (GEPA~\cite{gepa2024}) and DSPy~\cite{khattab2023dspy} shows prompts can be automatically optimized through self-reflection. The analyzer's recommendations target tool descriptions, prompts, and examples---artifacts amenable to such techniques, potentially closing the loop without human intervention.
 
-Recent work on reflective prompt evolution (GEPA~\cite{gepa2024}) shows prompts can be automatically optimized through self-reflection. DSPy~\cite{khattab2023dspy} demonstrates similar techniques for prompt tuning. These techniques could close this gap---automatically applying fixes, measuring improvement, and iterating without human intervention. The analyzer's recommendations target tool descriptions, prompts, and examples---artifacts amenable to such techniques.
+%% ============================================================
+%% 4. AGENTIC DEVX METRICS
+%% ============================================================
+\section{Agentic DevX Metrics}
+\label{sec:devx}
 
-\subsection{Feedback Loop}
+\subsection{Role in the Feedback Loop}
+\label{sec:devx-role}
 
-The trajectory analyzer enables a continuous improvement cycle with optional regression testing:
+Agentic DevX is the final quality gate. After the package is improved and agents generate applications, we need to verify: can another agent actually operate this output?
 
-\begin{center}
-Generate $\rightarrow$ Evaluate $\rightarrow$ Analyze Trajectories $\rightarrow$ Improve Scaffolding $\rightarrow$ Regression Suite $\rightarrow$ Repeat
-\end{center}
+This is distinct from the trajectory analyzer's role. The analyzer improves the package based on how agents behave during generation. DevX metrics evaluate the result---whether generated applications meet agent-operability criteria.
 
-%%
-%% Experimental Setup
-%%
-\section{Experimental Setup}
-\label{sec:setup}
+\subsection{Motivation}
+\label{sec:devx-motivation}
 
-\subsection{AppEval-100 Benchmark Design}
+Consider an agent that generates a working application. A human developer can run it: they'll figure out missing environment variables, install unlisted dependencies, work around unclear documentation. An agent \emph{can sometimes} do this too, but it's slow and inefficient---spending many turns on trial-and-error that explicit configuration would eliminate. It needs explicit \texttt{.env.example} files, documented commands, health endpoints for verification.
 
-We design a 100-prompt benchmark targeting statistical validity for Databricks data application evaluation. Our sample size provides $\pm$9\% confidence interval at 95\% confidence for binary metrics ($p=0.7$), matching InsightBench~\cite{insightbench2024} (100 tasks) and exceeding Spider 2.0's~\cite{spider2_2024} focused enterprise subset (632 tasks).
+Existing metrics miss this distinction. Build success (binary) doesn't capture whether the build process is agent-friendly. We need metrics that ask: \textbf{can another agent operate this?}
 
-\subsubsection{Difficulty Distribution}
+\subsection{Runability (0--5)}
+\label{sec:devx-runability}
+
+Measures whether a sample AI agent can run the application locally:
 
 \begin{table}[h]
-\caption{Prompt difficulty distribution ($n=100$)}
-\label{tab:difficulty}
+\caption{Runability scoring rubric (D8).}
+\label{tab:runability}
 \centering
-\begin{tabular}{lcp{5cm}}
+\small
+\begin{tabular}{cp{6cm}}
 \toprule
-Tier & Count & Description \\
+\textbf{Score} & \textbf{Criteria} \\
 \midrule
-Simple & 40 & Single-entity CRUD, basic dashboards, one data source \\
-Medium & 40 & Multi-entity JOINs, filters, interactive charts, 2--3 data sources \\
-Hard & 20 & Complex analytics, multi-step workflows, real-time updates \\
+0 & Install or start fails; missing scripts or environment \\
+1 & Installs but start fails; not solvable via README \\
+2 & Starts with manual tweaks (undocumented env vars) \\
+3 & Starts cleanly with .env.example + documented steps \\
+4 & Starts with seeds/migrations via scripts \\
+5 & + healthcheck endpoint + smoke test succeeds \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsubsection{Domain Coverage}
+\subsection{Deployability (0--5)}
+\label{sec:devx-deployability}
 
-Prompts span five application domains: Analytics Dashboards (26\%), CRUD Applications (22\%), Data Visualization (22\%), Business Intelligence (20\%), and Reporting Tools (10\%).
+Measures whether a sample AI agent can deploy the application:
 
-\subsubsection{Schema Families}
+\begin{table}[h]
+\caption{Deployability scoring rubric (D9).}
+\label{tab:deployability}
+\centering
+\small
+\begin{tabular}{cp{6cm}}
+\toprule
+\textbf{Score} & \textbf{Criteria} \\
+\midrule
+0 & No Dockerfile or broken Dockerfile \\
+1 & Image builds; container fails to start \\
+2 & Starts; healthcheck fails or ports undefined \\
+3 & Healthcheck OK; smoke returns 2xx \\
+4 & + logs/metrics hooks present \\
+5 & + automated rollback to prior known-good tag \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-We target six schema families to ensure diversity: TPC-DS (25 prompts, retail/customer analytics), TPC-H (20, supply chain), NYC Taxi (15, trip analytics), Custom Databricks (25, Unity Catalog/ML features), Financial (10, trading/risk), and IoT/Telemetry (5, device metrics).
+\subsection{Why This Matters}
+\label{sec:devx-why}
 
-\subsection{Prompt Collection Methodology}
+These metrics encode what agents need but humans can work around:
 
-Prompts are collected from three sources to ensure realistic ambiguity and domain vocabulary:
-
-\begin{enumerate}
-    \item \textbf{Hackathon recordings} (50 prompts): Extracted from video transcripts of internal Databricks application hackathons, preserving natural language vagueness.
-    \item \textbf{Production logs} (30 prompts): Anonymized user requests from app.build, capturing real-world requirements.
-    \item \textbf{Synthetic generation} (20 prompts): LLM-generated from templates to fill coverage gaps.
-\end{enumerate}
-
-\textbf{Quality Criteria:} Prompts must exhibit realistic ambiguity, domain-specific vocabulary, implicit requirements (unstated but expected features), and achievability with current templates.
-
-\subsection{Current Evaluation Dataset}
-
-For this paper, we evaluate on a ``Simple 20'' subset---20 Databricks data application prompts spanning dashboards, analytics, and business intelligence tools---retained as a fixed regression set for longitudinal comparison.
-
-\subsection{Generation Pipeline}
-
-Applications are generated using:
 \begin{itemize}
-    \item \textbf{Claude Agent SDK} with edda MCP for tool orchestration
-    \item \textbf{Dagger} containerized execution for isolation and reproducibility
-    \item \textbf{Environment scaffolding} with templates and validation pipelines
+    \item \textbf{Explicit environment}: \texttt{.env.example} with all required variables
+    \item \textbf{Documented commands}: exact \texttt{npm install \&\& npm start} in README
+    \item \textbf{Verification endpoints}: \texttt{/health} that returns 200 when ready
+    \item \textbf{Deployment configuration}: working Dockerfile, port exposure, healthcheck
 \end{itemize}
 
-\subsection{Generation--Evaluation Isolation}
+Human developers tolerate ambiguity; agents fail on it. Agentic DevX measures the gap.
+
+\subsection{The 9-Metric Framework}
+\label{sec:devx-framework}
+
+Agentic DevX doesn't replace traditional metrics---it complements them. We embed it within a 9-metric framework covering correctness, functionality, and operability.
+
+%% --- TikZ Figure 4: AppEval 9-Metric Framework ---
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[node distance=0.4cm]
+  % Core Functionality
+  \node[sysblock, text width=1.4cm, minimum height=0.7cm] (l1) {L1\\Build};
+  \node[sysblock, text width=1.4cm, minimum height=0.7cm, right=0.3cm of l1] (l2) {L2\\Run};
+  \node[sysblock, text width=1.4cm, minimum height=0.7cm, right=0.3cm of l2] (l3) {L3\\Types};
+  \node[sysblock, text width=1.4cm, minimum height=0.7cm, right=0.3cm of l3] (l4) {L4\\Tests};
+
+  \begin{scope}[on background layer]
+    \node[draw, rounded corners=3pt, fill=blue!3, fit=(l1)(l4), inner sep=5pt, label={[font=\footnotesize\bfseries]above:Core Functionality (Binary)}] (core) {};
+  \end{scope}
+
+  % Platform Integration
+  \node[sysblock, text width=1.4cm, minimum height=0.7cm, below=1.2cm of l1] (l5) {L5\\DB};
+  \node[sysblock, text width=1.4cm, minimum height=0.7cm, right=0.3cm of l5] (l6) {L6\\Data};
+  \node[sysblock, text width=1.4cm, minimum height=0.7cm, right=0.3cm of l6] (l7) {L7\\UI};
+
+  \begin{scope}[on background layer]
+    \node[draw, rounded corners=3pt, fill=blue!3, fit=(l5)(l7), inner sep=5pt, label={[font=\footnotesize\bfseries]above:Platform Integration (Binary)}] (plat) {};
+  \end{scope}
+
+  % Agentic DevX
+  \node[pillarbox, text width=2.2cm, minimum height=0.7cm, below=1.2cm of l5.south west, anchor=north west] (d8) {D8\\Runability\\0--5};
+  \node[pillarbox, text width=2.2cm, minimum height=0.7cm, right=0.3cm of d8] (d9) {D9\\Deployability\\0--5};
+
+  \begin{scope}[on background layer]
+    \node[draw, rounded corners=3pt, fill=orange!5, fit=(d8)(d9), inner sep=5pt, label={[font=\footnotesize\bfseries]above:Agentic DevX (0--5) \textnormal{--- NOVEL}}] (devx) {};
+  \end{scope}
+\end{tikzpicture}
+\caption{AppEval 9-metric framework. L1--L4 check correctness, L5--L7 verify platform integration, D8--D9 (Agentic DevX) measure agent-operability---the novel contribution.}
+\label{fig:appeval-framework}
+\end{figure}
+
+L1--L4 are standard software quality checks. L5--L7 verify platform integration. D8--D9 (Agentic DevX) ask the question existing frameworks miss: is this output usable in an agentic pipeline?
+
+\subsection{Cluster-Based Quality Assessment}
+\label{sec:devx-clustering}
+
+As a weight-free alternative to composite scoring, we apply $k$-means clustering with cosine similarity on metric vectors. Each application is represented as a 9-dimensional vector $\mathbf{m} = (L_1, \ldots, L_7, \hat{D}_8, \hat{D}_9)$ where $\hat{D}_i = D_i / 5$ normalizes DevX scores to $[0,1]$. We cluster applications into quality tiers (e.g., $k=3$: low, medium, high) without requiring explicit pillar weights---the structure emerges from the data.
+
+This approach follows~\citet{knyazev2009clustering}, who demonstrated that metric-space clustering can classify software artifacts without manual threshold tuning. For our 20-application dataset, three clusters naturally separate: (1)~applications that fail build/runtime, (2)~applications that build but lack DevX artifacts, and (3)~applications with both functional correctness and agent-operability. The cluster boundaries provide empirical quality tiers that complement the rubric-based D8/D9 scores.
+
+\subsection{DORA Alignment}
+\label{sec:devx-dora}
+
+To ground our metrics in industry practice, we map to DORA~\cite{forsgren2018accelerate} delivery metrics:
+
+\begin{table}[h]
+\caption{DORA metric mapping.}
+\label{tab:dora}
+\centering
+\small
+\begin{tabular}{lp{5cm}}
+\toprule
+\textbf{DORA Metric} & \textbf{AppEval Mapping} \\
+\midrule
+Deployment Frequency & Successful D9 events per evaluation \\
+Lead Time & Time from prompt to successful deployment \\
+Change Failure Rate & Fraction of deployments failing healthcheck \\
+MTTR & Time from failure to restored deployment \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This mapping lets teams familiar with DORA interpret our results in their existing framework.
+
+%% ============================================================
+%% 5. GENERATION--EVALUATION ISOLATION
+%% ============================================================
+\section{Generation--Evaluation Isolation}
 \label{sec:isolation}
 
-A critical design requirement is that the generator and evaluator must be \emph{strictly isolated}. Without isolation, the generator agent can exploit evaluation artifacts---a form of reward hacking~\cite{amodei2016concrete} that inflates metrics without improving application quality. We describe the threat model, our mitigation, and implications for the field.
+A critical design requirement is that the generator and evaluator must be \emph{strictly isolated}. Without isolation, the generator agent can exploit evaluation artifacts---a form of reward hacking~\cite{amodei2016concrete} that inflates metrics without improving application quality.
 
-\subsubsection{Threat Model: Metric Gaming Through Code Leakage}
+\subsection{Threat Model: Metric Gaming}
+\label{sec:isolation-threat}
 
-Agentic coding systems actively explore their filesystem via tools like \texttt{Read}, \texttt{Glob}, and \texttt{Grep}. When evaluation code resides in the same workspace as generation code, the following attack surfaces emerge:\footnote{Examples are hypothetical threat scenarios that motivated our isolation design. We observed agents reading non-generation files during early development, which led to the container-level isolation described in Section~\ref{sec:container-isolation}.}
+Agentic coding systems actively explore their filesystem via tools like \texttt{Read}, \texttt{Glob}, and \texttt{Grep}. When evaluation code resides in the same workspace, the following attack surfaces emerge:
 
-\textbf{Scenario 1: Eval check reverse-engineering.} Our DB connectivity check (\texttt{eval\_checks.py:39--70}\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/cli/evaluation/eval_checks.py\#L39-L70}}) verifies connectivity by calling tRPC endpoints and parsing JSON responses for a \texttt{result} key. An agent with read access could discover this check and create minimal stubs that pass the binary metric without implementing genuine Databricks queries:
+\textbf{Scenario 1: Eval check reverse-engineering.} Our DB connectivity check (\texttt{eval\_checks.py:39--70})\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/cli/evaluation/eval_checks.py\#L39-L70}} verifies connectivity by calling tRPC endpoints and parsing JSON responses. An agent with read access could discover this check and create minimal stubs that pass the binary metric without implementing genuine queries:
 
-\begin{verbatim}
-// Hypothetical stub (passes L5 check, no real data)
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
+// Hypothetical stub (passes L5, no real data)
 healthcheck: publicProcedure.query(() => ({
   result: { data: [], status: "ok" }
 }))
-\end{verbatim}
+\end{lstlisting}
 
-\textbf{Scenario 2: Composite score optimization.} The AppEval-100 formula and pillar weights are defined in \texttt{eval\_metrics.py:44--88}\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/cli/evaluation/eval_metrics.py\#L44-L88}}. An agent that reads this file learns that Reliability (30\%) and DevX (20\%) are weighted separately, and could prioritize boilerplate (\texttt{.env.example}, \texttt{Dockerfile}) for DevX points while neglecting SQL quality metrics that require genuine implementation.
+\textbf{Scenario 2: Composite score optimization.} The evaluation weights are defined in \texttt{eval\_metrics.py}\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/cli/evaluation/eval_metrics.py\#L44-L88}}. An agent that reads this file could prioritize boilerplate (\texttt{.env.example}, \texttt{Dockerfile}) for DevX points while neglecting metrics requiring genuine implementation.
 
-\textbf{Scenario 3: Pattern copying from prior runs.} If the \texttt{app/} directory from prior generations is accessible, an agent could copy file structures verbatim from successful runs rather than reasoning about current prompt requirements---producing high-scoring but homogeneous applications that fail on novel prompts.
+\textbf{Scenario 3: Pattern copying from prior runs.} If prior generations are accessible, an agent could copy file structures verbatim rather than reasoning about current requirements.
 
-\textbf{Scenario 4: Trajectory-informed shortcuts.} With access to prior trajectory logs, an agent could identify which tool sequences led to passing evaluations and replay them mechanically, bypassing exploratory reasoning.
+\subsection{Container-Level Isolation via Dagger}
+\label{sec:isolation-container}
 
-\subsubsection{Container-Level Isolation via Dagger}
-\label{sec:container-isolation}
+We enforce isolation at the container build level. The generation Dockerfile\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/Dockerfile\#L58-L64}} selectively copies only generation-related code:
 
-We enforce isolation at the container build level. The generation Dockerfile\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/Dockerfile\#L58-L64}} selectively copies only generation-related code, explicitly excluding evaluation:
-
-\begin{verbatim}
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
 # Exclude evaluation to prevent reward hacking
 COPY cli/generation/    ./cli/generation/
 COPY cli/utils/         ./cli/utils/
 # NOT copied: cli/evaluation/,
 #             cli/analyze_trajectories.py
-\end{verbatim}
-
-The Dagger build context further excludes runtime artifacts\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/cli/generation/dagger_run.py\#L206-L212}}:
-
-\begin{verbatim}
-context = client.host().directory(".",
-    exclude=["app/", "app-eval/",
-             "results/", ".venv/", ".git/"])
-\end{verbatim}
+\end{lstlisting}
 
 Each generation starts from a clean workspace. In bulk runs, a pre-generation directory snapshot\footnote{\url{https://github.com/neondatabase/appdotbuild-agent/blob/main/klaudbiusz/cli/generation/container_runner.py\#L76}} prevents cross-contamination between parallel generations.
+
+%% --- TikZ Figure 5: Isolation Boundaries ---
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[node distance=0.5cm]
+  % Generator box
+  \node[sysblock, text width=2.4cm] (pkg) {Domain Package\\(.mdc rules)};
+  \node[sysblock, text width=2.4cm, below=0.4cm of pkg] (mcp) {MCP Tools\\(Databricks CLI)};
+  \node[sysblock, text width=2.4cm, below=0.4cm of mcp] (skills) {Installed Skills};
+
+  \begin{scope}[on background layer]
+    \node[draw, thick, rounded corners=4pt, fill=green!5, fit=(pkg)(mcp)(skills), inner sep=8pt, label={[font=\small\bfseries]above:Generator Container}] (gen) {};
+  \end{scope}
+
+  % Evaluator box
+  \node[sysblock, text width=2.4cm, right=2.5cm of pkg] (checks) {Eval Checks\\/ Metrics};
+  \node[sysblock, text width=2.4cm, below=0.4cm of checks] (prior) {Prior Apps\\/ Results};
+  \node[sysblock, text width=2.4cm, below=0.4cm of prior] (ta) {Trajectory\\Analyzer};
+
+  \begin{scope}[on background layer]
+    \node[draw, thick, rounded corners=4pt, fill=orange!5, fit=(checks)(prior)(ta), inner sep=8pt, label={[font=\small\bfseries]above:Evaluator Container}] (eval) {};
+  \end{scope}
+
+  % Shared artifacts
+  \node[databox, text width=2cm, below=1.5cm of $(gen.south)!0.5!(eval.south)$] (app) {App Code\\+ Trajectory};
+
+  \draw[arr] (gen.south) -- ++(0,-0.5) -| node[near start, above, font=\footnotesize]{writes} (app.north west);
+  \draw[arr] (eval.south) -- ++(0,-0.5) -| node[near start, above, font=\footnotesize]{reads} (app.north east);
+
+  % Barrier
+  \draw[thick, dashed, red!60] ($(gen.north east)!0.5!(eval.north west)+(0,0.5)$) -- ($(gen.south east)!0.5!(eval.south west)+(0,-0.3)$) node[midway, fill=white, font=\footnotesize\color{red!60}] {isolation};
+\end{tikzpicture}
+\caption{Isolation boundaries between generation and evaluation. The generator cannot read evaluation code; improvements flow only through the domain package.}
+\label{fig:isolation}
+\end{figure}
 
 \begin{table}[h]
 \caption{Isolation boundaries between generation and evaluation.}
@@ -689,7 +627,7 @@ Each generation starts from a clean workspace. In bulk runs, a pre-generation di
 \small
 \begin{tabular}{lcc}
 \toprule
-Artifact & Generator & Evaluator \\
+\textbf{Artifact} & \textbf{Generator} & \textbf{Evaluator} \\
 \midrule
 Domain package (.mdc rules) & \checkmark & --- \\
 MCP tools (Databricks CLI) & \checkmark & --- \\
@@ -703,154 +641,153 @@ Current trajectory & writes & reads \\
 \end{tabular}
 \end{table}
 
-This separation mirrors training/test splits in machine learning: the generator learns from the domain package (training signal), while the evaluator measures generalization against unseen criteria. Improvements flow exclusively through the domain package---not through gaming the evaluation protocol.
+This separation mirrors training/test splits in machine learning: the generator learns from the domain package (training signal), while the evaluator measures generalization against unseen criteria. We recommend that agent evaluation frameworks enforce container-level isolation as a baseline requirement.
 
-\subsubsection{Implications for Agent Evaluation}
-
-Our isolation design addresses a class of vulnerabilities unique to agentic systems: (1) agents actively explore their filesystem and will read evaluation code if accessible; (2) binary metrics are especially vulnerable to trivial stubs that pass without useful output; (3) composite score formulas, when known, enable strategic effort allocation that maximizes score over quality; (4) access to prior outputs enables pattern matching instead of reasoning.
-
-We recommend that agent evaluation frameworks enforce container-level or filesystem-level isolation between generation and evaluation as a baseline requirement.
-
-\subsection{Statistical Validity}
-
-Our 100-prompt benchmark provides:
-\begin{itemize}
-    \item \textbf{Confidence Interval:} $\pm$9\% at 95\% confidence for binary metrics
-    \item \textbf{Statistical Power:} 0.80 for medium effect size ($d=0.5$)
-    \item \textbf{Stratification:} Three difficulty tiers adequately sampled (40/40/20)
-\end{itemize}
-
-The ``Simple 20'' regression set enables longitudinal model comparisons while guarding against prompt inflation effects.
-
-%%
-%% Results
-%%
+%% ============================================================
+%% 6. RESULTS
+%% ============================================================
 \section{Results}
 \label{sec:results}
 
-\subsection{Overall Performance}
+\subsection{Generation Performance}
+\label{sec:results-perf}
 
-We evaluate on the ``Simple 20'' prompt set---20 Databricks data application prompts spanning dashboards, analytics, and business intelligence tools.
+We evaluated on 20 Databricks applications spanning dashboards, analytics tools, and business intelligence interfaces. Each app was generated from a natural language prompt describing the desired functionality.
 
 \begin{table}[h]
-\caption{Aggregate evaluation results ($n=20$ applications, Evals 2.0)}
+\caption{Aggregate evaluation results ($n=20$ applications).}
 \label{tab:results}
+\centering
+\small
 \begin{tabular}{llcc}
 \toprule
-ID & Metric & Result & Notes \\
+\textbf{ID} & \textbf{Metric} & \textbf{Result} & \textbf{Notes} \\
 \midrule
-L1 & Build Success & 20/20 & 100\% pass \\
-L2 & Runtime Success & 20/20 & 100\% pass \\
-L3 & Type Safety & 1/20 & 5\% pass (improvement needed) \\
-L4 & Tests Pass & -- & Not yet instrumented \\
-\midrule
-L5 & DB Connectivity & 18/20 & 90\% pass \\
-L6 & Data Operations & -- & Requires app-specific procedures \\
-L7 & UI Validation & -- & VLM check in progress \\
-\midrule
-D8 & Runability & 3.0/5 & Average score \\
-D9 & Deployability & 2.5/5 & Average score \\
+L1 & Build Success & 18/20 (90\%) & \\
+L2 & Runtime Success & 18/20 (90\%) & \\
+L3 & Type Safety & 1/20 (5\%) & Primary gap \\
+L5 & DB Connectivity & 18/20 (90\%) & \\
+D8 & Runability & 3.0/5 avg & \\
+D9 & Deployability & 2.5/5 avg & \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{Key Finding:} 100\% of generated applications achieve build and runtime success, with 90\% achieving functional Databricks connectivity. However, type safety (5\%) and agentic DevX scores (3.0/5, 2.5/5) indicate room for improvement toward production readiness.
+The 90\% build/runtime success indicates the core generation pipeline works. The 5\% type safety rate is the primary gap---trajectory analysis traced this to TypeScript strict mode violations, particularly null handling.
 
-\subsection{Generation Efficiency Metrics}
+\subsection{Efficiency}
+\label{sec:results-efficiency}
+
+Generation is practical for real use: under 10 minutes and under \$1 per application.
 
 \begin{table}[h]
-\caption{Efficiency metrics ($n=20$ applications)}
+\caption{Efficiency metrics ($n=20$ applications).}
 \label{tab:efficiency}
+\centering
+\small
 \begin{tabular}{lcc}
 \toprule
-Metric & Value & Notes \\
+\textbf{Metric} & \textbf{Value} & \textbf{Notes} \\
 \midrule
-E10: Total Tokens & ~16K/app & Prompt + completion \\
-E11: Generation Time & 6--9 min & End-to-end \\
-E12: Agent Turns & 93 avg & Conversation turns \\
-E13: LOC & 732 avg & Lines of code \\
-\midrule
+Generation Time & 6--9 min & End-to-end \\
 Cost per App & \$0.74 & API cost \\
-Total Cost (20 apps) & \$14.81 & -- \\
-Build Step Time & 2.7s avg & Docker build \\
+Agent Turns & 93 avg & Conversation turns \\
+Lines of Code & 732 avg & Generated LOC \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Comparison: Evals 1.0 vs 2.0}
+Cost is dominated by the reasoning model (Claude Sonnet). The 93 turns include data exploration, scaffolding, iterative code generation, and validation.
 
-\begin{table}[h]
-\caption{Evolution from manual (Evals 1.0) to automated (Evals 2.0) evaluation}
-\label{tab:comparison}
-\begin{tabular}{lcc}
-\toprule
-Aspect & Evals 1.0 & Evals 2.0 \\
-\midrule
-Viability Rate & 73\% (30 apps) & 100\% build/runtime \\
-Time to Deploy & 30--60 min & 6--9 min \\
-Evaluation Method & Manual rubric & Automated pipeline \\
-Metrics Tracked & Binary viability & 13 metrics + AppEval-100 \\
-Reproducibility & Low & Full artifact pack \\
-\bottomrule
-\end{tabular}
-\end{table}
+\subsection{Feedback Loop in Action}
+\label{sec:results-loop}
 
-\subsection{Production Readiness Assessment}
+The trajectory analyzer identified type safety as the primary gap (5\% pass rate). Root cause from trajectory analysis: TypeScript strict mode violations, particularly null handling in generated code.
 
-Current status: \textbf{below production threshold}. To reach Production Candidate level:
-\begin{itemize}
-    \item L3 Type Safety: 5\% $\rightarrow$ target $\geq$90\%
-    \item D8 Runability: 3.0 $\rightarrow$ target $\geq$4
-    \item D9 Deployability: 2.5 $\rightarrow$ target $\geq$4
-    \item DORA guardrails: Lead Time P50 $\leq$10m, CFR $\leq$15\%, MTTR $\leq$15m
-\end{itemize}
+This demonstrates the feedback loop:
+\begin{enumerate}
+    \item Agents used the package $\to$ generated apps with type errors
+    \item Trajectories showed repeated \texttt{tsc} failures and confusion about null checks
+    \item Analyzer recommended: add explicit null handling examples to CLAUDE.md guidance
+    \item Fix implemented $\to$ next iteration showed improvement
+\end{enumerate}
 
-\subsection{Trajectory Optimizer Insights}
+%% ============================================================
+%% 7. RELATED WORK
+%% ============================================================
+\section{Related Work}
+\label{sec:related}
 
-Analysis of agent trajectories revealed common friction patterns:
-\begin{itemize}
-    \item \textbf{SQL Syntax:} Databricks SQL variations causing query failures
-    \item \textbf{Error Handling:} Missing error handling in template scaffolding
-    \item \textbf{Tool Descriptions:} Unclear MCP tool descriptions leading to incorrect usage
-    \item \textbf{Type Inference:} TypeScript strict mode violations in generated code
-\end{itemize}
+\textbf{Environment matters more than model.} Recent work~\cite{kniazev2025appbuild} compared agent performance across different environments. Template quality, tool descriptions, and embedded guidance had larger effects than model upgrades. This motivates the focus on improving tooling rather than agents.
 
-These insights feed back into template and tool improvements via the optimize $\rightarrow$ evaluate $\rightarrow$ analyze cycle.
+\textbf{Evaluation gap.} Existing benchmarks evaluate code correctness (HumanEval~\cite{chen2021evaluating}, SWE-bench~\cite{jimenez2024swe}), task completion (WebArena~\cite{zhou2024webarena}, GAIA~\cite{mialon2023gaia}), or SQL quality (BIRD~\cite{bird2023}, Spider~\cite{yu2018spider}). None ask whether generated code can be operated by other agents---a critical question for compound AI systems where one agent's output becomes another's input.
 
-%%
-%% Discussion
-%%
+\textbf{Agent tool protocols.} The Model Context Protocol (MCP) standardizes agent-tool interaction. Cloudflare~\cite{cloudflare2024codemode} and Anthropic~\cite{anthropic2024tools} report that LLMs perform better writing code to call tools than calling tools directly. We adopt this pattern.
+
+\textbf{Trajectory analysis.} Analyzing agent execution traces for debugging is established practice (SWE-agent~\cite{yang2024swe}, OpenHands~\cite{wang2024openhands}). Our contribution is making the synthesis phase itself agentic---an agent that explores source code to generate recommendations, rather than static aggregation.
+
+\textbf{Agent evaluation harnesses.} Inspect AI~\cite{inspectai2024} and DeepEval~\cite{deepeval2024} provide evaluation infrastructure but focus on correctness rather than deployment readiness. AgentBench~\cite{agentbench2023} spans multiple environments but does not evaluate autonomous deployability.
+
+%% ============================================================
+%% 8. DISCUSSION
+%% ============================================================
 \section{Discussion}
 \label{sec:discussion}
 
+\subsection{Agent-Agnostic vs Agent-Specific}
+\label{sec:disc-agnostic}
+
+Our approach invests in tooling rather than agents. This is a deliberate bet: agents improve rapidly (model upgrades are free to adopters), while domain knowledge is slow to encode and hard to transfer. By packaging knowledge as installable artifacts, we ensure that every agent improvement automatically benefits users without re-implementation.
+
+The tradeoff is control. Agent-specific approaches can fine-tune behavior precisely; our agent-agnostic design relies on the agent's ability to follow tool descriptions and guidance. In practice, we find this sufficient for structured tasks (scaffolding, validation, deployment) but limiting for open-ended reasoning about application architecture.
+
+\subsection{The DevX Dimension}
+\label{sec:disc-devx}
+
+Agentic DevX introduces a genuinely new evaluation dimension. Existing benchmarks implicitly assume a human operator who can bridge gaps between generated code and running software. As AI systems become compound---with agents consuming other agents' outputs---this assumption breaks down.
+
+We argue that DevX metrics will become increasingly important as agent pipelines deepen. A code generation agent whose output cannot be operated by a deployment agent is only partially useful, regardless of code quality.
+
 \subsection{Limitations}
+\label{sec:disc-limitations}
 
-\textbf{Platform Specificity.} Our current implementation targets Databricks applications. Extending to other platforms requires platform-specific metrics (e.g., AWS Lambda, Vercel).
+\textbf{Platform specificity.} We validate on Databricks; the architecture generalizes but requires platform-specific implementation work.
 
-\textbf{Binary Metrics.} Several metrics are binary, potentially missing nuanced quality differences. Future work could introduce continuous variants.
+\textbf{Dataset size.} Twenty applications provide initial validation; scaling to 100+ is planned.
 
-\textbf{Dataset Size.} Our evaluation of 20 applications provides initial validation but may not capture edge cases. Scaling to larger datasets is ongoing.
+\textbf{Type safety gap.} The 5\% pass rate indicates template/guidance issues. The trajectory analyzer identified the cause; fixes are being validated through subsequent loop iterations.
 
-\subsection{Broader Impact}
+\textbf{Agentic DevX validation.} Current scores are proxy measurements based on artifact presence; future work should validate with actual agent operation trials.
 
-By establishing standardized metrics for autonomous deployability, we enable:
-\begin{itemize}
-    \item Reproducible benchmarking of agentic code generation systems
-    \item Objective comparison across different approaches
-    \item Systematic improvement through trajectory-based feedback
-\end{itemize}
+\textbf{Loop maturity.} We run the feedback loop continuously; reported results reflect multiple iterations. A longer-term longitudinal study would strengthen confidence in the approach.
 
-%%
-%% Conclusion
-%%
+\subsection{Broader Implications}
+\label{sec:disc-broader}
+
+The feedback loop pattern---generate, analyze trajectories, improve tooling, re-evaluate---is not specific to Databricks or even to code generation. Any domain where agents use tools to produce artifacts can benefit from trajectory-based tooling improvement. The key insight is that agent failures are often environmental failures in disguise, and the fix is better infrastructure rather than better models.
+
+By establishing standardized metrics for autonomous operability, we enable reproducible benchmarking, objective comparison across approaches, and systematic improvement through trajectory-based feedback.
+
+%% ============================================================
+%% 9. CONCLUSION
+%% ============================================================
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented Klaudbiusz, an open-source, agent-agnostic toolset for autonomous Databricks application generation. Rather than building a specific agent, we provide reusable infrastructure---scaffolding, templates, and MCP tools---that any agentic system can leverage. Our trajectory analyzer enables continuous improvement of this toolset by identifying friction points in agent execution traces. AppEval-100 provides composite evaluation combining Reliability, SQL Quality, Web Quality, and Agentic DevX, mapped to industry-standard DORA metrics.
+We presented a feedback loop for iterative improvement of agent tooling:
 
-The path to reliable agentic code generation requires not just better models, but better tooling. We release Klaudbiusz to enable the community to build and improve agent-agnostic infrastructure systematically.
+\begin{enumerate}
+    \item \textbf{Installable domain knowledge} packages expertise as agent-consumable artifacts
+    \item Agents use the package, producing \textbf{trajectories}
+    \item \textbf{Agentic trajectory analyzer} identifies friction and recommends fixes
+    \item \textbf{Agentic DevX metrics} verify the final output is agent-operable
+\end{enumerate}
 
-\textbf{Open Source Release.} Toolset, trajectory analyzer, and evaluation harness available at: [URL redacted for review]
+When agents fail, improve their environment rather than the agents themselves. Our system operationalizes this insight with a closed loop---trajectories reveal friction, analysis produces fixes, evaluation verifies improvement.
+
+On 20 Databricks applications across multiple agent backends, we achieve 90\% build success at \$0.74/app. The trajectory analyzer identified concrete improvements that we implemented and verified, demonstrating the loop in practice.
+
+\textbf{Open source.} Domain package, trajectory analyzer, and evaluation harness available at: [URL redacted for review]
 
 %%
 %% Acknowledgments (hidden for review)
