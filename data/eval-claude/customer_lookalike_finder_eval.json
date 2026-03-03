@@ -1,0 +1,82 @@
+{
+  "app_name": "customer_lookalike_finder",
+  "app_dir": "/Users/evgenii.kniazev/Downloads/claude_gen/app-claude-databricks_v2/customer_lookalike_finder",
+  "timestamp": "2026-03-03T00:16:44.109175+00:00",
+  "metrics": {
+    "build_success": true,
+    "runtime_success": true,
+    "type_safety": true,
+    "tests_pass": true,
+    "databricks_connectivity": false,
+    "data_returned": false,
+    "ui_renders": true,
+    "local_runability_score": 3,
+    "deployability_score": 0,
+    "local_runability_pass": true,
+    "deployability_pass": false,
+    "test_coverage_pct": 0.0,
+    "total_loc": 948,
+    "build_time_sec": 18.5,
+    "app_type": "node",
+    "framework": "node"
+  },
+  "issues": [
+    "Deployability failed or skipped"
+  ],
+  "details": {
+    "build": {
+      "ok": true,
+      "time": 18.50618290901184,
+      "error": ""
+    },
+    "type_safety": {
+      "ok": true,
+      "error": ""
+    },
+    "tests": {
+      "ok": true,
+      "output": ""
+    },
+    "runtime": {
+      "ok": true,
+      "output": "<!--\n Copyright (c) Streamlit Inc. (2018-2022) Snowflake Inc. (2022-2026)\n\n Licensed under the Apache License, Version 2.0 (the \"License\");\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n\n     http://www.apache.org/licenses/LICENSE-2.0\n\n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or im"
+    },
+    "ui_renders": {
+      "ok": true,
+      "output": "STATUS: PASS\n"
+    },
+    "db_connectivity": {
+      "ok": false,
+      "output": "Skipped - no DB credentials"
+    },
+    "data_returned": {
+      "ok": false,
+      "output": "Skipped - needs live DB"
+    },
+    "runability": {
+      "passes": 3,
+      "trials": 3,
+      "details": [
+        {
+          "trial": 1,
+          "ok": true,
+          "output": "\n> customer-lookalike@1.0.0 postinstall\n> npm run typegen\n\n\n> customer-lookalike@1.0.0 typegen\n> appkit generate-types\n\n  Processing customer_categories (1/6)   \u001b[2K\n  \u2713 customer_categories (cached)\n  Processing customer_info (2/6)   \u001b[2K\n  \u2713 customer_info (cached)\n  Processing customer_lookalikes ("
+        },
+        {
+          "trial": 2,
+          "ok": true,
+          "output": "\n> customer-lookalike@1.0.0 postinstall\n> npm run typegen\n\n\n> customer-lookalike@1.0.0 typegen\n> appkit generate-types\n\n  Processing customer_categories (1/6)   \u001b[2K\n  \u2713 customer_categories (cached)\n  Processing customer_info (2/6)   \u001b[2K\n  \u2713 customer_info (cached)\n  Processing customer_lookalikes ("
+        },
+        {
+          "trial": 3,
+          "ok": true,
+          "output": "\n> customer-lookalike@1.0.0 postinstall\n> npm run typegen\n\n\n> customer-lookalike@1.0.0 typegen\n> appkit generate-types\n\n  Processing customer_categories (1/6)   \u001b[2K\n  \u2713 customer_categories (cached)\n  Processing customer_info (2/6)   \u001b[2K\n  \u2713 customer_info (cached)\n  Processing customer_lookalikes ("
+        }
+      ]
+    },
+    "deployability": {
+      "ok": false,
+      "output": "Disabled"
+    }
+  }
+}

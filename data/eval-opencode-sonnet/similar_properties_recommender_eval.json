@@ -1,0 +1,82 @@
+{
+  "app_name": "similar_properties_recommender",
+  "app_dir": "/Users/evgenii.kniazev/Downloads/non-claude-gen (2)/app-opencode-sonnet-databricks_v2/similar_properties_recommender",
+  "timestamp": "2026-03-03T00:13:54.643003+00:00",
+  "metrics": {
+    "build_success": true,
+    "runtime_success": true,
+    "type_safety": true,
+    "tests_pass": true,
+    "databricks_connectivity": false,
+    "data_returned": false,
+    "ui_renders": true,
+    "local_runability_score": 2,
+    "deployability_score": 0,
+    "local_runability_pass": true,
+    "deployability_pass": false,
+    "test_coverage_pct": 0.0,
+    "total_loc": 536461,
+    "build_time_sec": 15.7,
+    "app_type": "python",
+    "framework": "streamlit"
+  },
+  "issues": [
+    "Deployability failed or skipped"
+  ],
+  "details": {
+    "build": {
+      "ok": true,
+      "time": 15.669970989227295,
+      "error": ""
+    },
+    "type_safety": {
+      "ok": true,
+      "error": ""
+    },
+    "tests": {
+      "ok": true,
+      "output": ""
+    },
+    "runtime": {
+      "ok": true,
+      "output": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\" />\n    <link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon-16x16.png\" />\n    <link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon-32x32.png\" />\n    <link rel=\"icon\" type=\"image/png\" sizes=\"48x48\" href=\"/favicon-48x48.png\" />\n    <link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/apple-touch-icon.png\" />\n    <link rel=\"manifest\" href=\"/site.web"
+    },
+    "ui_renders": {
+      "ok": true,
+      "output": "STATUS: PASS\n"
+    },
+    "db_connectivity": {
+      "ok": false,
+      "output": "Skipped - no DB credentials"
+    },
+    "data_returned": {
+      "ok": false,
+      "output": "Skipped - needs live DB"
+    },
+    "runability": {
+      "passes": 2,
+      "trials": 3,
+      "details": [
+        {
+          "trial": 1,
+          "ok": true,
+          "output": "\n[notice] A new release of pip is available: 25.3 -> 26.0.1\n[notice] To update, run: pip install --upgrade pip\nSTATUS: PASS\nbash: line 10: 20493 Killed: 9                  '/Users/evgenii.kniazev/Downloads/non-claude-gen (2)/app-opencode-sonnet-databricks_v2/similar_properties_recommender/.venv/bin'"
+        },
+        {
+          "trial": 2,
+          "ok": false,
+          "output": "\n[notice] A new release of pip is available: 25.3 -> 26.0.1\n[notice] To update, run: pip install --upgrade pip\nSTATUS: FAIL\n\n  Local URL: http://localhost:8000\n  Network URL: http://10.248.32.233:8000\n  External URL: http://137.83.235.84:8000\n\n  For better performance, install the Watchdog module:\n\n"
+        },
+        {
+          "trial": 3,
+          "ok": true,
+          "output": "\n[notice] A new release of pip is available: 25.3 -> 26.0.1\n[notice] To update, run: pip install --upgrade pip\nSTATUS: PASS\nbash: line 10: 21622 Killed: 9                  '/Users/evgenii.kniazev/Downloads/non-claude-gen (2)/app-opencode-sonnet-databricks_v2/similar_properties_recommender/.venv/bin'"
+        }
+      ]
+    },
+    "deployability": {
+      "ok": false,
+      "output": "Disabled"
+    }
+  }
+}

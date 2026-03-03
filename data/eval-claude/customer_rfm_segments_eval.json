@@ -1,0 +1,83 @@
+{
+  "app_name": "customer_rfm_segments",
+  "app_dir": "/Users/evgenii.kniazev/Downloads/claude_gen/app-claude-databricks/customer_rfm_segments",
+  "timestamp": "2026-03-03T00:01:35.471478+00:00",
+  "metrics": {
+    "build_success": true,
+    "runtime_success": true,
+    "type_safety": true,
+    "tests_pass": false,
+    "databricks_connectivity": false,
+    "data_returned": false,
+    "ui_renders": true,
+    "local_runability_score": 2,
+    "deployability_score": 0,
+    "local_runability_pass": true,
+    "deployability_pass": false,
+    "test_coverage_pct": 0.0,
+    "total_loc": 891,
+    "build_time_sec": 13.8,
+    "app_type": "node",
+    "framework": "node"
+  },
+  "issues": [
+    "Tests failed",
+    "Deployability failed or skipped"
+  ],
+  "details": {
+    "build": {
+      "ok": true,
+      "time": 13.7706618309021,
+      "error": ""
+    },
+    "type_safety": {
+      "ok": true,
+      "error": ""
+    },
+    "tests": {
+      "ok": false,
+      "output": "Test output:                                                                       ^\n      16 |   await expect(page.getByText('Segment Overview')).toBeVisible();\n      17 |   await expect(page.getByText('Customer Distribution by Segment')).toBeVisible();\n      18 |\n        at /Users/evgenii.kniazev/Downloads/claude_gen/app-claude-databricks/customer_rfm_segments/tests/smoke.spec.ts:15:78\n\n\n\u001b[1A\u001b[2K  1 failed\n    [chromium] \u203a tests/smoke.spec.ts:11:1 \u203a smoke test - app loads and displays data \u2500\u2500\u2500"
+    },
+    "runtime": {
+      "ok": true,
+      "output": "<!--\n Copyright (c) Streamlit Inc. (2018-2022) Snowflake Inc. (2022-2026)\n\n Licensed under the Apache License, Version 2.0 (the \"License\");\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n\n     http://www.apache.org/licenses/LICENSE-2.0\n\n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or im"
+    },
+    "ui_renders": {
+      "ok": true,
+      "output": "STATUS: PASS\n"
+    },
+    "db_connectivity": {
+      "ok": false,
+      "output": "Skipped - no DB credentials"
+    },
+    "data_returned": {
+      "ok": false,
+      "output": "Skipped - needs live DB"
+    },
+    "runability": {
+      "passes": 2,
+      "trials": 3,
+      "details": [
+        {
+          "trial": 1,
+          "ok": true,
+          "output": "\n> customer-rfm-segments@1.0.0 postinstall\n> npm run typegen\n\n\n> customer-rfm-segments@1.0.0 typegen\n> appkit generate-types\n\n  Processing rfm_segments (1/1)   \u001b[2K\n  \u2713 rfm_segments (cached)\n\nup to date, audited 856 packages in 1s\n\n188 packages are looking for funding\n  run `npm fund` for details\n\n3"
+        },
+        {
+          "trial": 2,
+          "ok": true,
+          "output": "\n> customer-rfm-segments@1.0.0 postinstall\n> npm run typegen\n\n\n> customer-rfm-segments@1.0.0 typegen\n> appkit generate-types\n\n  Processing rfm_segments (1/1)   \u001b[2K\n  \u2713 rfm_segments (cached)\n\nup to date, audited 856 packages in 1s\n\n188 packages are looking for funding\n  run `npm fund` for details\n\n3"
+        },
+        {
+          "trial": 3,
+          "ok": false,
+          "output": "\n> customer-rfm-segments@1.0.0 postinstall\n> npm run typegen\n\n\n> customer-rfm-segments@1.0.0 typegen\n> appkit generate-types\n\n  Processing rfm_segments (1/1)   \u001b[2K\n  \u2713 rfm_segments (cached)\n\nup to date, audited 856 packages in 1s\n\n188 packages are looking for funding\n  run `npm fund` for details\n\n3"
+        }
+      ]
+    },
+    "deployability": {
+      "ok": false,
+      "output": "Disabled"
+    }
+  }
+}

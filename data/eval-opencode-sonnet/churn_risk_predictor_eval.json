@@ -1,0 +1,83 @@
+{
+  "app_name": "churn_risk_predictor",
+  "app_dir": "/Users/evgenii.kniazev/Downloads/non-claude-gen (2)/app-opencode-sonnet-databricks_v2/churn_risk_predictor",
+  "timestamp": "2026-03-02T23:56:08.278064+00:00",
+  "metrics": {
+    "build_success": true,
+    "runtime_success": true,
+    "type_safety": true,
+    "tests_pass": false,
+    "databricks_connectivity": false,
+    "data_returned": false,
+    "ui_renders": true,
+    "local_runability_score": 3,
+    "deployability_score": 0,
+    "local_runability_pass": true,
+    "deployability_pass": false,
+    "test_coverage_pct": 0.0,
+    "total_loc": 2120346,
+    "build_time_sec": 9.6,
+    "app_type": "python",
+    "framework": "unknown"
+  },
+  "issues": [
+    "Tests failed",
+    "Deployability failed or skipped"
+  ],
+  "details": {
+    "build": {
+      "ok": true,
+      "time": 9.635320901870728,
+      "error": ""
+    },
+    "type_safety": {
+      "ok": true,
+      "error": ""
+    },
+    "tests": {
+      "ok": false,
+      "output": "Test output: \nno tests ran in 0.00s\n"
+    },
+    "runtime": {
+      "ok": true,
+      "output": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <script type=\"module\">import { injectIntoGlobalHook } from \"/@react-refresh\";\ninjectIntoGlobalHook(window);\nwindow.$RefreshReg$ = () => {};\nwindow.$RefreshSig$ = () => (type) => type;</script>\n\n    <script type=\"module\" src=\"/@vite/client\"></script>\n\n    <meta charset=\"UTF-8\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\" />\n    <link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon-16x16.png\" />\n    <link rel=\"icon\" type=\"i"
+    },
+    "ui_renders": {
+      "ok": true,
+      "output": "STATUS: PASS\n"
+    },
+    "db_connectivity": {
+      "ok": false,
+      "output": "Skipped - no DB credentials"
+    },
+    "data_returned": {
+      "ok": false,
+      "output": "Skipped - needs live DB"
+    },
+    "runability": {
+      "passes": 3,
+      "trials": 3,
+      "details": [
+        {
+          "trial": 1,
+          "ok": true,
+          "output": "\n[notice] A new release of pip is available: 25.3 -> 26.0.1\n[notice] To update, run: pip install --upgrade pip\nSTATUS: PASS\n"
+        },
+        {
+          "trial": 2,
+          "ok": true,
+          "output": "\n[notice] A new release of pip is available: 25.3 -> 26.0.1\n[notice] To update, run: pip install --upgrade pip\nSTATUS: PASS\n"
+        },
+        {
+          "trial": 3,
+          "ok": true,
+          "output": "\n[notice] A new release of pip is available: 25.3 -> 26.0.1\n[notice] To update, run: pip install --upgrade pip\nSTATUS: PASS\n"
+        }
+      ]
+    },
+    "deployability": {
+      "ok": false,
+      "output": "Disabled"
+    }
+  }
+}

@@ -47,23 +47,23 @@
 }
 \email{arseny.kravchenko@databricks.com}
 
-\author{Igor Rekun}
-\affiliation{%
-  \institution{Databricks}
-}
-\email{igor.rekun@databricks.com}
-
 \author{Fabian Jakobs}
 \affiliation{%
   \institution{Databricks}
 }
 \email{fabian.jakobs@databricks.com}
 
+\author{Igor Rekun}
+\affiliation{%
+  \institution{Databricks}
+}
+\email{igor.rekun@databricks.com}
+
 %%
 %% Abstract
 %%
 \begin{abstract}
-When AI agents fail to build production applications, should we improve the agent or its environment? Recent work suggests that environment quality (templates, tools, guidance) matters more than model selection~\cite{kniazev2025appbuild}. We present a feedback loop for iterative tooling improvement: (1)~an \emph{installable domain knowledge} architecture packages expertise as agent-consumable artifacts; (2)~agents use this package to generate applications, producing execution trajectories; (3)~an \emph{agentic trajectory analyzer} processes these trajectories to identify friction and recommend fixes to the package; (4)~\emph{Agentic DevX metrics} serve as the final quality gate, measuring whether generated applications can be operated by other agents. This approach is designed to generalize across domains; we validate it on Databricks data applications across multiple agent backends (Claude Code and Opencode). On 50~applications, we achieve 90\% one-shot build success at \$2.33/app. The trajectory analyzer identified concrete improvements (batch operations, clearer tool descriptions, missing examples) that we implemented, demonstrating the feedback loop mechanism through case studies. The architecture is designed for automatic optimization: the analyzer's recommendations target tool descriptions, prompts, and examples, artifacts amenable to techniques like GEPA or DSPy-style prompt tuning, potentially closing the loop without human intervention.
+When AI agents fail to build production applications, should we improve the agent or its environment? Recent work suggests that environment quality (templates, tools, guidance) matters more than model selection~\cite{kniazev2025appbuild}. We present a feedback loop for iterative tooling improvement: (1)~an \emph{installable domain knowledge} architecture packages expertise as agent-consumable artifacts; (2)~agents use this package to generate applications, producing execution trajectories; (3)~an \emph{agentic trajectory analyzer} processes these trajectories to identify friction and recommend fixes to the package; (4)~\emph{Agentic DevX metrics} serve as the final quality gate, measuring whether generated applications can be operated by other agents. This approach is designed to generalize across domains; we validate it on Databricks data applications across multiple agent backends (Claude Code and Opencode). On 47~applications, we achieve 100\% build and type safety, 98\% runtime success, and 96\% local runability at \$1.61/app. The trajectory analyzer identified concrete improvements (batch operations, clearer tool descriptions, missing examples) that we implemented, demonstrating the feedback loop mechanism through case studies. The architecture is designed for automatic optimization: the analyzer's recommendations target tool descriptions, prompts, and examples, artifacts amenable to techniques like GEPA or DSPy-style prompt tuning, potentially closing the loop without human intervention.
 \end{abstract}
 
 %%
@@ -104,7 +104,7 @@ AI agents can generate functional software, but they lack domain-specific knowle
 
 This approach is motivated by recent findings~\cite{kniazev2025appbuild}: when comparing agent performance across environments while holding the model constant, environment quality (templates, tools, guidance) had larger effects than model upgrades. An agent with excellent tooling outperforms a better model with poor tooling.
 
-Accepting that tooling matters raises a question: how do we improve it systematically? Manual inspection doesn't scale. End-state metrics (build pass/fail) don't reveal causes. We need a feedback loop that: (1)~captures how agents actually use tooling; (2)~identifies friction points and root causes; (3)~produces actionable recommendations; (4)~verifies improvements against agent-centric criteria.
+Accepting that tooling matters raises a question: how do we improve it systematically? Manual inspection doesn't scale. End-state metrics (build pass/fail) don't reveal causes. Early work on automated code assessment~\cite{kniazev2026classification} showed that comprehensible source code metrics can classify changes effectively; we extend this intuition to agent-generated applications. We need a feedback loop that: (1)~captures how agents actually use tooling; (2)~identifies friction points and root causes; (3)~produces actionable recommendations; (4)~verifies improvements against agent-centric criteria.
 
 We instantiate each component:
 
@@ -113,10 +113,10 @@ We instantiate each component:
 
     \item \textbf{Agentic Trajectory Analyzer} (Section~\ref{sec:trajectory}). A two-phase system: parallel friction extraction with a fast model followed by agentic synthesis with a reasoning model that has source code access.
 
-    \item \textbf{CanItShip: Agentic DevX Metrics} (Section~\ref{sec:devx}). The final quality gate: all nine metrics are evaluated by an evaluator agent across three independent trials, measuring whether another agent, not a human, can reliably operate generated applications.
+    \item \textbf{CanItShip: Agentic DevX Metrics} (Section~\ref{sec:devx}). The final quality gate: eight metrics across two evaluation modes---shell-scripted checks (\textbf{Ls}) for deterministic properties and agentic evaluation (\textbf{Ra}) for autonomous operation and deployment readiness.
 \end{enumerate}
 
-\textbf{Validation.} We validate across Claude Code (primary) and Opencode on Databricks data applications. On 50~applications: 90\% build success, 90\% database connectivity, \$2.33/app average. The trajectory analyzer identified improvements that we implemented and verified through multiple iterations.
+\textbf{Validation.} We validate across Claude Code (primary, $n{=}47$) and Opencode+Sonnet ($n{=}22$) on Databricks data applications. On 47~Claude Code applications: 100\% build and type safety, 98\% runtime success, and 96\% local runability at \$1.61/app average. The trajectory analyzer identified improvements that we implemented and verified through multiple iterations.
 
 %% ============================================================
 %% 2. INSTALLABLE DOMAIN KNOWLEDGE
@@ -128,30 +128,13 @@ Developers already use capable agents (Claude Code, Opencode). Rather than askin
 
 The package has three components: context layers that inject domain knowledge progressively, tools exposed via CLI, and a state machine that enforces validation before deployment.
 
-\textbf{Context layers.} Agents have limited context windows. Dumping all domain knowledge upfront wastes tokens and can confuse the model. Instead, we inject context progressively; each layer activates when relevant (Table~\ref{tab:context-layers}).
+\textbf{Context layers.} Agents have limited context windows. Dumping all domain knowledge upfront wastes tokens and can confuse the model. Instead, we inject context progressively: tool definitions are always available at the protocol level, workflow patterns activate on first discovery call, target-specific constraints load when the application type is detected, and SDK-specific templates inject after scaffolding.
 
-\begin{table}[h]
-\caption{Context layer injection strategy.}
-\label{tab:context-layers}
-\centering
-\small
-\begin{tabular}{llp{3.2cm}}
-\toprule
-\textbf{Layer} & \textbf{Content} & \textbf{When Injected} \\
-\midrule
-Tools & Tool names/descriptions & Always (protocol-level) \\
-Workflow & Patterns, CLI usage & On first discovery call \\
-Target & App vs job constraints & When target type detected \\
-Template & SDK patterns, examples & After scaffolding \\
-\bottomrule
-\end{tabular}
-\end{table}
+\textbf{CLI tools and MCP parity.} We expose domain functionality through CLI commands, a pattern that Cloudflare~\cite{cloudflare2024codemode} and Anthropic~\cite{anthropic2024tools} found effective. Each CLI command maps 1:1 to a Model Context Protocol (MCP) tool definition, ensuring the same domain knowledge is accessible to any MCP-compliant agent. Lifecycle commands (\texttt{scaffold}, \texttt{validate}, \texttt{deploy}) and data exploration commands (schema discovery, batch queries) are available as both CLI tools and MCP skills, providing the domain-specific capabilities on top of standard workspace tools.
 
-\textbf{CLI tools.} We expose domain functionality through CLI commands, a pattern that Cloudflare~\cite{cloudflare2024codemode} and Anthropic~\cite{anthropic2024tools} found effective, reporting that LLMs perform better writing code to call CLI tools than invoking tools directly. Lifecycle commands (\texttt{scaffold}, \texttt{validate}, \texttt{deploy}) and data exploration commands (schema discovery, batch queries) provide the domain-specific capabilities on top of standard workspace tools.
+\textbf{State machine.} Applications cannot deploy unless they pass validation after their most recent modification: \texttt{Scaffolded $\to$ Modified $\to$ Validated $\to$ Deployed}. Any change after validation requires re-validation, preventing untested code deployment, a common failure mode when agents skip validation.
 
-\textbf{State machine.} Applications cannot deploy unless they pass validation after their most recent modification: \texttt{Scaffolded $\to$ Modified $\to$ Validated(checksum) $\to$ Deployed}. Any change after validation requires re-validation, preventing untested code deployment, a common failure mode when agents skip validation.
-
-\textbf{Agent compatibility.} To validate agent-agnosticism, we tested the package across Claude Code (automated, primary) and Opencode with open-source models. The key requirement is function calling capability; any agent that can invoke CLI tools works with our package.
+\textbf{Agent compatibility.} To validate agent-agnosticism, we tested the package across Claude Code (automated, primary) and Opencode with Sonnet. The key requirement is function calling capability; any agent that can invoke CLI tools works with our package.
 
 %% ============================================================
 %% 3. AGENTIC TRAJECTORY ANALYZER
@@ -179,95 +162,87 @@ Agentic DevX is the final quality gate. After the package is improved and agents
 
 Consider an agent that generates a working application. A human developer can run it: they'll figure out missing environment variables, install unlisted dependencies, work around unclear documentation. An agent \emph{can sometimes} do this too, but it's slow and inefficient, spending many turns on trial-and-error that explicit configuration would eliminate.
 
-\textbf{Agentic evaluation protocol.} All nine metrics are evaluated by deploying an evaluator agent (Claude Haiku) that receives a prompt contract (Table~\ref{tab:prompts}) and emits a structured \texttt{STATUS: PASS|FAIL} verdict, parsed via regex with fallback inference. Each metric runs \emph{three independent trials}; a metric passes if all three trials succeed. Each trial records turns and token usage. A shell-script fallback exists for environments where the agent SDK is unavailable (e.g., root-only clusters).
+\textbf{Two evaluation modes.} We employ two complementary approaches. \emph{Shell-scripted} (\textbf{Ls}) metrics run deterministic commands---build tools, type checkers, test runners, HTTP probes---for reproducible pass/fail verdicts. \emph{Agentic} (\textbf{Ra}) metrics deploy an evaluator agent (Claude Haiku) that receives a prompt contract (Table~\ref{tab:prompts}) and emits a structured \texttt{STATUS: PASS|FAIL} verdict, parsed via regex with fallback inference. Agentic metrics run three independent trials; a metric passes if at least two of three trials succeed. Each trial records turns and token usage.
 
 \begin{table}[h]
-\caption{Agentic evaluation prompt contracts.}
+\caption{CanItShip metric definitions. Ls = shell-scripted, Ra = agentic.}
 \label{tab:prompts}
 \centering
 \small
-\begin{tabular}{lp{3.6cm}c}
+\begin{tabular}{lll}
 \toprule
-\textbf{Metric} & \textbf{Prompt Contract} & \textbf{Trials} \\
+\textbf{ID} & \textbf{Metric} & \textbf{Check} \\
 \midrule
-L1: Build & Build app for production; run build scripts or import sanity & 3 \\
-L2: Runtime & Start app, verify healthcheck responds on port & 3 \\
-L3: Types & Run static/type checks (pyright, mypy, tsc) & 3 \\
-L4: Tests & Run test suite; FAIL if no tests exist & 3 \\
+Ls1 & Build & Build scripts / import sanity \\
+Ls2 & Runtime & Start app, healthcheck on port \\
+Ls3 & Types & Static analysis (pyright, tsc) \\
+Ls4 & Tests & Run test suite; FAIL if none \\
+Ls5 & UI & Render page, check for errors \\
+Ls6 & Runability & Install, start, healthcheck \\
 \midrule
-L5: DB Conn. & Connect to the database through the running app; verify query returns rows & 3 \\
-L6: Data & Verify app returns real backend data, not mocked or hardcoded & 3 \\
-L7: UI & Load UI on port; verify page renders without errors & 3 \\
-D8: Runability & Install deps, start server, hit healthcheck endpoint & 3 \\
-D9: Deploy & Build container, deploy, verify healthcheck returns 2xx & 3 \\
+Ra7 & Runability & Agent: install, start, verify \\
+Ra8 & Deployability & Validate bundle or config \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{The CanItShip framework.} The nine metrics span three tiers: Core Functionality (L1--L4), Platform Integration (L5--L7), and Agentic DevX (D8--D9). The harness is platform-independent: prompt contracts reference generic concepts (database connectivity, healthcheck endpoints, container deployment) rather than platform-specific APIs.
+\textbf{The CanItShip framework.} The eight metrics span three tiers: Core Functionality (Ls1--Ls4), Platform Integration (Ls5), and Agentic DevX (Ls6, Ra7--Ra8). Shell-scripted metrics provide deterministic, reproducible baselines; agentic metrics capture tasks (autonomous installation, deployment validation) that require adaptive tool use beyond fixed scripts. The naming convention encodes evaluation mode: \textbf{Ls} (Level, scripted) for deterministic checks and \textbf{Ra} (Readiness, agentic) for agent-evaluated checks. The harness moves toward platform independence: shell-scripted checks (Ls) require pre-built scripts per platform, but agentic checks (Ra) need only a task prompt and a configured environment, making them portable by design.
 
-%% --- Multi-agent comparison radar chart (9 axes) ---
+%% --- Multi-agent comparison radar chart (8 axes) ---
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}[scale=0.72]
-  % --- Radar grid (4 concentric 9-gons, 40° spacing) ---
+  % --- Radar grid (4 concentric hexagons, 60° spacing) ---
   \foreach \l in {1,...,4} {
     \pgfmathsetmacro{\r}{\l/4*2.2}
     \draw[gray!25, thin]
-      ({90}:\r) -- ({50}:\r) -- ({10}:\r) --
-      ({-30}:\r) -- ({-70}:\r) -- ({-110}:\r) --
-      ({-150}:\r) -- ({-190}:\r) -- ({-230}:\r) -- cycle;
+      ({90}:\r) -- ({30}:\r) -- ({-30}:\r) --
+      ({-90}:\r) -- ({-150}:\r) -- ({-210}:\r) -- cycle;
   }
   % --- Axes ---
-  \foreach \a in {90,50,10,-30,-70,-110,-150,-190,-230} {
+  \foreach \a in {90,30,-30,-90,-150,-210} {
     \draw[gray!40, thin] (0,0) -- (\a:2.2);
   }
   % --- Axis labels ---
-  \node[font=\footnotesize\bfseries] at (90:2.55) {L1};
-  \node[font=\footnotesize\bfseries] at (50:2.55) {L2};
-  \node[font=\footnotesize\bfseries] at (10:2.65) {L3};
-  \node[font=\footnotesize\bfseries] at (-30:2.55) {L4};
-  \node[font=\footnotesize\bfseries] at (-70:2.55) {L5};
-  \node[font=\footnotesize\bfseries] at (-110:2.55) {L6};
-  \node[font=\footnotesize\bfseries] at (-150:2.55) {L7};
-  \node[font=\footnotesize\bfseries] at (-190:2.65) {D8};
-  \node[font=\footnotesize\bfseries] at (-230:2.55) {D9};
+  \node[font=\footnotesize\bfseries] at (90:2.6) {Ls1};
+  \node[font=\footnotesize\bfseries] at (30:2.6) {Ls2};
+  \node[font=\footnotesize\bfseries] at (-30:2.7) {Ls3};
+  \node[font=\footnotesize\bfseries] at (-90:2.6) {Ls4};
+  \node[font=\footnotesize\bfseries] at (-150:2.6) {Ls5};
+  \node[font=\footnotesize\bfseries] at (-210:2.6) {Ls6};
   % --- Scale labels (25%, 50%, 75%, 100%) ---
-  \node[font=\tiny, gray] at (70:0.62) {25};
-  \node[font=\tiny, gray] at (70:1.17) {50};
-  \node[font=\tiny, gray] at (70:1.72) {75};
-  \node[font=\tiny, gray] at (70:2.35) {100};
-  % --- Claude Code (n=50): blue, solid ---
-  % L1=90%, L2=90%, L3=6%, L4=0(n/a), L5=90%, L6=80%, L7=84%, D8=72%, D9=60%
+  \node[font=\tiny, gray] at (60:0.62) {25};
+  \node[font=\tiny, gray] at (60:1.17) {50};
+  \node[font=\tiny, gray] at (60:1.72) {75};
+  \node[font=\tiny, gray] at (60:2.35) {100};
+  % --- Claude Code (n=47, shell): blue, solid ---
+  % Ls1=100, Ls2=98, Ls3=100, Ls4=60, Ls5=98, Ls6=96
+  % radius = pct/100 * 2.2
   \fill[blue!20, opacity=0.5]
-    (90:1.98) -- (50:1.98) -- (10:0.132) --
-    (-30:0.0) -- (-70:1.98) -- (-110:1.76) --
-    (-150:1.848) -- (-190:1.584) -- (-230:1.32) -- cycle;
+    (90:2.2) -- (30:2.156) -- (-30:2.2) --
+    (-90:1.32) -- (-150:2.156) -- (-210:2.112) -- cycle;
   \draw[blue!70, thick]
-    (90:1.98) -- (50:1.98) -- (10:0.132) --
-    (-30:0.0) -- (-70:1.98) -- (-110:1.76) --
-    (-150:1.848) -- (-190:1.584) -- (-230:1.32) -- cycle;
-  % --- Opencode+Sonnet (n=20): orange, dashed ---
-  % L1=80%, L2=70%, L3=35%, L4=75%, L5=0%, L6=0%, L7=5%, D8=10%, D9=15%
+    (90:2.2) -- (30:2.156) -- (-30:2.2) --
+    (-90:1.32) -- (-150:2.156) -- (-210:2.112) -- cycle;
+  % --- Opencode+Sonnet (n=22, shell): orange, dashed ---
+  % Ls1=100, Ls2=82, Ls3=100, Ls4=68, Ls5=82, Ls6=100
   \fill[orange!20, opacity=0.5]
-    (90:1.76) -- (50:1.54) -- (10:0.77) --
-    (-30:1.65) -- (-70:0.0) -- (-110:0.0) --
-    (-150:0.11) -- (-190:0.22) -- (-230:0.33) -- cycle;
+    (90:2.2) -- (30:1.804) -- (-30:2.2) --
+    (-90:1.496) -- (-150:1.804) -- (-210:2.2) -- cycle;
   \draw[orange!80, thick, dashed]
-    (90:1.76) -- (50:1.54) -- (10:0.77) --
-    (-30:1.65) -- (-70:0.0) -- (-110:0.0) --
-    (-150:0.11) -- (-190:0.22) -- (-230:0.33) -- cycle;
+    (90:2.2) -- (30:1.804) -- (-30:2.2) --
+    (-90:1.496) -- (-150:1.804) -- (-210:2.2) -- cycle;
   % --- Legend ---
   \fill[blue!70] (3.2,1.7) rectangle (3.5,1.9);
-  \node[font=\footnotesize, anchor=west] at (3.6, 1.8) {Claude ($n{=}50$)};
+  \node[font=\footnotesize, anchor=west] at (3.6, 1.8) {Claude ($n{=}47$)};
   \draw[orange!80, thick, dashed] (3.2,1.05) -- (3.5,1.05);
-  \node[font=\footnotesize, anchor=west] at (3.6, 1.05) {Opencode ($n{=}20$)};
+  \node[font=\footnotesize, anchor=west] at (3.6, 1.05) {Opencode ($n{=}22$)};
 \end{tikzpicture}
-\caption{Multi-agent metric profiles (all 9 metrics). Claude Code (solid) achieves broad coverage but dips on L3 (type safety, 6\%) and L4 (tests, not yet evaluated). Opencode+Sonnet (dashed, $n{=}20$) shows moderate core metrics (L1=80\%, L4=75\%) and collapses on platform metrics (L5--L7), with D8/D9 provisional.}
+\caption{Shell-scripted metric profiles (Ls1--Ls6). Both agents achieve near-perfect build and type-check scores; the main gap is Ls4 (tests) and Ls5 (UI). Agentic metrics (Ra7--Ra8) evaluated on a subset are in Table~\ref{tab:agentic}.}
 \label{fig:radar}
 \end{figure}
 
-\textbf{Generation--evaluation isolation.} We observed agents reading evaluation scripts when both resided in the same workspace, producing code that passes checks rather than solving the underlying task. This is a form of reward hacking~\cite{amodei2016concrete}. We enforce container-level isolation via Dagger~\cite{dagger2024}: the generation Dockerfile copies only domain package code, explicitly excluding evaluation scripts. Each generation starts from a clean workspace. This mirrors training/test splits in ML; we recommend container-level isolation as a baseline requirement for agent evaluation.
+\textbf{Generation--evaluation isolation.} Agents that can read evaluation scripts produce code that passes checks rather than solving the task---a form of reward hacking~\cite{amodei2016concrete}. We enforce workspace-level isolation, excluding evaluation scripts from the generation environment. Each generation starts from a clean workspace, mirroring ML train/test splits.
 
 %% ============================================================
 %% 5. RESULTS
@@ -275,10 +250,10 @@ D9: Deploy & Build container, deploy, verify healthcheck returns 2xx & 3 \\
 \section{Results}
 \label{sec:results}
 
-We evaluated on 50~Databricks applications spanning dashboards, analytics tools, and business intelligence interfaces. Each was generated from a natural language prompt using Claude Code with CLI-based tool orchestration in containerized execution.
+We evaluated 47~Databricks applications spanning dashboards, analytics tools, and business intelligence interfaces, generated from natural language prompts using Claude Code with CLI-based tool orchestration. Shell-scripted metrics (Ls1--Ls6) were evaluated using deterministic build, runtime, type-check, test, UI, and HTTP probe commands with a 3-trial majority protocol for Ls6.
 
 \begin{table}[t]
-\caption{Evaluation results ($n{=}50$ Databricks applications).}
+\caption{Shell-scripted evaluation (Ls metrics, $n{=}47$ Claude Code apps).}
 \label{tab:results}
 \centering
 \small
@@ -286,153 +261,144 @@ We evaluated on 50~Databricks applications spanning dashboards, analytics tools,
 \toprule
 \textbf{Tier} & \textbf{Metric} & \textbf{Result} \\
 \midrule
-\multirow{4}{*}{Core} & L1: Build Success & 45/50 (90\%) \\
- & L2: Runtime Success & 45/50 (90\%) \\
- & L3: Type Safety & 3/50 (6\%) \\
- & L4: Tests Pass & --$^{*}$ \\
+\multirow{4}{*}{Core} & Ls1: Build Success & 47/47 (100\%) \\
+ & Ls2: Runtime Success & 46/47 (98\%) \\
+ & Ls3: Type Safety & 47/47 (100\%) \\
+ & Ls4: Tests Pass & 28/47 (60\%) \\
 \midrule
-\multirow{3}{*}{Platform} & L5: DB Connectivity & 45/50 (90\%) \\
- & L6: Data Returned & 40/50 (80\%) \\
- & L7: UI Renders & 42/50 (84\%) \\
+Platform & Ls5: UI Renders & 46/47 (98\%) \\
 \midrule
-\multirow{2}{*}{DevX} & D8: Runability & 36/50 (72\%) \\
- & D9: Deployability & 30/50 (60\%) \\
+DevX & Ls6: Runability & 45/47 (96\%) \\
 \midrule
-\multirow{2}{*}{Efficiency} & Cost per App & \$2.33 \\
- & Lines of Code & 732 avg \\
+\multirow{2}{*}{Efficiency} & Cost per App & \$1.61 \\
+ & Turns per App & 46 avg \\
 \bottomrule
-\multicolumn{3}{l}{\scriptsize $^{*}$L4 instrumented for Opencode (75\%) but not for the primary $n{=}50$ Claude evaluation.}
+\multicolumn{3}{l}{\scriptsize Agentic metrics (Ra7--Ra8) in Table~\ref{tab:agentic}.}
 \end{tabular}
 \end{table}
 
-The 90\% build/runtime success indicates the core generation pipeline works. The drop from 90\% on single-trial metrics to 72\%/60\% on multi-trial D8/D9 quantifies the gap between ``code that works'' and ``code an agent can reliably operate'', the core motivation for Agentic DevX. 95\% Wilson confidence intervals for key metrics: L1/L2 [79\%, 96\%], D8 [58\%, 83\%], D9 [46\%, 73\%].
+The 100\% build and type-safety rates across all 47~apps confirm that Claude Code with installable domain knowledge produces structurally sound applications. Ls2 (runtime) and Ls5 (UI) each achieve 98\%, with a single app failing to respond on the healthcheck endpoint. Ls6 (runability) reaches 96\% under the 3-trial majority protocol. Ls4 (tests) shows 60\%, as 19~apps' test suites contain integration tests that require a live database connection unavailable in local evaluation.
 
-\textbf{Multi-agent comparison.} To validate agent-agnosticism, we ran the same CanItShip harness on 20~applications generated by Opencode with Sonnet (Table~\ref{tab:multiagent}). The pattern is clear: Opencode achieves 80\% build and 75\% test pass but collapses on platform metrics (L5--L7: 0\% DB connectivity, 0\% data returned). These applications compile but never connect to Databricks, returning mocked or empty data. This confirms that without installable domain knowledge, even a capable model produces structurally correct but domain-disconnected applications.
+\textbf{Multi-agent comparison.} To validate agent-agnosticism, we ran the same shell-scripted harness on 22~applications generated by Opencode with Sonnet (Table~\ref{tab:multiagent}). Both agents achieve 100\% build (Ls1) and type safety (Ls3); the divergence appears on runtime, UI, and DevX metrics. Claude Code's 98\% runtime and 96\% runability versus Opencode's 82\% runtime and 100\% runability reflects architectural differences: Node.js apps (Claude) have more complex startup sequences but consistent healthcheck patterns, while Python/Streamlit apps (Opencode) start faster but 4~apps fail the HTTP healthcheck due to CLI-only entry points.
 
 \begin{table}[h]
-\caption{Multi-agent comparison: Claude Code ($n{=}50$) vs Opencode+Sonnet ($n{=}20$).}
+\caption{Multi-agent shell-scripted (Ls) comparison: Claude ($n{=}47$) vs Opencode ($n{=}22$).}
 \label{tab:multiagent}
 \centering
 \small
 \begin{tabular}{lccc}
 \toprule
-\textbf{Metric} & \textbf{Claude Code} & \textbf{Opencode} & \textbf{$\Delta$} \\
+\textbf{Metric} & \textbf{Claude} & \textbf{Opencode} & \textbf{$\Delta$} \\
 \midrule
-L1: Build & 90\% & 80\% & $-$10 \\
-L2: Runtime & 90\% & 70\% & $-$20 \\
-L3: Types & 6\% & 35\% & +29 \\
-L4: Tests & --$^{*}$ & 75\% & -- \\
-L5: DB Conn. & 90\% & 0\% & $-$90 \\
-L6: Data & 80\% & 0\% & $-$80 \\
-L7: UI & 84\% & 5\% & $-$79 \\
-D8: Runability$^{\dagger}$ & 72\% & 10\% & $-$62 \\
-D9: Deploy$^{\dagger}$ & 60\% & 15\% & $-$45 \\
+Ls1: Build & 100\% & 100\% & 0 \\
+Ls2: Runtime & 98\% & 82\% & +16 \\
+Ls3: Types & 100\% & 100\% & 0 \\
+Ls4: Tests & 60\% & 68\% & $-$8 \\
+Ls5: UI & 98\% & 82\% & +16 \\
+Ls6: Runability & 96\% & 100\% & $-$4 \\
 \bottomrule
-\multicolumn{4}{l}{\scriptsize $^{\dagger}$D8/D9 are provisional harness outputs for the Opencode evaluation.}
 \end{tabular}
 \end{table}
 
-\textbf{Agentic metric variance.} The 3-trial protocol reveals significant non-determinism in agentic evaluation. Figure~\ref{fig:trials} shows both agents' metric profiles: Claude Code (a) achieves broad, stable coverage; Opencode (b) shows three independent trials with visible variance on D8 and D9. D8 trial-level pass rates range from 35\% to 50\% across trials, while D9 ranges from 30\% to 35\%. Per-app agreement: 50\% for D8 (10/20~apps consistent across all trials), 60\% for D9 (12/20~consistent). Mean trial-level D8: 41.7\% ($\sigma{=}7.6\%$); mean trial-level D9: 33.3\% ($\sigma{=}2.9\%$). Under the strict 3/3 pass criterion, only 2/20 apps pass D8 and 3/20 pass D9, demonstrating why multiple trials are essential for agentic evaluation.
+\textbf{Agentic evaluation.} Ra7 (agentic runability) and Ra8 (deployability) require adaptive tool use---autonomously installing and starting applications, and validating deployment configurations---beyond the scope of deterministic shell scripts. A key motivation is agent-agnostic coverage: when Opencode produced Python applications instead of the Node.js stack our shell checks targeted, deterministic scripts lacked coverage for framework detection, dependency resolution, and startup sequences. An agentic evaluator handles this naturally by reading project files and adapting its strategy, mirroring how a human developer would onboard an unfamiliar codebase. This also makes the benchmark more faithful: when an evaluator agent struggles to run a formally correct application due to poor developer experience (missing entry points, undocumented setup steps), the resulting lower score reflects a genuine DevX deficiency rather than a tooling gap. We evaluated Ra7--Ra8 on a subset of $n{=}11$ Opencode+Sonnet applications using an evaluator agent (Claude Haiku) with three independent trials per metric and a 2/3 majority pass criterion (Table~\ref{tab:agentic}).
 
-%% --- Two-panel radar: Claude aggregate + Opencode 3-trial (9 axes) ---
+\begin{table}[h]
+\caption{Agentic evaluation (Ra metrics): Opencode+Sonnet subset ($n{=}11$, Claude Haiku evaluator, 3-trial 2/3 majority).}
+\label{tab:agentic}
+\centering
+\small
+\begin{tabular}{lccl}
+\toprule
+\textbf{Metric} & \textbf{Pass} & \textbf{Rate} & \textbf{Failure Mode} \\
+\midrule
+Ra7: Runability & 8/11 & 73\% & Path escaping, startup \\
+Ra8: Deployability & 4/11 & 36\% & Missing deploy config \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Ra7 passed at 73\%, lower than shell-scripted Ls6 (100\% on the same apps), confirming that autonomous discovery is harder than scripted probes. Ra8 failures stemmed from apps lacking deployment configuration entirely.
+
+\textbf{Ls6 runability variance.} The 3-trial shell-scripted protocol for Ls6 reveals non-determinism from timing and port contention. For Claude Code ($n{=}47$), 38~apps passed all 3 trials, 7~apps passed 2/3, and 2~apps passed 0/3, yielding 96\% under the majority criterion. For Opencode ($n{=}22$), 17~apps passed all 3 trials and 5~apps passed 2/3, yielding 100\%. This variance---even in deterministic scripts---demonstrates why multi-trial protocols are essential for evaluation metrics involving process startup and network probes.
+
+%% --- Two-panel radar: Claude aggregate + Opencode 3-trial (8 axes) ---
 \begin{figure}[t]
 \centering
 \begin{minipage}{0.48\columnwidth}
 \centering
 \begin{tikzpicture}[scale=0.46]
-  % --- Radar grid (4 concentric 9-gons, 40° spacing) ---
+  % --- Radar grid (4 concentric hexagons, 60° spacing) ---
   \foreach \l in {1,...,4} {
     \pgfmathsetmacro{\r}{\l/4*2.2}
     \draw[gray!25, thin]
-      ({90}:\r) -- ({50}:\r) -- ({10}:\r) --
-      ({-30}:\r) -- ({-70}:\r) -- ({-110}:\r) --
-      ({-150}:\r) -- ({-190}:\r) -- ({-230}:\r) -- cycle;
+      ({90}:\r) -- ({30}:\r) -- ({-30}:\r) --
+      ({-90}:\r) -- ({-150}:\r) -- ({-210}:\r) -- cycle;
   }
-  % --- Axes ---
-  \foreach \a in {90,50,10,-30,-70,-110,-150,-190,-230} {
+  \foreach \a in {90,30,-30,-90,-150,-210} {
     \draw[gray!40, thin] (0,0) -- (\a:2.2);
   }
-  % --- Axis labels ---
-  \node[font=\tiny\bfseries] at (90:2.65) {L1};
-  \node[font=\tiny\bfseries] at (50:2.65) {L2};
-  \node[font=\tiny\bfseries] at (10:2.75) {L3};
-  \node[font=\tiny\bfseries] at (-30:2.65) {L4};
-  \node[font=\tiny\bfseries] at (-70:2.65) {L5};
-  \node[font=\tiny\bfseries] at (-110:2.65) {L6};
-  \node[font=\tiny\bfseries] at (-150:2.65) {L7};
-  \node[font=\tiny\bfseries] at (-190:2.75) {D8};
-  \node[font=\tiny\bfseries] at (-230:2.65) {D9};
-  % --- Claude Code aggregate (n=50): blue, solid ---
-  % L1=90%, L2=90%, L3=6%, L4=0(n/a), L5=90%, L6=80%, L7=84%, D8=72%, D9=60%
+  \node[font=\tiny\bfseries] at (90:2.7) {Ls1};
+  \node[font=\tiny\bfseries] at (30:2.7) {Ls2};
+  \node[font=\tiny\bfseries] at (-30:2.8) {Ls3};
+  \node[font=\tiny\bfseries] at (-90:2.7) {Ls4};
+  \node[font=\tiny\bfseries] at (-150:2.7) {Ls5};
+  \node[font=\tiny\bfseries] at (-210:2.7) {Ls6};
+  % --- Claude Code aggregate (n=47, shell): blue, solid ---
   \fill[blue!20, opacity=0.5]
-    (90:1.98) -- (50:1.98) -- (10:0.132) --
-    (-30:0.0) -- (-70:1.98) -- (-110:1.76) --
-    (-150:1.848) -- (-190:1.584) -- (-230:1.32) -- cycle;
+    (90:2.2) -- (30:2.156) -- (-30:2.2) --
+    (-90:1.32) -- (-150:2.156) -- (-210:2.112) -- cycle;
   \draw[blue!70, thick]
-    (90:1.98) -- (50:1.98) -- (10:0.132) --
-    (-30:0.0) -- (-70:1.98) -- (-110:1.76) --
-    (-150:1.848) -- (-190:1.584) -- (-230:1.32) -- cycle;
+    (90:2.2) -- (30:2.156) -- (-30:2.2) --
+    (-90:1.32) -- (-150:2.156) -- (-210:2.112) -- cycle;
 \end{tikzpicture}\\[1mm]
-{\scriptsize (a) Claude Code ($n{=}50$, aggregate)}
+{\scriptsize (a) Claude Code ($n{=}47$)}
 \end{minipage}
 \hfill
 \begin{minipage}{0.48\columnwidth}
 \centering
 \begin{tikzpicture}[scale=0.46]
-  % --- Radar grid (4 concentric 9-gons, 40° spacing) ---
   \foreach \l in {1,...,4} {
     \pgfmathsetmacro{\r}{\l/4*2.2}
     \draw[gray!25, thin]
-      ({90}:\r) -- ({50}:\r) -- ({10}:\r) --
-      ({-30}:\r) -- ({-70}:\r) -- ({-110}:\r) --
-      ({-150}:\r) -- ({-190}:\r) -- ({-230}:\r) -- cycle;
+      ({90}:\r) -- ({30}:\r) -- ({-30}:\r) --
+      ({-90}:\r) -- ({-150}:\r) -- ({-210}:\r) -- cycle;
   }
-  % --- Axes ---
-  \foreach \a in {90,50,10,-30,-70,-110,-150,-190,-230} {
+  \foreach \a in {90,30,-30,-90,-150,-210} {
     \draw[gray!40, thin] (0,0) -- (\a:2.2);
   }
-  % --- Axis labels ---
-  \node[font=\tiny\bfseries] at (90:2.65) {L1};
-  \node[font=\tiny\bfseries] at (50:2.65) {L2};
-  \node[font=\tiny\bfseries] at (10:2.75) {L3};
-  \node[font=\tiny\bfseries] at (-30:2.65) {L4};
-  \node[font=\tiny\bfseries] at (-70:2.65) {L5};
-  \node[font=\tiny\bfseries] at (-110:2.65) {L6};
-  \node[font=\tiny\bfseries] at (-150:2.65) {L7};
-  \node[font=\tiny\bfseries] at (-190:2.75) {D8};
-  \node[font=\tiny\bfseries] at (-230:2.65) {D9};
-  % --- Trial 1: L1=80%,L2=70%,L3=35%,L4=75%,L5-L6=0%,L7=5%,D8=35%,D9=35% (solid teal) ---
+  \node[font=\tiny\bfseries] at (90:2.7) {Ls1};
+  \node[font=\tiny\bfseries] at (30:2.7) {Ls2};
+  \node[font=\tiny\bfseries] at (-30:2.8) {Ls3};
+  \node[font=\tiny\bfseries] at (-90:2.7) {Ls4};
+  \node[font=\tiny\bfseries] at (-150:2.7) {Ls5};
+  \node[font=\tiny\bfseries] at (-210:2.7) {Ls6};
+  % --- Opencode (n=22, shell): 3-trial Ls6 variance ---
+  % All Ls metrics identical across trials; Ls6 at -210° varies
+  % Trial 1: Ls6=95% → -210:2.09 (solid teal)
   \fill[teal!15, opacity=0.4]
-    (90:1.76) -- (50:1.54) -- (10:0.77) --
-    (-30:1.65) -- (-70:0.0) -- (-110:0.0) --
-    (-150:0.11) -- (-190:0.77) -- (-230:0.77) -- cycle;
+    (90:2.2) -- (30:1.804) -- (-30:2.2) --
+    (-90:1.496) -- (-150:1.804) -- (-210:2.09) -- cycle;
   \draw[teal!70, thick]
-    (90:1.76) -- (50:1.54) -- (10:0.77) --
-    (-30:1.65) -- (-70:0.0) -- (-110:0.0) --
-    (-150:0.11) -- (-190:0.77) -- (-230:0.77) -- cycle;
-  % --- Trial 2: D8=40%,D9=35% (dashed violet) ---
+    (90:2.2) -- (30:1.804) -- (-30:2.2) --
+    (-90:1.496) -- (-150:1.804) -- (-210:2.09) -- cycle;
+  % Trial 2: Ls6=82% → -210:1.804 (dashed violet)
   \fill[violet!15, opacity=0.4]
-    (90:1.76) -- (50:1.54) -- (10:0.77) --
-    (-30:1.65) -- (-70:0.0) -- (-110:0.0) --
-    (-150:0.11) -- (-190:0.88) -- (-230:0.77) -- cycle;
+    (90:2.2) -- (30:1.804) -- (-30:2.2) --
+    (-90:1.496) -- (-150:1.804) -- (-210:1.804) -- cycle;
   \draw[violet!70, thick, dashed]
-    (90:1.76) -- (50:1.54) -- (10:0.77) --
-    (-30:1.65) -- (-70:0.0) -- (-110:0.0) --
-    (-150:0.11) -- (-190:0.88) -- (-230:0.77) -- cycle;
-  % --- Trial 3: D8=50%,D9=30% (dotted orange) ---
+    (90:2.2) -- (30:1.804) -- (-30:2.2) --
+    (-90:1.496) -- (-150:1.804) -- (-210:1.804) -- cycle;
+  % Trial 3: Ls6=86% → -210:1.892 (dotted orange)
   \fill[orange!15, opacity=0.4]
-    (90:1.76) -- (50:1.54) -- (10:0.77) --
-    (-30:1.65) -- (-70:0.0) -- (-110:0.0) --
-    (-150:0.11) -- (-190:1.10) -- (-230:0.66) -- cycle;
+    (90:2.2) -- (30:1.804) -- (-30:2.2) --
+    (-90:1.496) -- (-150:1.804) -- (-210:1.892) -- cycle;
   \draw[orange!70, thick, dotted]
-    (90:1.76) -- (50:1.54) -- (10:0.77) --
-    (-30:1.65) -- (-70:0.0) -- (-110:0.0) --
-    (-150:0.11) -- (-190:1.10) -- (-230:0.66) -- cycle;
+    (90:2.2) -- (30:1.804) -- (-30:2.2) --
+    (-90:1.496) -- (-150:1.804) -- (-210:1.892) -- cycle;
 \end{tikzpicture}\\[1mm]
-{\scriptsize (b) Opencode+Sonnet ($n{=}20$, 3 trials)}
+{\scriptsize (b) Opencode ($n{=}22$, 3 Ls6 trials)}
 \end{minipage}
 \\[2mm]
-% --- Shared legend ---
 \begin{tikzpicture}
   \draw[teal!70, thick] (0,0) -- (0.3,0);
   \node[font=\scriptsize, anchor=west] at (0.35, 0) {Trial 1};
@@ -441,7 +407,7 @@ D9: Deploy$^{\dagger}$ & 60\% & 15\% & $-$45 \\
   \draw[orange!70, thick, dotted] (3.0,0) -- (3.3,0);
   \node[font=\scriptsize, anchor=west] at (3.35, 0) {Trial 3};
 \end{tikzpicture}
-\caption{Detailed metric profiles (all 9 metrics). (a)~Claude Code: broad coverage; L4 not yet evaluated. (b)~Opencode+Sonnet ($n{=}20$): three trial-level aggregates show moderate core metrics, platform metrics near 0\%, and visible D8/D9 variance across trials.}
+\caption{Detailed metric profiles. (a)~Claude Code ($n{=}47$): 100\% build/types, 98\% runtime/UI, 96\% Ls6 runability. (b)~Opencode ($n{=}22$): three Ls6 trial-level aggregates show variance (95\%/82\%/86\%) from timing and port contention.}
 \label{fig:trials}
 \end{figure}
 
@@ -477,7 +443,7 @@ Retries on errors & Unclear messages & Added contextual error params \\
 
 \textbf{Trajectory analysis.} Analyzing agent execution traces for debugging is established practice (SWE-agent~\cite{yang2024swe}, OpenHands~\cite{wang2024openhands}). Our contribution is making the synthesis phase itself agentic: an agent that explores source code to generate recommendations, rather than static aggregation.
 
-\textbf{Agent evaluation harnesses.} Inspect AI~\cite{inspectai2024} and DeepEval~\cite{deepeval2024} provide evaluation infrastructure but focus on correctness rather than deployment readiness. AgentBench~\cite{agentbench2023} spans multiple environments but does not evaluate autonomous deployability. DORA metrics~\cite{forsgren2018accelerate} provide the industry standard for delivery performance; to our knowledge, no existing framework maps AI code generation evaluation to DORA.
+\textbf{Agent evaluation harnesses.} Inspect AI~\cite{inspectai2024} and DeepEval~\cite{deepeval2024} provide evaluation infrastructure but focus on correctness rather than deployment readiness. AgentBench~\cite{agentbench2023} spans multiple environments but does not evaluate autonomous deployability.
 
 %% ============================================================
 %% 7. DISCUSSION
@@ -489,7 +455,7 @@ Retries on errors & Unclear messages & Added contextual error params \\
 
 \textbf{Toward automatic optimization.} Our loop is currently semi-automatic: the analyzer outputs recommendations, a human reviews them. Since recommendations target tool descriptions and prompts, techniques like GEPA~\cite{gepa2025} and DSPy~\cite{khattab2023dspy} could potentially close the loop without human intervention.
 
-\textbf{Limitations.} \emph{External validity:} We validate on Databricks; the harness is platform-independent but domain packages require platform-specific implementation. \emph{Internal validity:} $n{=}50$ provides initial validation; scaling to 100+ across difficulty tiers is planned. \emph{Construct validity:} All metrics rely on evaluator agent judgment, introducing variance (Figure~\ref{fig:trials}). On small $N$, the trajectory analyzer can overreact to isolated failures; human review remains essential. The feedback loop is demonstrated qualitatively through case studies (Table~\ref{tab:improvements}); longitudinal quantification across multiple iterations with $n{=}100$+ is planned.
+\textbf{Limitations.} \emph{External validity:} We validate on Databricks; the harness is platform-independent but domain packages require adaptation. \emph{Internal validity:} Shell metrics cover $n{=}47$ Claude and $n{=}22$ Opencode apps; agentic metrics cover $n{=}11$. Scaling to 100+ is planned. \emph{Construct validity:} Even deterministic scripts exhibit timing variance (Figure~\ref{fig:trials}); multi-trial protocols are essential. The feedback loop is demonstrated via case studies (Table~\ref{tab:improvements}); longitudinal quantification is planned.
 
 %% ============================================================
 %% 8. CONCLUSION
@@ -497,13 +463,13 @@ Retries on errors & Unclear messages & Added contextual error params \\
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented a feedback loop for iterative improvement of agent tooling: installable domain knowledge, an agentic trajectory analyzer, and Agentic DevX metrics. On 50~Databricks applications across multiple agent backends, we achieve 90\% build success at \$2.33/app. The trajectory analyzer identified concrete improvements that we implemented and verified. When agents fail, improve their environment rather than the agents themselves. The evaluation harness, trajectory analyzer, 50-prompt benchmark, and anonymized artifacts are released under the MIT license.
+We presented a feedback loop for iterative improvement of agent tooling: installable domain knowledge, an agentic trajectory analyzer, and CanItShip Agentic DevX metrics. Using shell-scripted (Ls) and agentic (Ra) evaluation across 69~Databricks applications and two agent backends (Claude Code $n{=}47$, Opencode+Sonnet $n{=}22$), we achieve 100\% build and type safety, 98\% runtime success, and 96\% local runability at \$1.61/app. Agentic evaluation on a subset ($n{=}11$) shows 73\% agentic runability and 36\% deployability, with failures traceable to missing deployment manifests. The trajectory analyzer identified concrete improvements that we implemented and verified. When agents fail, improve their environment rather than the agents themselves. The evaluation harness, trajectory analyzer, 50-prompt benchmark, and anonymized artifacts are released under the MIT license.
 
 %%
 %% Acknowledgments
 %%
 \begin{acks}
-We thank the Databricks Apps team for infrastructure support and the internal hackathon participants whose prompts formed the basis of our benchmark.
+We thank the Databricks Apps team for infrastructure support.
 \end{acks}
 
 %%

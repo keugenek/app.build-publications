@@ -1,0 +1,82 @@
+{
+  "app_name": "omnichannel_customer_view",
+  "app_dir": "/Users/evgenii.kniazev/Downloads/claude_gen/app-claude-databricks_v2/omnichannel_customer_view",
+  "timestamp": "2026-03-03T00:22:51.218241+00:00",
+  "metrics": {
+    "build_success": true,
+    "runtime_success": true,
+    "type_safety": true,
+    "tests_pass": true,
+    "databricks_connectivity": false,
+    "data_returned": false,
+    "ui_renders": true,
+    "local_runability_score": 3,
+    "deployability_score": 0,
+    "local_runability_pass": true,
+    "deployability_pass": false,
+    "test_coverage_pct": 0.0,
+    "total_loc": 983,
+    "build_time_sec": 17.5,
+    "app_type": "node",
+    "framework": "node"
+  },
+  "issues": [
+    "Deployability failed or skipped"
+  ],
+  "details": {
+    "build": {
+      "ok": true,
+      "time": 17.458027124404907,
+      "error": ""
+    },
+    "type_safety": {
+      "ok": true,
+      "error": ""
+    },
+    "tests": {
+      "ok": true,
+      "output": ""
+    },
+    "runtime": {
+      "ok": true,
+      "output": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\" />\n    <link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon-16x16.png\" />\n    <link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon-32x32.png\" />\n    <link rel=\"icon\" type=\"image/png\" sizes=\"48x48\" href=\"/favicon-48x48.png\" />\n    <link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/apple-touch-icon.png\" />\n    <link rel=\"manifest\" href=\"/site.web"
+    },
+    "ui_renders": {
+      "ok": true,
+      "output": "STATUS: PASS\n"
+    },
+    "db_connectivity": {
+      "ok": false,
+      "output": "Skipped - no DB credentials"
+    },
+    "data_returned": {
+      "ok": false,
+      "output": "Skipped - needs live DB"
+    },
+    "runability": {
+      "passes": 3,
+      "trials": 3,
+      "details": [
+        {
+          "trial": 1,
+          "ok": true,
+          "output": "\n> omnichannel-customer-view@1.0.0 postinstall\n> npm run typegen\n\n\n> omnichannel-customer-view@1.0.0 typegen\n> appkit generate-types\n\n  Processing customer_channel_summary (1/5)   \u001b[2K\n  \u2713 customer_channel_summary (cached)\n  Processing customer_purchase_timeline (2/5)   \u001b[2K\n  \u2713 customer_purchase_ti"
+        },
+        {
+          "trial": 2,
+          "ok": true,
+          "output": "\n> omnichannel-customer-view@1.0.0 postinstall\n> npm run typegen\n\n\n> omnichannel-customer-view@1.0.0 typegen\n> appkit generate-types\n\n  Processing customer_channel_summary (1/5)   \u001b[2K\n  \u2713 customer_channel_summary (cached)\n  Processing customer_purchase_timeline (2/5)   \u001b[2K\n  \u2713 customer_purchase_ti"
+        },
+        {
+          "trial": 3,
+          "ok": true,
+          "output": "\n> omnichannel-customer-view@1.0.0 postinstall\n> npm run typegen\n\n\n> omnichannel-customer-view@1.0.0 typegen\n> appkit generate-types\n\n  Processing customer_channel_summary (1/5)   \u001b[2K\n  \u2713 customer_channel_summary (cached)\n  Processing customer_purchase_timeline (2/5)   \u001b[2K\n  \u2713 customer_purchase_ti"
+        }
+      ]
+    },
+    "deployability": {
+      "ok": false,
+      "output": "Disabled"
+    }
+  }
+}

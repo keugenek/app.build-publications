@@ -1,0 +1,84 @@
+{
+  "app_name": "product_profitability",
+  "app_dir": "/Users/evgenii.kniazev/Downloads/claude_gen/app-claude-databricks/product_profitability",
+  "timestamp": "2026-03-03T00:05:00.665220+00:00",
+  "metrics": {
+    "build_success": true,
+    "runtime_success": false,
+    "type_safety": true,
+    "tests_pass": false,
+    "databricks_connectivity": false,
+    "data_returned": false,
+    "ui_renders": false,
+    "local_runability_score": 3,
+    "deployability_score": 0,
+    "local_runability_pass": true,
+    "deployability_pass": false,
+    "test_coverage_pct": 0.0,
+    "total_loc": 829,
+    "build_time_sec": 15.9,
+    "app_type": "node",
+    "framework": "node"
+  },
+  "issues": [
+    "Tests failed",
+    "Runtime failed (app did not start or respond)",
+    "Deployability failed or skipped"
+  ],
+  "details": {
+    "build": {
+      "ok": true,
+      "time": 15.86592984199524,
+      "error": ""
+    },
+    "type_safety": {
+      "ok": true,
+      "error": ""
+    },
+    "tests": {
+      "ok": false,
+      "output": "Test output:   |                                                                           ^\n      17 |   await expect(page.getByText('Net Margin % \u2014 Bottom 20 Products')).toBeVisible({ timeout: 60000 });\n      18 |\n      19 |   // Verify console logs were captured\n        at /Users/evgenii.kniazev/Downloads/claude_gen/app-claude-databricks/product_profitability/tests/smoke.spec.ts:16:75\n\n\n\u001b[1A\u001b[2K  1 failed\n    [chromium] \u203a tests/smoke.spec.ts:11:1 \u203a smoke test - app loads and displays data \u2500\u2500\u2500"
+    },
+    "runtime": {
+      "ok": false,
+      "output": "HEALTH_FAIL\nbash: line 4:  2591 Killed: 9                  npm start > /tmp/app_8000.log 2>&1\n"
+    },
+    "ui_renders": {
+      "ok": false,
+      "output": "App not running"
+    },
+    "db_connectivity": {
+      "ok": false,
+      "output": "App not running"
+    },
+    "data_returned": {
+      "ok": false,
+      "output": "App not running"
+    },
+    "runability": {
+      "passes": 3,
+      "trials": 3,
+      "details": [
+        {
+          "trial": 1,
+          "ok": true,
+          "output": "\n> product-profitability@1.0.0 postinstall\n> npm run typegen\n\n\n> product-profitability@1.0.0 typegen\n> appkit generate-types\n\n  Processing hello_world (1/3)   \u001b[2K\n  \u2713 hello_world (cached)\n  Processing mocked_sales (2/3)   \u001b[2K\n  \u2713 mocked_sales (cached)\n  Processing product_profitability (3/3)   \u001b[2"
+        },
+        {
+          "trial": 2,
+          "ok": true,
+          "output": "\n> product-profitability@1.0.0 postinstall\n> npm run typegen\n\n\n> product-profitability@1.0.0 typegen\n> appkit generate-types\n\n  Processing hello_world (1/3)   \u001b[2K\n  \u2713 hello_world (cached)\n  Processing mocked_sales (2/3)   \u001b[2K\n  \u2713 mocked_sales (cached)\n  Processing product_profitability (3/3)   \u001b[2"
+        },
+        {
+          "trial": 3,
+          "ok": true,
+          "output": "\n> product-profitability@1.0.0 postinstall\n> npm run typegen\n\n\n> product-profitability@1.0.0 typegen\n> appkit generate-types\n\n  Processing hello_world (1/3)   \u001b[2K\n  \u2713 hello_world (cached)\n  Processing mocked_sales (2/3)   \u001b[2K\n  \u2713 mocked_sales (cached)\n  Processing product_profitability (3/3)   \u001b[2"
+        }
+      ]
+    },
+    "deployability": {
+      "ok": false,
+      "output": "Disabled"
+    }
+  }
+}

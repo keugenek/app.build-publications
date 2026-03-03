@@ -1,0 +1,83 @@
+{
+  "app_name": "customer_ltv_cohorts",
+  "app_dir": "/Users/evgenii.kniazev/Downloads/claude_gen/app-claude-databricks/customer_ltv_cohorts",
+  "timestamp": "2026-03-03T00:00:41.785362+00:00",
+  "metrics": {
+    "build_success": true,
+    "runtime_success": true,
+    "type_safety": true,
+    "tests_pass": false,
+    "databricks_connectivity": false,
+    "data_returned": false,
+    "ui_renders": true,
+    "local_runability_score": 3,
+    "deployability_score": 0,
+    "local_runability_pass": true,
+    "deployability_pass": false,
+    "test_coverage_pct": 0.0,
+    "total_loc": 833,
+    "build_time_sec": 16.7,
+    "app_type": "node",
+    "framework": "node"
+  },
+  "issues": [
+    "Tests failed",
+    "Deployability failed or skipped"
+  ],
+  "details": {
+    "build": {
+      "ok": true,
+      "time": 16.74514889717102,
+      "error": ""
+    },
+    "type_safety": {
+      "ok": true,
+      "error": ""
+    },
+    "tests": {
+      "ok": false,
+      "output": "Test output: *.{test,spec}.?(c|m)[jt]s?(x)\u001b[39m\n\u001b[2mexclude:  \u001b[22m\u001b[33m**/node_modules/**\u001b[2m, \u001b[22m**/dist/**\u001b[2m, \u001b[22m**/*.spec.ts\u001b[2m, \u001b[22m**/.smoke-test/**\u001b[2m, \u001b[22m**/.databricks/**\u001b[39m\n\n\n> customer-ltv-cohorts@1.0.0 test:smoke\n> playwright install chromium && playwright test tests/smoke.spec.ts\n\n\nRunning 1 test using 1 worker\n\n\u001b[1A\u001b[2K[1/1] [chromium] \u203a tests/smoke.spec.ts:11:1 \u203a smoke test - app loads and displays data\nsh: line 1: 93927 Killed: 9               playwright test tests/s"
+    },
+    "runtime": {
+      "ok": true,
+      "output": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\" />\n    <link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon-16x16.png\" />\n    <link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon-32x32.png\" />\n    <link rel=\"icon\" type=\"image/png\" sizes=\"48x48\" href=\"/favicon-48x48.png\" />\n    <link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/apple-touch-icon.png\" />\n    <link rel=\"manifest\" href=\"/site.web"
+    },
+    "ui_renders": {
+      "ok": true,
+      "output": "STATUS: PASS\n"
+    },
+    "db_connectivity": {
+      "ok": false,
+      "output": "Skipped - no DB credentials"
+    },
+    "data_returned": {
+      "ok": false,
+      "output": "Skipped - needs live DB"
+    },
+    "runability": {
+      "passes": 3,
+      "trials": 3,
+      "details": [
+        {
+          "trial": 1,
+          "ok": true,
+          "output": "\n> customer-ltv-cohorts@1.0.0 postinstall\n> npm run typegen\n\n\n> customer-ltv-cohorts@1.0.0 typegen\n> appkit generate-types\n\n  Processing cohort_summary (1/3)   \u001b[2K\n  \u2713 cohort_summary (cached)\n  Processing ltv_by_cohort (2/3)   \u001b[2K\n  \u2713 ltv_by_cohort (cached)\n  Processing retention_by_cohort (3/3)  "
+        },
+        {
+          "trial": 2,
+          "ok": true,
+          "output": "\n> customer-ltv-cohorts@1.0.0 postinstall\n> npm run typegen\n\n\n> customer-ltv-cohorts@1.0.0 typegen\n> appkit generate-types\n\n  Processing cohort_summary (1/3)   \u001b[2K\n  \u2713 cohort_summary (cached)\n  Processing ltv_by_cohort (2/3)   \u001b[2K\n  \u2713 ltv_by_cohort (cached)\n  Processing retention_by_cohort (3/3)  "
+        },
+        {
+          "trial": 3,
+          "ok": true,
+          "output": "\n> customer-ltv-cohorts@1.0.0 postinstall\n> npm run typegen\n\n\n> customer-ltv-cohorts@1.0.0 typegen\n> appkit generate-types\n\n  Processing cohort_summary (1/3)   \u001b[2K\n  \u2713 cohort_summary (cached)\n  Processing ltv_by_cohort (2/3)   \u001b[2K\n  \u2713 ltv_by_cohort (cached)\n  Processing retention_by_cohort (3/3)  "
+        }
+      ]
+    },
+    "deployability": {
+      "ok": false,
+      "output": "Disabled"
+    }
+  }
+}
