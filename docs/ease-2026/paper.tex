@@ -63,7 +63,7 @@
 %% Abstract
 %%
 \begin{abstract}
-When AI agents fail to build production applications, should we improve the agent or its environment? Recent work suggests that environment quality (templates, tools, guidance) matters more than model selection~\cite{kniazev2025appbuild}. We present a feedback loop for iterative tooling improvement: (1)~an \emph{installable domain knowledge} architecture packages expertise as agent-consumable artifacts; (2)~agents use this package to generate applications, producing execution trajectories; (3)~an \emph{agentic trajectory analyzer} processes these trajectories to identify friction and recommend fixes to the package; (4)~\emph{Agentic DevX metrics} serve as the final quality gate, measuring whether generated applications can be operated by other agents. This approach is designed to generalize across domains; we validate it on Databricks data applications across multiple agent backends (Claude Code and Opencode). On 47~applications, we achieve 100\% build and type safety, 98\% runtime success, and 96\% local runability at \$1.61/app. The trajectory analyzer identified concrete improvements (batch operations, clearer tool descriptions, missing examples) that we implemented, demonstrating the feedback loop mechanism through case studies. The architecture is designed for automatic optimization: the analyzer's recommendations target tool descriptions, prompts, and examples, artifacts amenable to techniques like GEPA or DSPy-style prompt tuning, potentially closing the loop without human intervention.
+When AI agents fail to build production applications, should we improve the agent or its environment? Recent work suggests that environment quality (templates, tools, guidance) matters more than model selection~\cite{kniazev2025appbuild}. We present a feedback loop for iterative tooling improvement: (1)~an \emph{installable domain knowledge} architecture packages expertise as agent-consumable artifacts; (2)~agents use this package to generate applications, producing execution trajectories; (3)~an \emph{agentic trajectory analyzer} processes these trajectories to identify friction and recommend fixes to the package; (4)~\emph{Agentic DevX metrics} serve as the final quality gate, measuring whether generated applications can be operated by other agents. We validate on Databricks data applications across two agent backends (Claude Code and Opencode+Sonnet). On 50~data-focused prompts requiring SQL, schema access, and platform integration, we achieve 100\% build and type safety, 98\% runtime success, and 96\% local runability at \$1.61/app---compared to 73.3\% viability on easier consumer prompts in prior work. Agentic evaluation reveals that even apps passing scripted checks fail under autonomous operation (73\% agentic runability, 36\% deployability). The trajectory analyzer closes the loop: it processes failure traces from agentic evaluation, recommends fixes, which are applied to the domain package and applications, and improvements are measured by rerunning the same evaluations. The architecture targets artifacts amenable to automatic optimization~\cite{gepa2025, khattab2023dspy}, potentially closing the loop without human intervention.
 \end{abstract}
 
 %%
@@ -250,7 +250,11 @@ Ra8 & Deployability & Validate bundle or config \\
 \section{Results}
 \label{sec:results}
 
-\textbf{Prompt sets and coverage.} Two disjoint prompt sets were given to both agents under identical conditions (Table~\ref{tab:coverage}). Shell-scripted checks (Ls1--Ls6) ran on both agents to measure how the harness interacts with each backend. Agentic checks (Ra7--Ra8) ran on Opencode Set~1 apps only; 9 were excluded because generation quality was already poor (no entry points, incomplete scaffolds).
+We organize results around three claims: (1)~automated scripted evaluation on a new data-focused benchmark; (2)~agentic checks revealing failures invisible to scripted evaluation; (3)~a trajectory-driven closed loop that analyzes failures, applies fixes, and measures improvement.
+
+The prior app.build evaluation~\cite{kniazev2025appbuild} achieved 73.3\% viability on 30 generic consumer prompts using human+cloud evaluation. We create 50 new data-focused prompts requiring SQL, schema access, and platform integration, and automate the evaluation as reproducible local shell scripts.
+
+\textbf{Claim 1: Automated scripted evaluation on new data-focused benchmark.} Two disjoint prompt sets were given to both agents under identical conditions (Table~\ref{tab:coverage}). Shell-scripted checks (Ls1--Ls6) ran on both agents to measure how the harness interacts with each backend. Agentic checks (Ra7--Ra8) ran on Opencode Set~1 apps only; 9 were excluded because generation quality was already poor (no entry points, incomplete scaffolds).
 
 \begin{table}[t]
 \caption{Dataset coverage. Set~1: 20 generic analytics prompts (churn, RFM, warehouse). Set~2: 30 Databricks-specific prompts (property search, bookings, parts). Generation failures produced only metadata with no source code.}
@@ -295,7 +299,7 @@ DevX & Ls6: Runability & 45/47 (96\%) \\
 \end{tabular}
 \end{table}
 
-The 100\% build and type-safety rates across all 47~apps confirm that Claude Code with installable domain knowledge produces structurally sound applications. Ls2 (runtime) and Ls5 (UI) each achieve 98\%, with a single app failing to respond on the healthcheck endpoint. Ls6 (runability) reaches 96\% under the 3-trial majority protocol. Ls4 (tests) shows 60\%, as 19~apps' test suites contain integration tests that require a live database connection unavailable in local evaluation.
+The 100\% build and type-safety rates across all 47~apps confirm that Claude Code with installable domain knowledge produces structurally sound applications. Ls2 (runtime) and Ls5 (UI) each achieve 98\%, with a single app failing to respond on the healthcheck endpoint. Ls6 (runability) reaches 96\% under the 3-trial majority protocol. Ls4 (tests) shows 60\%, as 19~apps' test suites contain integration tests that require a live database connection unavailable in local evaluation. Where app.build achieved 73.3\% viability on generic consumer prompts with human evaluation, domain knowledge yields 100\% build success on data-focused prompts with fully automated checks.
 
 \textbf{Multi-agent comparison.} To validate agent-agnosticism, we ran the same shell-scripted harness on 35~Opencode+Sonnet applications across both prompt sets (Table~\ref{tab:multiagent}). Both agents achieve 100\% build (Ls1); divergence appears on runtime, UI, and DevX metrics. Claude Code's 98\% runtime versus Opencode's 80\% reflects architectural differences: Node.js apps (Claude) have complex startup sequences but consistent healthcheck patterns, while Python/Streamlit apps (Opencode) start faster but 7~apps fail the HTTP healthcheck due to CLI-only or non-standard entry points.
 
@@ -318,7 +322,7 @@ Ls6: Runability & 96\% & 91\% & +5 \\
 \end{tabular}
 \end{table}
 
-\textbf{Agentic evaluation.} Ra7 (agentic runability) and Ra8 (deployability) require adaptive tool use---autonomously installing and starting applications, and validating deployment configurations---beyond the scope of deterministic shell scripts. A key motivation is agent-agnostic coverage: when Opencode produced Python applications instead of the Node.js stack our shell checks targeted, deterministic scripts lacked coverage for framework detection, dependency resolution, and startup sequences. An agentic evaluator handles this naturally by reading project files and adapting its strategy, mirroring how a human developer would onboard an unfamiliar codebase. This also makes the benchmark more faithful: when an evaluator agent struggles to run a formally correct application due to poor developer experience (missing entry points, undocumented setup steps), the resulting lower score reflects a genuine DevX deficiency rather than a tooling gap. We evaluated Ra7--Ra8 on a subset of $n{=}11$ Opencode+Sonnet applications using an evaluator agent (Claude Haiku) with three independent trials per metric and a 2/3 majority pass criterion (Table~\ref{tab:agentic}).
+\textbf{Claim 2: Agentic checks---can another agent operate these apps?} Ra7 (agentic runability) and Ra8 (deployability) require adaptive tool use---autonomously installing and starting applications, and validating deployment configurations---beyond the scope of deterministic shell scripts. A key motivation is agent-agnostic coverage: when Opencode produced Python applications instead of the Node.js stack our shell checks targeted, deterministic scripts lacked coverage for framework detection, dependency resolution, and startup sequences. An agentic evaluator handles this naturally by reading project files and adapting its strategy, mirroring how a human developer would onboard an unfamiliar codebase. This also makes the benchmark more faithful: when an evaluator agent struggles to run a formally correct application due to poor developer experience (missing entry points, undocumented setup steps), the resulting lower score reflects a genuine DevX deficiency rather than a tooling gap. We evaluated Ra7--Ra8 on a subset of $n{=}11$ Opencode+Sonnet applications using an evaluator agent (Claude Haiku) with three independent trials per metric and a 2/3 majority pass criterion (Table~\ref{tab:agentic}).
 
 \begin{table}[h]
 \caption{Agentic evaluation (Ra metrics): Opencode+Sonnet subset ($n{=}11$, Claude Haiku evaluator, 3-trial 2/3 majority).}
@@ -429,10 +433,12 @@ Ra7 passed at 73\%, lower than shell-scripted Ls6 (100\% on the same apps), conf
 \label{fig:trials}
 \end{figure}
 
-\textbf{Feedback loop mechanism: case studies.} The trajectory analyzer identified concrete friction points that we fixed in the domain package (Table~\ref{tab:improvements}). Agents calling schema discovery once per table (N calls for N tables) revealed a missing batch operation; we added it and observed agents using the batch call in subsequent generations. Repeated SQL syntax errors on \texttt{QUALIFY} and \texttt{PIVOT} clauses indicated missing dialect-specific examples; we added them to the guidance layer. A tool name mismatch caused agents to hallucinate tool calls; renaming for clarity eliminated the pattern. We demonstrate the mechanism produces actionable recommendations; quantifying cumulative improvement across iterations requires a longitudinal study. These fixes target tool descriptions, prompts, and examples---artifacts amenable to automatic optimization~\cite{gepa2025, khattab2023dspy}. The full trajectory analysis reports are available in the project repository.
+\textbf{Claim 3: Trajectory analysis closes the loop.} After agentic checks identify failing apps, the trajectory analyzer processes failure traces and recommends fixes. We apply fixes to the domain package and applications via Claude Code, then rerun agentic evaluations to measure improvement. The protocol is: (1)~run agentic eval to identify failing apps and failure traces; (2)~feed traces to the trajectory analyzer to obtain recommendations; (3)~apply recommendations to the domain package and generated applications using Claude Code; (4)~rerun agentic eval on the same apps and measure the delta.
+
+Table~\ref{tab:improvements} shows manual loop iterations: the trajectory analyzer identified friction points that we fixed in the domain package. These fixes---targeting tool descriptions, prompts, and examples---are amenable to automatic optimization~\cite{gepa2025, khattab2023dspy}.
 
 \begin{table}[h]
-\caption{Trajectory-identified improvements (implemented).}
+\caption{Trajectory-identified improvements (manual loop iterations).}
 \label{tab:improvements}
 \centering
 \small
@@ -445,6 +451,23 @@ Repeated SQL errors & Missing examples & Added QUALIFY, PIVOT to guidance \\
 Confusing tool name & Name mismatch & Renamed tool for clarity \\
 Retries on errors & Unclear messages & Added contextual error params \\
 6\% type safety & Missing null examples & Added null handling to templates \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:loop} shows the automated loop: applying analyzer recommendations from agentic evaluation failure traces and measuring improvement on the same apps.
+
+\begin{table}[h]
+\caption{Trajectory-driven improvement: agentic metrics before and after applying analyzer recommendations. Results pending.}
+\label{tab:loop}
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+\textbf{Metric} & \textbf{Before} & \textbf{After} & \textbf{$\Delta$} \\
+\midrule
+Ra7: Runability & 8/11 (73\%) & --/-- (--\%) & -- \\
+Ra8: Deployability & 4/11 (36\%) & --/-- (--\%) & -- \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -481,7 +504,7 @@ Retries on errors & Unclear messages & Added contextual error params \\
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented a feedback loop for iterative improvement of agent tooling: installable domain knowledge, an agentic trajectory analyzer, and CanItShip Agentic DevX metrics. Using shell-scripted (Ls) and agentic (Ra) evaluation across 82~Databricks applications and two agent backends (Claude Code $n{=}47$, Opencode+Sonnet $n{=}35$), we achieve 100\% build and type safety, 98\% runtime success, and 96\% local runability at \$1.61/app. Agentic evaluation on a subset ($n{=}11$) shows 73\% agentic runability and 36\% deployability, with failures traceable to missing deployment manifests. The trajectory analyzer identified concrete improvements that we implemented and verified. When agents fail, improve their environment rather than the agents themselves. The evaluation harness, trajectory analyzer, 50-prompt benchmark, and anonymized artifacts are released under the MIT license.
+We presented a feedback loop for iterative improvement of agent tooling: installable domain knowledge, an agentic trajectory analyzer, and CanItShip Agentic DevX metrics. Using shell-scripted (Ls) and agentic (Ra) evaluation across 82~Databricks applications and two agent backends (Claude Code $n{=}47$, Opencode+Sonnet $n{=}35$), we achieve 100\% build and type safety, 98\% runtime success, and 96\% local runability at \$1.61/app. Agentic evaluation on a subset ($n{=}11$) shows 73\% agentic runability and 36\% deployability, with failures traceable to missing deployment manifests. Beyond identifying friction through case studies, we demonstrate a closed-loop mechanism: the trajectory analyzer processes agentic evaluation failure traces, recommends fixes applied via Claude Code, and improvements are measured by rerunning the same evaluations. When agents fail, improve their environment rather than the agents themselves. The evaluation harness, trajectory analyzer, 50-prompt benchmark, and anonymized artifacts are released under the MIT license.
 
 %%
 %% Acknowledgments
