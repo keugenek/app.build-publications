@@ -116,7 +116,7 @@ We instantiate each component:
     \item \textbf{CanItShip: Agentic DevX Metrics} (Section~\ref{sec:devx}). The final quality gate: eight metrics across two evaluation modes---shell-scripted checks (\textbf{Ls}) for deterministic properties and agentic evaluation (\textbf{Ra}) for autonomous operation and deployment readiness.
 \end{enumerate}
 
-\textbf{Validation.} We validate across Claude Code (primary, $n{=}47$) and Opencode+Sonnet ($n{=}22$) on Databricks data applications. On 47~Claude Code applications: 100\% build and type safety, 98\% runtime success, and 96\% local runability at \$1.61/app average. The trajectory analyzer identified improvements that we implemented and verified through multiple iterations.
+\textbf{Validation.} We validate across Claude Code (primary, $n{=}47$) and Opencode+Sonnet ($n{=}35$) on Databricks data applications. On 47~Claude Code applications: 100\% build and type safety, 98\% runtime success, and 96\% local runability at \$1.61/app average. The trajectory analyzer identified improvements that we implemented and verified through multiple iterations.
 
 %% ============================================================
 %% 2. INSTALLABLE DOMAIN KNOWLEDGE
@@ -224,19 +224,19 @@ Ra8 & Deployability & Validate bundle or config \\
   \draw[blue!70, thick]
     (90:2.2) -- (30:2.156) -- (-30:2.2) --
     (-90:1.32) -- (-150:2.156) -- (-210:2.112) -- cycle;
-  % --- Opencode+Sonnet (n=22, shell): orange, dashed ---
-  % Ls1=100, Ls2=82, Ls3=100, Ls4=68, Ls5=82, Ls6=100
+  % --- Opencode+Sonnet (n=35, shell): orange, dashed ---
+  % Ls1=100, Ls2=80, Ls3=94, Ls4=77, Ls5=80, Ls6=91
   \fill[orange!20, opacity=0.5]
-    (90:2.2) -- (30:1.804) -- (-30:2.2) --
-    (-90:1.496) -- (-150:1.804) -- (-210:2.2) -- cycle;
+    (90:2.2) -- (30:1.76) -- (-30:2.068) --
+    (-90:1.694) -- (-150:1.76) -- (-210:2.002) -- cycle;
   \draw[orange!80, thick, dashed]
-    (90:2.2) -- (30:1.804) -- (-30:2.2) --
-    (-90:1.496) -- (-150:1.804) -- (-210:2.2) -- cycle;
+    (90:2.2) -- (30:1.76) -- (-30:2.068) --
+    (-90:1.694) -- (-150:1.76) -- (-210:2.002) -- cycle;
   % --- Legend ---
   \fill[blue!70] (3.2,1.7) rectangle (3.5,1.9);
   \node[font=\footnotesize, anchor=west] at (3.6, 1.8) {Claude ($n{=}47$)};
   \draw[orange!80, thick, dashed] (3.2,1.05) -- (3.5,1.05);
-  \node[font=\footnotesize, anchor=west] at (3.6, 1.05) {Opencode ($n{=}22$)};
+  \node[font=\footnotesize, anchor=west] at (3.6, 1.05) {Opencode ($n{=}35$)};
 \end{tikzpicture}
 \caption{Shell-scripted metric profiles (Ls1--Ls6). Both agents achieve near-perfect build and type-check scores; the main gap is Ls4 (tests) and Ls5 (UI). Agentic metrics (Ra7--Ra8) evaluated on a subset are in Table~\ref{tab:agentic}.}
 \label{fig:radar}
@@ -250,7 +250,25 @@ Ra8 & Deployability & Validate bundle or config \\
 \section{Results}
 \label{sec:results}
 
-We evaluated 47~Databricks applications spanning dashboards, analytics tools, and business intelligence interfaces, generated from natural language prompts using Claude Code with CLI-based tool orchestration. Shell-scripted metrics (Ls1--Ls6) were evaluated using deterministic build, runtime, type-check, test, UI, and HTTP probe commands with a 3-trial majority protocol for Ls6.
+\textbf{Prompt sets and coverage.} Two disjoint prompt sets were given to both agents under identical conditions (Table~\ref{tab:coverage}). Shell-scripted checks (Ls1--Ls6) ran on both agents to measure how the harness interacts with each backend. Agentic checks (Ra7--Ra8) ran on Opencode Set~1 apps only; 9 were excluded because generation quality was already poor (no entry points, incomplete scaffolds).
+
+\begin{table}[t]
+\caption{Dataset coverage. Set~1: 20 generic analytics prompts (churn, RFM, warehouse). Set~2: 30 Databricks-specific prompts (property search, bookings, parts). Generation failures produced only metadata with no source code.}
+\label{tab:coverage}
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+& \textbf{Gen.} & \textbf{Gen.~fail} & \textbf{Ls eval} & \textbf{Ra eval} \\
+\midrule
+Claude (Set 1+2)   & 49/50 & 1 & 47 & --- \\
+Opencode (Set 2)   & 28/30 & 2 & 22 & --- \\
+Opencode (Set 1)   & 18/20 & 2 & 13 & 11 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Shell-scripted metrics (Ls1--Ls6) were evaluated using deterministic build, runtime, type-check, test, UI, and HTTP probe commands with a 3-trial majority protocol for Ls6.
 
 \begin{table}[t]
 \caption{Shell-scripted evaluation (Ls metrics, $n{=}47$ Claude Code apps).}
@@ -279,10 +297,10 @@ DevX & Ls6: Runability & 45/47 (96\%) \\
 
 The 100\% build and type-safety rates across all 47~apps confirm that Claude Code with installable domain knowledge produces structurally sound applications. Ls2 (runtime) and Ls5 (UI) each achieve 98\%, with a single app failing to respond on the healthcheck endpoint. Ls6 (runability) reaches 96\% under the 3-trial majority protocol. Ls4 (tests) shows 60\%, as 19~apps' test suites contain integration tests that require a live database connection unavailable in local evaluation.
 
-\textbf{Multi-agent comparison.} To validate agent-agnosticism, we ran the same shell-scripted harness on 22~applications generated by Opencode with Sonnet (Table~\ref{tab:multiagent}). Both agents achieve 100\% build (Ls1) and type safety (Ls3); the divergence appears on runtime, UI, and DevX metrics. Claude Code's 98\% runtime and 96\% runability versus Opencode's 82\% runtime and 100\% runability reflects architectural differences: Node.js apps (Claude) have more complex startup sequences but consistent healthcheck patterns, while Python/Streamlit apps (Opencode) start faster but 4~apps fail the HTTP healthcheck due to CLI-only entry points.
+\textbf{Multi-agent comparison.} To validate agent-agnosticism, we ran the same shell-scripted harness on 35~Opencode+Sonnet applications across both prompt sets (Table~\ref{tab:multiagent}). Both agents achieve 100\% build (Ls1); divergence appears on runtime, UI, and DevX metrics. Claude Code's 98\% runtime versus Opencode's 80\% reflects architectural differences: Node.js apps (Claude) have complex startup sequences but consistent healthcheck patterns, while Python/Streamlit apps (Opencode) start faster but 7~apps fail the HTTP healthcheck due to CLI-only or non-standard entry points.
 
 \begin{table}[h]
-\caption{Multi-agent shell-scripted (Ls) comparison: Claude ($n{=}47$) vs Opencode ($n{=}22$).}
+\caption{Multi-agent shell-scripted (Ls) comparison: Claude ($n{=}47$) vs Opencode ($n{=}35$).}
 \label{tab:multiagent}
 \centering
 \small
@@ -291,11 +309,11 @@ The 100\% build and type-safety rates across all 47~apps confirm that Claude Cod
 \textbf{Metric} & \textbf{Claude} & \textbf{Opencode} & \textbf{$\Delta$} \\
 \midrule
 Ls1: Build & 100\% & 100\% & 0 \\
-Ls2: Runtime & 98\% & 82\% & +16 \\
-Ls3: Types & 100\% & 100\% & 0 \\
-Ls4: Tests & 60\% & 68\% & $-$8 \\
-Ls5: UI & 98\% & 82\% & +16 \\
-Ls6: Runability & 96\% & 100\% & $-$4 \\
+Ls2: Runtime & 98\% & 80\% & +18 \\
+Ls3: Types & 100\% & 94\% & +6 \\
+Ls4: Tests & 60\% & 77\% & $-$17 \\
+Ls5: UI & 98\% & 80\% & +18 \\
+Ls6: Runability & 96\% & 91\% & +5 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -319,7 +337,7 @@ Ra8: Deployability & 4/11 & 36\% & Missing deploy config \\
 
 Ra7 passed at 73\%, lower than shell-scripted Ls6 (100\% on the same apps), confirming that autonomous discovery is harder than scripted probes. Ra8 failures stemmed from apps lacking deployment configuration entirely.
 
-\textbf{Ls6 runability variance.} The 3-trial shell-scripted protocol for Ls6 reveals non-determinism from timing and port contention. For Claude Code ($n{=}47$), 38~apps passed all 3 trials, 7~apps passed 2/3, and 2~apps passed 0/3, yielding 96\% under the majority criterion. For Opencode ($n{=}22$), 17~apps passed all 3 trials and 5~apps passed 2/3, yielding 100\%. This variance---even in deterministic scripts---demonstrates why multi-trial protocols are essential for evaluation metrics involving process startup and network probes.
+\textbf{Ls6 runability variance.} The 3-trial shell-scripted protocol for Ls6 reveals non-determinism from timing and port contention. For Claude Code ($n{=}47$), 38~apps passed all 3 trials, 7~apps passed 2/3, and 2~apps passed 0/3, yielding 96\% under the majority criterion. For Opencode ($n{=}35$), 24~apps passed all 3 trials, 8~apps passed 2/3, and 3~apps passed 0/3, yielding 91\%. This variance---even in deterministic scripts---demonstrates why multi-trial protocols are essential for evaluation metrics involving process startup and network probes.
 
 %% --- Two-panel radar: Claude aggregate + Opencode 3-trial (8 axes) ---
 \begin{figure}[t]
@@ -372,31 +390,31 @@ Ra7 passed at 73\%, lower than shell-scripted Ls6 (100\% on the same apps), conf
   \node[font=\tiny\bfseries] at (-90:2.7) {Ls4};
   \node[font=\tiny\bfseries] at (-150:2.7) {Ls5};
   \node[font=\tiny\bfseries] at (-210:2.7) {Ls6};
-  % --- Opencode (n=22, shell): 3-trial Ls6 variance ---
+  % --- Opencode (n=35, shell): 3-trial Ls6 variance ---
   % All Ls metrics identical across trials; Ls6 at -210° varies
-  % Trial 1: Ls6=95% → -210:2.09 (solid teal)
+  % Trial 1: Ls6=89% → -210:1.958 (solid teal)
   \fill[teal!15, opacity=0.4]
-    (90:2.2) -- (30:1.804) -- (-30:2.2) --
-    (-90:1.496) -- (-150:1.804) -- (-210:2.09) -- cycle;
+    (90:2.2) -- (30:1.76) -- (-30:2.068) --
+    (-90:1.694) -- (-150:1.76) -- (-210:1.958) -- cycle;
   \draw[teal!70, thick]
-    (90:2.2) -- (30:1.804) -- (-30:2.2) --
-    (-90:1.496) -- (-150:1.804) -- (-210:2.09) -- cycle;
-  % Trial 2: Ls6=82% → -210:1.804 (dashed violet)
+    (90:2.2) -- (30:1.76) -- (-30:2.068) --
+    (-90:1.694) -- (-150:1.76) -- (-210:1.958) -- cycle;
+  % Trial 2: Ls6=80% → -210:1.76 (dashed violet)
   \fill[violet!15, opacity=0.4]
-    (90:2.2) -- (30:1.804) -- (-30:2.2) --
-    (-90:1.496) -- (-150:1.804) -- (-210:1.804) -- cycle;
+    (90:2.2) -- (30:1.76) -- (-30:2.068) --
+    (-90:1.694) -- (-150:1.76) -- (-210:1.76) -- cycle;
   \draw[violet!70, thick, dashed]
-    (90:2.2) -- (30:1.804) -- (-30:2.2) --
-    (-90:1.496) -- (-150:1.804) -- (-210:1.804) -- cycle;
-  % Trial 3: Ls6=86% → -210:1.892 (dotted orange)
+    (90:2.2) -- (30:1.76) -- (-30:2.068) --
+    (-90:1.694) -- (-150:1.76) -- (-210:1.76) -- cycle;
+  % Trial 3: Ls6=83% → -210:1.826 (dotted orange)
   \fill[orange!15, opacity=0.4]
-    (90:2.2) -- (30:1.804) -- (-30:2.2) --
-    (-90:1.496) -- (-150:1.804) -- (-210:1.892) -- cycle;
+    (90:2.2) -- (30:1.76) -- (-30:2.068) --
+    (-90:1.694) -- (-150:1.76) -- (-210:1.826) -- cycle;
   \draw[orange!70, thick, dotted]
-    (90:2.2) -- (30:1.804) -- (-30:2.2) --
-    (-90:1.496) -- (-150:1.804) -- (-210:1.892) -- cycle;
+    (90:2.2) -- (30:1.76) -- (-30:2.068) --
+    (-90:1.694) -- (-150:1.76) -- (-210:1.826) -- cycle;
 \end{tikzpicture}\\[1mm]
-{\scriptsize (b) Opencode ($n{=}22$, 3 Ls6 trials)}
+{\scriptsize (b) Opencode ($n{=}35$, 3 Ls6 trials)}
 \end{minipage}
 \\[2mm]
 \begin{tikzpicture}
@@ -407,7 +425,7 @@ Ra7 passed at 73\%, lower than shell-scripted Ls6 (100\% on the same apps), conf
   \draw[orange!70, thick, dotted] (3.0,0) -- (3.3,0);
   \node[font=\scriptsize, anchor=west] at (3.35, 0) {Trial 3};
 \end{tikzpicture}
-\caption{Detailed metric profiles. (a)~Claude Code ($n{=}47$): 100\% build/types, 98\% runtime/UI, 96\% Ls6 runability. (b)~Opencode ($n{=}22$): three Ls6 trial-level aggregates show variance (95\%/82\%/86\%) from timing and port contention.}
+\caption{Detailed metric profiles. (a)~Claude Code ($n{=}47$): 100\% build/types, 98\% runtime/UI, 96\% Ls6 runability. (b)~Opencode ($n{=}35$): three Ls6 trial-level aggregates show variance (89\%/80\%/83\%) from timing and port contention.}
 \label{fig:trials}
 \end{figure}
 
@@ -455,7 +473,7 @@ Retries on errors & Unclear messages & Added contextual error params \\
 
 \textbf{Toward automatic optimization.} Our loop is currently semi-automatic: the analyzer outputs recommendations, a human reviews them. Since recommendations target tool descriptions and prompts, techniques like GEPA~\cite{gepa2025} and DSPy~\cite{khattab2023dspy} could potentially close the loop without human intervention.
 
-\textbf{Limitations.} \emph{External validity:} We validate on Databricks; the harness is platform-independent but domain packages require adaptation. \emph{Internal validity:} Shell metrics cover $n{=}47$ Claude and $n{=}22$ Opencode apps; agentic metrics cover $n{=}11$. Scaling to 100+ is planned. \emph{Construct validity:} Even deterministic scripts exhibit timing variance (Figure~\ref{fig:trials}); multi-trial protocols are essential. The feedback loop is demonstrated via case studies (Table~\ref{tab:improvements}); longitudinal quantification is planned.
+\textbf{Limitations.} \emph{External validity:} We validate on Databricks; the harness is platform-independent but domain packages require adaptation. \emph{Internal validity:} Shell metrics cover $n{=}47$ Claude and $n{=}35$ Opencode apps; agentic metrics cover $n{=}11$. Scaling to 100+ is planned. \emph{Construct validity:} Even deterministic scripts exhibit timing variance (Figure~\ref{fig:trials}); multi-trial protocols are essential. The feedback loop is demonstrated via case studies (Table~\ref{tab:improvements}); longitudinal quantification is planned.
 
 %% ============================================================
 %% 8. CONCLUSION
@@ -463,7 +481,7 @@ Retries on errors & Unclear messages & Added contextual error params \\
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented a feedback loop for iterative improvement of agent tooling: installable domain knowledge, an agentic trajectory analyzer, and CanItShip Agentic DevX metrics. Using shell-scripted (Ls) and agentic (Ra) evaluation across 69~Databricks applications and two agent backends (Claude Code $n{=}47$, Opencode+Sonnet $n{=}22$), we achieve 100\% build and type safety, 98\% runtime success, and 96\% local runability at \$1.61/app. Agentic evaluation on a subset ($n{=}11$) shows 73\% agentic runability and 36\% deployability, with failures traceable to missing deployment manifests. The trajectory analyzer identified concrete improvements that we implemented and verified. When agents fail, improve their environment rather than the agents themselves. The evaluation harness, trajectory analyzer, 50-prompt benchmark, and anonymized artifacts are released under the MIT license.
+We presented a feedback loop for iterative improvement of agent tooling: installable domain knowledge, an agentic trajectory analyzer, and CanItShip Agentic DevX metrics. Using shell-scripted (Ls) and agentic (Ra) evaluation across 82~Databricks applications and two agent backends (Claude Code $n{=}47$, Opencode+Sonnet $n{=}35$), we achieve 100\% build and type safety, 98\% runtime success, and 96\% local runability at \$1.61/app. Agentic evaluation on a subset ($n{=}11$) shows 73\% agentic runability and 36\% deployability, with failures traceable to missing deployment manifests. The trajectory analyzer identified concrete improvements that we implemented and verified. When agents fail, improve their environment rather than the agents themselves. The evaluation harness, trajectory analyzer, 50-prompt benchmark, and anonymized artifacts are released under the MIT license.
 
 %%
 %% Acknowledgments
