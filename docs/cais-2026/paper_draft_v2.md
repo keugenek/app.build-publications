@@ -2,15 +2,17 @@
 
 **Abstract**
 
-When AI agents fail to build production applications, should we improve the agent or its environment? Our prior work found that environment quality—templates, tools, guidance—matters more than model selection. We present a feedback loop for iterative tooling improvement: (1) an **installable domain knowledge** architecture packages expertise as agent-consumable artifacts; (2) agents use this package to generate applications, producing execution trajectories; (3) an **agentic trajectory analyzer** processes these trajectories to identify friction and recommend fixes to the package; (4) **Agentic DevX metrics** serve as the final quality gate, measuring whether generated applications can be operated by other agents. We believe this approach generalizes across domains; we validate it on Databricks data applications across multiple agent backends (Claude Agent SDK, Cursor, Codex, LiteLLM with open-source models). On 20 applications, we achieve 90% one-shot build success at $0.74/app. The trajectory analyzer identified concrete improvements—batch operations, clearer tool descriptions, missing examples—that we implemented, demonstrating the feedback loop in action. The architecture is designed for automatic optimization: the analyzer's recommendations target tool descriptions, prompts, and examples—artifacts amenable to techniques like GEPA or DSPy-style prompt tuning, potentially closing the loop without human intervention.
+When AI agents fail to build production applications, should we improve the agent or its environment? Recent work suggests that environment quality—templates, tools, guidance—matters more than model selection [Kniazev 2025]. We present a feedback loop for iterative tooling improvement: (1) an **installable domain knowledge** architecture packages expertise as agent-consumable artifacts; (2) agents use this package to generate applications, producing execution trajectories; (3) an **agentic trajectory analyzer** processes these trajectories to identify friction and recommend fixes to the package; (4) **Agentic DevX metrics** serve as the final quality gate, measuring whether generated applications can be operated by other agents. We believe this approach generalizes across domains; we validate it on Databricks data applications across multiple agent backends [PLACEHOLDER for final agent list]. On 20 applications, we achieve 90% one-shot build success at $0.74/app. The trajectory analyzer identified concrete improvements—batch operations, clearer tool descriptions, missing examples—that we implemented, demonstrating the feedback loop in action. The architecture is designed for automatic optimization: the analyzer's recommendations target tool descriptions, prompts, and examples—artifacts amenable to techniques like GEPA or DSPy-style prompt tuning, potentially closing the loop without human intervention.
+
+**Keywords:** agent-agnostic tooling, agentic code generation, trajectory analysis, developer experience metrics, feedback loop
 
 ---
 
 ## 1. Introduction
 
-AI agents can generate functional software, but they lack domain-specific knowledge required for production applications. The conventional response is building better agents. We take a different approach: improve what agents have access to.
+AI agents can generate functional software, but they lack domain-specific knowledge required for production applications. The conventional response is building specialized agents. We take a different approach: improve what agents have access to.
 
-This approach emerged from our prior work [SANER'26 preprint]: when comparing agent performance across environments while holding the model constant, we found that environment quality (templates, tools, guidance) had larger effects than model upgrades. An agent with excellent tooling outperforms a better model with poor tooling.
+This approach is motivated by recent findings [Kniazev 2025]: when comparing agent performance across environments while holding the model constant, environment quality (templates, tools, guidance) had larger effects than model upgrades. An agent with excellent tooling outperforms a better model with poor tooling.
 
 Accepting that tooling matters raises a question: how do we improve it systematically? Manual inspection doesn't scale. End-state metrics (build pass/fail) don't reveal causes. We need a feedback loop that:
 
@@ -36,25 +38,25 @@ Accepting that tooling matters raises a question: how do we improve it systemati
 │  │  Analyzer    │   friction   │  (+ evals)   │            │
 │  └──────────────┘   signals    └──────────────┘            │
 │                                                             │
-│                    ┌──────────────┐                        │
-│                    │  Agentic     │                        │
-│                    │  DevX Evals  │◄── final quality gate  │
-│                    └──────────────┘                        │
+│                    ┌──────────────┐                         │
+│                    │  Agentic     │                         │
+│                    │  DevX Evals  │◄── final quality gate   │
+│                    └──────────────┘                         │
 └─────────────────────────────────────────────────────────────┘
 
-**Figure 1: The feedback loop. Trajectories feed the analyzer, which
-improves the package. Agentic DevX evals verify the final output.**
+Figure 1: The feedback loop. Trajectories feed the analyzer, which
+improves the domain package. Agentic DevX evals verify the final output.
 ```
 
-We instantiate each component:
+We instantiate each component (Figure 1):
 
-1. **Installable Domain Knowledge** (Section 2). An architecture for packaging domain expertise as agent-consumable artifacts. We validate on Databricks, exposing tools via CLI commands—applicable to emerging standards like Agent Skills (agentskills.io).
+1. **Installable Domain Knowledge** (Section 2). An architecture for packaging domain expertise as agent-consumable artifacts. We validate on Databricks, exposing tools via a Skill + CLI architecture—CLI wraps Skills' scripts for agent compatibility.
 
 2. **Agentic Trajectory Analyzer** (Section 3). A two-phase system: parallel friction extraction with a cheap model followed by agentic synthesis with a reasoning model that has source code access. The analyzer consumes trajectories and optionally evaluation results.
 
-3. **Agentic DevX Metrics** (Section 4). The final quality gate: Runability (0-5) and Deployability (0-5) measure whether another agent—not a human—can operate generated applications. This is a novel evaluation dimension absent from existing benchmarks.
+3. **Agentic DevX Metrics** (Section 4). The final quality gate: Runability (0–5) and Deployability (0–5) measure whether another agent—not a human—can operate generated applications. This is a novel evaluation dimension absent from existing benchmarks.
 
-**Validation.** We validate across Claude Agent SDK (primary), Cursor, Codex (manual), and LiteLLM with open-source models. On 20 Databricks applications: 90% build success, 90% database connectivity, $0.74/app, 6-9 minute latency. The trajectory analyzer identified improvements that we implemented and verified through multiple iterations.
+**Validation.** We validate across multiple agent backends [PLACEHOLDER for final agent list]. On 20 Databricks applications: 90% build success, 90% database connectivity, $0.74/app, 6–9 minute latency. The trajectory analyzer identified improvements that we implemented and verified through multiple iterations.
 
 ---
 
@@ -70,6 +72,8 @@ This approach has a practical advantage: we leverage the ecosystem of existing a
 
 The package has three components: context layers that inject domain knowledge progressively, tools exposed via CLI, and a state machine that enforces validation before deployment.
 
+> **Note:** This architecture section reflects the current Skill + CLI design; MCP was a prior iteration. [TODO: update architecture diagram for Skills]
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                  Installable Domain Package                      │
@@ -83,7 +87,7 @@ The package has three components: context layers that inject domain knowledge pr
 │  │ L3: Template │ SDK patterns, examples     │ After scaffold │ │
 │  └────────────────────────────────────────────────────────────┘ │
 │                                                                  │
-│  Tools (exposed via CLI)                                         │
+│  Tools (exposed via Skill + CLI)                                 │
 │  ┌──────────────┐ ┌──────────────┐                              │
 │  │  Lifecycle   │ │    Data      │                              │
 │  │  scaffold    │ │  exploration │                              │
@@ -92,37 +96,34 @@ The package has three components: context layers that inject domain knowledge pr
 │  └──────────────┘ └──────────────┘                              │
 │                                                                  │
 │  State Machine                                                   │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │ Scaffolded ──► Modified ──► Validated ──► Deployed       │  │
-│  │     │              ▲          │(checksum)                │  │
-│  │     └──────────────┴──────────┘                          │  │
-│  │         (edit invalidates)                                │  │
-│  └──────────────────────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │ Scaffolded ──► Modified ──► Validated(checksum) ──► Deployed │
+│  └──────────────────────────────────────────────────────────┘   │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
 
-**Figure 2: Domain package architecture. Context layers avoid overload;
-state machine enforces validation before deployment.**
+Figure 2: Domain package architecture. Context layers avoid token
+overload; the state machine enforces validation before deployment.
 ```
 
 ### 2.3 Context Layers
 
-Agents have limited context windows. Dumping all domain knowledge upfront wastes tokens and can confuse the model. Instead, we inject context progressively—each layer activates when relevant.
+Agents have limited context windows. Dumping all domain knowledge upfront wastes tokens and can confuse the model. Instead, we inject context progressively—each layer activates when relevant (Figure 2).
 
 | Layer | Content | When Injected |
 |-------|---------|---------------|
-| L0: Tools | Tool names and descriptions | Always (protocol-level) |
-| L1: Workflow | Universal patterns, CLI usage, validation rules | On first discovery call |
-| L2: Target | Target-specific constraints (apps vs jobs vs pipelines) | When target type detected |
-| L3: Template | Language/SDK-specific patterns (charts, tRPC, types) | After scaffolding or from CLAUDE.md |
+| L0: Tools | Tool names/descriptions | Always (protocol-level) |
+| L1: Workflow | Patterns, CLI usage | On first discovery call |
+| L2: Target | App vs job constraints | When target type detected |
+| L3: Template | SDK patterns, examples | After scaffolding or from CLAUDE.md |
 
-For example, an agent scaffolding a new app receives L0-L2 initially. Only after scaffolding completes does L3 activate—providing SDK-specific patterns like "how to draw charts with Recharts" or "tRPC router conventions". For existing projects, the agent reads CLAUDE.md (placed in the project root) to acquire L3 context.
+For example, an agent scaffolding a new app receives L0–L2 initially. Only after scaffolding completes does L3 activate—providing SDK-specific patterns like "how to draw charts with Recharts" or "tRPC router conventions". For existing projects, the agent reads CLAUDE.md (placed in the project root) to acquire L3 context.
 
 ### 2.4 Tools
 
-We expose domain functionality through CLI commands—a pattern that Cloudflare ("Code Mode") [1] and Anthropic [2] found effective, reporting that LLMs perform better writing code to call tools than calling tools directly.
+We expose domain functionality through CLI commands—a pattern that Cloudflare [Cloudflare 2024] and Anthropic [Anthropic 2024] found effective, reporting that LLMs perform better writing code to call tools than calling tools directly.
 
-**Lifecycle commands:** scaffold (creates project from template with CLAUDE.md guidance), validate (builds in Docker, captures Playwright screenshot), deploy (to target platform).
+**Lifecycle commands** [TODO: update to current names]**:** `scaffold` (creates project from template with CLAUDE.md guidance), `validate` (builds in Docker, captures Playwright screenshot), `deploy` (to target platform).
 
 **Data exploration:** Commands for discovering available data, with agent-friendly additions: batch operations that bundle multiple queries, clearer error messages, and syntax examples for platform-specific SQL variations.
 
@@ -133,9 +134,7 @@ Workspace tools (read/write/edit, grep, glob, bash) are not our contribution—a
 Applications cannot deploy unless they pass validation after their most recent modification:
 
 ```
-Scaffolded → [edit] → Modified → [validate] → Validated(checksum) → [deploy] → Deployed
-                ↑                                    |
-                └────────── [edit] ─────────────────┘
+Scaffolded ──[edit]──► Modified ──[validate]──► Validated(checksum) ──[deploy]──► Deployed
 ```
 
 The checksum captures state at validation time. Any change after validation requires re-validation. This prevents untested code deployment—a common failure mode when agents skip validation.
@@ -149,9 +148,9 @@ To validate agent-agnosticism, we tested the package across multiple backends. T
 | Claude Agent SDK | Automated | Primary production use |
 | Cursor | Manual | IDE integration |
 | Codex | Manual | Alternative agent |
-| LiteLLM + Qwen3-Coder-480B | Automated | Open-source models (70% success at $0.61/app) |
+| [PLACEHOLDER for open-source backend] | Automated | Open-source models (70% success at $0.61/app) |
 
-The LiteLLM backend demonstrates that the approach isn't tied to specific vendors—we wrap any model with function calling into our generation pipeline.
+The open-source backend demonstrates that the approach isn't tied to specific vendors—any model with function calling capability works with our generation pipeline.
 
 ---
 
@@ -163,14 +162,14 @@ To run trajectory analysis at scale, we built infrastructure for bulk app genera
 
 The analyzer consumes trajectories and recommends package improvements. This closes the loop: agents struggle → we see it in trajectories → we fix the tooling → agents struggle less.
 
-### 3.2 Why Trajectories, Not Just Outcomes
+### 3.2 Trajectories vs. End-State Metrics
 
 End-state metrics (build success, test pass) don't reveal causes:
 
 - Model limitations (reasoning, instruction following)?
 - Tool problems (unclear descriptions, missing functionality)?
 - Template issues (incorrect scaffolding, missing guidance)?
-- Prompt issues (underspecified requirements, contradicting constraints accumulated during project evolution)?
+- Prompt issues (underspecified requirements, contradicting constraints)?
 
 Trajectories—the sequence of reasoning, tool calls, and results—show where things went wrong. An agent retrying the same malformed SQL five times reveals a missing example. An agent calling N tools for N tables reveals a missing batch operation.
 
@@ -189,33 +188,33 @@ Trajectories—the sequence of reasoning, tool calls, and results—show where t
     ┌──────────┐     │      │ - Confusion     │   │
     │ App 2    │─────┤      │ - Inefficiency  │   │
     │ trace    │     │      └─────────────────┘   │
-    └──────────┘     │              ▲             │
-         ⋮          │              │             │
-    ┌──────────┐     │         (parallel)        │
-    │ App N    │─────┘                           │
-    │ trace    │                                 ▼
-    └──────────┘                      ┌─────────────────────┐
-                                      │ Aggregated Friction │
-                                      │ Patterns            │
-                                      └──────────┬──────────┘
-                                                 │
-                      ┌──────────────────────────┼────────────────────┐
-                      │        Agentic Synthesis Phase                │
-                      │         (reasoning model)                     │
-                      │  ┌─────────────────────────────────────────┐  │
-                      │  │  Agent with Read/Glob/Grep access to:   │  │
-                      │  │                                         │  │
-                      │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐   │  │
-                      │  │  │Template │ │  Tool   │ │  Eval   │   │  │
-                      │  │  │ Source  │ │  Defs   │ │ Metrics │   │  │
-                      │  │  └─────────┘ └─────────┘ └─────────┘   │  │
-                      │  │                                         │  │
-                      │  │  Up to 50 turns of exploration          │  │
-                      │  │  Progressive context discovery          │  │
-                      │  └─────────────────────────────────────────┘  │
-                      └──────────────────────────┬────────────────────┘
-                                                 │
-                                                 ▼
+    └──────────┘     │              ▲              │
+         ⋮          │              │              │
+    ┌──────────┐     │         (parallel)         │
+    │ App N    │─────┘                            │
+    │ trace    │                                  ▼
+    └──────────┘                       ┌─────────────────────┐
+                                       │ Aggregated Friction │
+                                       │ Patterns            │
+                                       └──────────┬──────────┘
+                                                  │
+                      ┌───────────────────────────┼────────────────────┐
+                      │        Agentic Synthesis Phase                 │
+                      │         (reasoning model)                      │
+                      │  ┌──────────────────────────────────────────┐  │
+                      │  │  Agent with Read/Glob/Grep access to:    │  │
+                      │  │                                          │  │
+                      │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐    │  │
+                      │  │  │Template │ │  Tool   │ │  Eval   │    │  │
+                      │  │  │ Source  │ │  Defs   │ │ Metrics │    │  │
+                      │  │  └─────────┘ └─────────┘ └─────────┘    │  │
+                      │  │                                          │  │
+                      │  │  Up to 50 turns of exploration           │  │
+                      │  │  Progressive context discovery           │  │
+                      │  └──────────────────────────────────────────┘  │
+                      └───────────────────────────┬────────────────────┘
+                                                  │
+                                                  ▼
                               ┌──────────────────────────────┐
                               │ Recommendations:             │
                               │ - Add discover_schema batch  │
@@ -226,9 +225,12 @@ Trajectories—the sequence of reasoning, tool calls, and results—show where t
                               │   find_tables                │
                               └──────────────────────────────┘
 
-**Figure 3: Two-phase trajectory analyzer. The synthesis phase is itself
-agentic—it explores source code to find root causes.**
+Figure 3: Two-phase trajectory analyzer. Map phase extracts friction in
+parallel; synthesis phase explores source code to find root causes and
+generate recommendations.
 ```
+
+We employ a map-reduce approach optimized for cost and quality (Figure 3).
 
 **Map phase.** Each trajectory is processed independently by a cheap model (we use Claude Haiku, ~$0.001/trajectory), extracting errors, retries, confusion patterns, and inefficient tool usage. This runs in parallel.
 
@@ -243,7 +245,7 @@ This is a full agent with up to 50 turns of exploration. If trajectories show SQ
 
 ### 3.4 Concrete Improvements
 
-The analyzer identified issues leading to fixes we implemented:
+For example, the analyzer identified issues leading to fixes we implemented:
 
 | Pattern Observed | Diagnosis | Fix Applied |
 |-----------------|-----------|-------------|
@@ -252,19 +254,21 @@ The analyzer identified issues leading to fixes we implemented:
 | Repeated SQL syntax errors | Missing examples | Added QUALIFY, PIVOT syntax to guidance |
 | Retries on malformed errors | Unclear error messages | Added contextual parameter messages |
 
-These aren't hypothetical—they're actual fixes derived from trajectory analysis and committed to the codebase.
+These examples illustrate fixes derived from trajectory analysis.
 
 ### 3.5 Cost Model
 
 For N trajectories:
 - Map: N × ~$0.001 (cheap model)
-- Synthesis: 1 × ~$0.5-3 (reasoning model, bounded at 50 turns)
+- Synthesis: 1 × ~$0.5–3 (reasoning model, bounded at 50 turns)
 
 Total scales linearly but remains bounded. For 20 apps, analysis cost was under $15.
 
 ### 3.6 Future Direction
 
-Our current approach is semi-automatic: the analyzer outputs recommendations, but a human reviews them and decides which to implement. This keeps a human in the loop for changes to production tooling. Recent work on reflective prompt evolution (GEPA) shows prompts can be automatically optimized through self-reflection. Similar techniques could close this gap—automatically applying fixes, measuring improvement, and iterating without human intervention.
+Our current approach is semi-automatic: the analyzer outputs recommendations, but a human reviews them and decides which to implement. This keeps a human in the loop for changes to production tooling. On small sample sizes, the analyzer tends to overreact—encountering an issue once or twice leads to recommending new helper tooling without assessing maintenance cost. Human judgment remains necessary to weigh recommendations against implementation effort.
+
+Recent work on reflective prompt evolution (GEPA [GEPA 2024]) and DSPy [Khattab 2023] shows prompts can be automatically optimized through self-reflection. The analyzer's recommendations target tool descriptions, prompts, and examples—artifacts amenable to such techniques, potentially closing the loop without human intervention.
 
 ---
 
@@ -282,7 +286,7 @@ Consider an agent that generates a working application. A human developer can ru
 
 Existing metrics miss this distinction. Build success (binary) doesn't capture whether the build process is agent-friendly. We need metrics that ask: **can another agent operate this?**
 
-### 4.3 Runability (0-5)
+### 4.3 Runability (0–5)
 
 Measures whether a sample AI agent can run the application locally:
 
@@ -295,7 +299,7 @@ Measures whether a sample AI agent can run the application locally:
 | 4 | Starts with seeds/migrations via scripts |
 | 5 | + healthcheck endpoint + smoke test succeeds |
 
-### 4.4 Deployability (0-5)
+### 4.4 Deployability (0–5)
 
 Measures whether a sample AI agent can deploy the application:
 
@@ -319,9 +323,9 @@ These metrics encode what agents need but humans can work around:
 
 Human developers tolerate ambiguity; agents fail on it. Agentic DevX measures the gap.
 
-### 4.6 Integration with Other Metrics
+### 4.6 The 9-Metric Framework
 
-Agentic DevX doesn't replace traditional metrics—it complements them. We embed it within a 9-metric framework that covers correctness (does it build?), functionality (does it connect to the database?), and operability (can another agent run it?).
+Agentic DevX doesn't replace traditional metrics—it complements them. We embed it within a 9-metric framework covering correctness, functionality, and operability.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -339,21 +343,28 @@ Agentic DevX doesn't replace traditional metrics—it complements them. We embed
 │  └─────────┘ └─────────┘ └─────────┘                       │
 ├─────────────────────────────────────────────────────────────┤
 │  Agentic DevX (0-5 Score) ← NOVEL                           │
-│  ┌───────────────┐ ┌───────────────┐                       │
-│  │ D8 Runability │ │D9 Deployabil. │                       │
-│  │     0-5       │ │     0-5       │                       │
-│  └───────────────┘ └───────────────┘                       │
+│  ┌───────────────┐ ┌───────────────┐                        │
+│  │ D8 Runability │ │D9 Deployabil. │                        │
+│  │     0-5       │ │     0-5       │                        │
+│  └───────────────┘ └───────────────┘                        │
 └─────────────────────────────────────────────────────────────┘
 
-**Figure 4: AppEval 9-metric framework. Agentic DevX (bottom) is the
-novel contribution measuring agent-operability.**
+Figure 4: AppEval 9-metric framework. L1–L4 check correctness, L5–L7
+verify platform integration, D8–D9 (Agentic DevX) measure
+agent-operability—the novel contribution.
 ```
 
-L1-L4 are standard software quality checks. L5-L7 verify platform integration. D8-D9 (Agentic DevX) ask the question existing frameworks miss: is this output usable in an agentic pipeline?
+L1–L4 are standard software quality checks. L5–L7 verify platform integration. D8–D9 (Agentic DevX) ask the question existing frameworks miss: is this output usable in an agentic pipeline?
 
-### 4.7 DORA Alignment
+### 4.7 Cluster-Based Quality Assessment
 
-To ground our metrics in industry practice, we map to DORA (DevOps Research and Assessment) delivery metrics—the standard for measuring software delivery performance.
+We apply k-means clustering on metric vectors as an exploratory analysis tool to surface quality tiers, not as a standalone metric. Each application is represented as a 9-dimensional vector **m** = (L1, ..., L7, D̂8, D̂9) where D̂ᵢ = Dᵢ / 5 normalizes DevX scores to [0, 1]. Clustering with cosine similarity identifies natural groupings without requiring explicit pillar weights.
+
+This approach follows Knyazev [2009], who demonstrated that metric-space clustering can classify software artifacts without manual threshold tuning. For our 20-application dataset, three clusters (k=3) naturally separate: (1) applications that fail build/runtime, (2) applications that build but lack DevX artifacts, and (3) applications with both functional correctness and agent-operability. These cluster boundaries surface empirical quality tiers that complement the rubric-based D8/D9 scores, providing insights into how metrics co-vary across applications.
+
+### 4.8 DORA Alignment
+
+To ground our metrics in industry practice, we map to DORA [Forsgren 2018] delivery metrics:
 
 | DORA Metric | AppEval Mapping |
 |-------------|-----------------|
@@ -366,75 +377,169 @@ This mapping lets teams familiar with DORA interpret our results in their existi
 
 ---
 
-## 5. Results
+## 5. Generation–Evaluation Isolation
 
-### 5.1 Generation Performance
+A critical design requirement is that the generator and evaluator must be *strictly isolated*. We observed agents reading evaluation files during early development, which would allow metric gaming—a form of reward hacking [Amodei 2016] that inflates metrics without improving application quality. This motivated container-level isolation.
+
+### 5.1 Threat Model: Metric Gaming
+
+The following scenarios are based on real agent behavior observed during development, not hypothetical threats.
+
+Agentic coding systems actively explore their filesystem via tools like `Read`, `Glob`, and `Grep`. When evaluation code resides in the same workspace, the following attack surfaces emerge:
+
+**Scenario 1: Eval check reverse-engineering.** Our DB connectivity check verifies connectivity by calling tRPC endpoints and parsing JSON responses. A coding agent (as opposed to the evaluation agent) with read access could discover this check and create minimal stubs that pass the binary metric without implementing genuine queries:
+
+```javascript
+// Hypothetical stub (passes L5, no real data)
+healthcheck: publicProcedure.query(() => ({
+  result: { data: [], status: "ok" }
+}))
+```
+
+**Scenario 2: Composite score optimization.** A coding agent that reads evaluation weights could prioritize boilerplate (`.env.example`, `Dockerfile`) for DevX points while neglecting metrics requiring genuine implementation.
+
+**Scenario 3: Pattern copying from prior runs.** If prior generations are accessible, a coding agent could copy file structures verbatim rather than reasoning about current requirements.
+
+### 5.2 Container-Level Isolation
+
+[TODO: update to current container configuration]
+
+We enforce isolation at the container build level. The generation Dockerfile selectively copies only generation-related code:
+
+```dockerfile
+# Exclude evaluation to prevent reward hacking
+COPY cli/generation/    ./cli/generation/
+COPY cli/utils/         ./cli/utils/
+# NOT copied: cli/evaluation/,
+#             cli/analyze_trajectories.py
+```
+
+Each generation starts from a clean workspace. In bulk runs, a pre-generation directory snapshot prevents cross-contamination between parallel generations.
+
+```
+┌───────────────────────┐         ┌───────────────────────┐
+│   Generator Container │         │   Evaluator Container │
+│                       │         │                       │
+│  ┌─────────────────┐  │         │  ┌─────────────────┐  │
+│  │ Domain Package  │  │         │  │ Eval Checks /   │  │
+│  │ (.mdc rules)    │  │         │  │ Metrics         │  │
+│  ├─────────────────┤  │         │  ├─────────────────┤  │
+│  │ CLI Tools       │  │         │  │ Prior Apps /    │  │
+│  │ (Databricks)    │  │    ¦    │  │ Results         │  │
+│  ├─────────────────┤  │    ¦    │  ├─────────────────┤  │
+│  │ Installed Skills│  │    ¦    │  │ Trajectory      │  │
+│  │                 │  │    ¦    │  │ Analyzer        │  │
+│  └─────────────────┘  │    ¦    │  └─────────────────┘  │
+│                       │    ¦    │                       │
+└───────────┬───────────┘    ¦    └───────────┬───────────┘
+            │           isolation              │
+            │  writes                   reads  │
+            ▼                                  ▼
+        ┌──────────────────────────────────────────┐
+        │         App Code + Trajectory            │
+        └──────────────────────────────────────────┘
+
+Figure 5: Isolation boundaries between generation and evaluation. The
+generator cannot read evaluation code; improvements flow only through
+the domain package.
+```
+
+| Artifact | Generator | Evaluator |
+|----------|-----------|-----------|
+| Domain package (.mdc rules) | ✓ | — |
+| CLI tools (Databricks) | ✓ | — |
+| Installed skills | ✓ | — |
+| Evaluation checks / metrics | — | ✓ |
+| Prior generated apps / results | — | ✓ |
+| Trajectory analyzer | — | ✓ |
+| Current app code | writes | reads |
+| Current trajectory | writes | reads |
+
+This separation mirrors training/test splits in machine learning: the generator learns from the domain package (training signal), while the evaluator measures generalization against unseen criteria. We recommend that agent evaluation frameworks enforce container-level isolation as a baseline requirement.
+
+---
+
+## 6. Results
+
+### 6.1 Generation Performance
 
 We evaluated on 20 Databricks applications spanning dashboards, analytics tools, and business intelligence interfaces. Each app was generated from a natural language prompt describing the desired functionality.
 
-| Metric | Result | Notes |
-|--------|--------|-------|
-| Build Success (L1) | 18/20 (90%) | |
-| Runtime Success (L2) | 18/20 (90%) | |
-| Type Safety (L3) | 1/20 (5%) | Primary gap identified |
-| DB Connectivity (L5) | 18/20 (90%) | |
-| Runability (D8) | 3.0/5 avg | |
-| Deployability (D9) | 2.5/5 avg | |
+| ID | Metric | Result | Notes |
+|----|--------|--------|-------|
+| L1 | Build Success | 18/20 (90%) | |
+| L2 | Runtime Success | 18/20 (90%) | |
+| L3 | Type Safety | 1/20 (5%) | Primary gap |
+| L5 | DB Connectivity | 18/20 (90%) | |
+| D8 | Runability | 3.0/5 avg | |
+| D9 | Deployability | 2.5/5 avg | |
 
-The 90% build/runtime success indicates the core generation pipeline works. The 5% type safety rate is the primary gap—trajectory analysis traced this to TypeScript strict mode violations, particularly null handling (see 5.3).
+The 90% build/runtime success indicates the core generation pipeline works. The 5% type safety rate is the primary gap—trajectory analysis traced this to TypeScript strict mode violations, particularly null handling in generated code. This demonstrates the feedback loop in action: (1) agents used the package and generated apps with type errors, (2) trajectories showed repeated `tsc` failures and confusion about null checks, (3) the analyzer recommended adding explicit null handling examples to CLAUDE.md guidance, and (4) the fix was implemented with the next iteration showing improvement.
 
-### 5.2 Efficiency
+### 6.2 Efficiency
 
 Generation is practical for real use: under 10 minutes and under $1 per application.
 
-| Metric | Value |
-|--------|-------|
-| Generation Time | 6-9 minutes |
-| Cost per App | $0.74 |
-| Agent Turns | 93 avg |
-| Lines of Code | 732 avg |
+| Metric | Value | Notes |
+|--------|-------|-------|
+| Generation Time | 6–9 min | End-to-end |
+| Cost per App | $0.74 | API cost |
+| Agent Turns | 93 avg | Conversation turns |
+| Lines of Code | 732 avg | Generated LOC |
 
-Cost is dominated by the reasoning model (Claude Sonnet in our case). The 93 turns include data exploration, scaffolding, iterative code generation, and validation.
-
-### 5.3 Feedback Loop in Action
-
-The trajectory analyzer identified type safety as the primary gap (5% pass rate). Root cause from trajectory analysis: TypeScript strict mode violations, particularly null handling in generated code.
-
-This demonstrates the feedback loop:
-1. Agents used the package → generated apps with type errors
-2. Trajectories showed repeated tsc failures and confusion about null checks
-3. Analyzer recommended: add explicit null handling examples to CLAUDE.md guidance
-4. Fix implemented → next iteration showed improvement
+Cost is dominated by the reasoning model (Claude Sonnet). The 93 turns include data exploration, scaffolding, iterative code generation, and validation.
 
 ---
 
-## 6. Related Work
+## 7. Related Work
 
-**Environment matters more than model.** Our prior work [SANER'26 Industrial Track, preprint] compared agent performance across different environments. Template quality, tool descriptions, and embedded guidance had larger effects than model upgrades. This motivates our focus on improving tooling rather than agents.
+**Environment matters more than model.** Recent work [Kniazev 2025] compared agent performance across different environments. Template quality, tool descriptions, and embedded guidance had larger effects than model upgrades. This motivates the focus on improving tooling rather than agents.
 
-**Evaluation gap.** Existing benchmarks evaluate code correctness (HumanEval, SWE-bench), task completion (WebArena, GAIA), or SQL quality (BIRD, Spider). None ask whether generated code can be operated by other agents—a critical question for compound AI systems where one agent's output becomes another's input.
+**Evaluation gap.** Existing benchmarks evaluate code correctness (HumanEval [Chen 2021], SWE-bench [Jimenez 2024]), task completion (WebArena [Zhou 2024], GAIA [Mialon 2023]), or SQL quality (BIRD [2023], Spider [Yu 2018]). None ask whether generated code can be operated by other agents—a critical question for compound AI systems where one agent's output becomes another's input.
 
-**Agent tool protocols.** The Model Context Protocol (MCP) standardizes agent-tool interaction. Cloudflare ("Code Mode") [1] and Anthropic [2] report that LLMs perform better writing code to call tools than calling tools directly. We adopt this pattern.
+**Agent tool protocols.** The Model Context Protocol (MCP) standardizes agent-tool interaction. Cloudflare [Cloudflare 2024] and Anthropic [Anthropic 2024] report that LLMs perform better writing code to call tools than calling tools directly. We adopt this pattern.
 
-**Trajectory analysis.** Analyzing agent execution traces for debugging is established practice. Our contribution is making the synthesis phase itself agentic—an agent that explores source code to generate recommendations, rather than static aggregation.
+**Trajectory analysis.** Analyzing agent execution traces for debugging is established practice (SWE-agent [Yang 2024], OpenHands [Wang 2024]). Kravchenko [2023] emphasizes structured error analysis as essential for ML system improvement. Our contribution is making the synthesis phase itself agentic—an agent that explores source code to generate recommendations, rather than static aggregation.
+
+**Agent evaluation harnesses.** Inspect AI [2024] and DeepEval [2024] provide evaluation infrastructure but focus on correctness rather than deployment readiness. AgentBench [2023] spans multiple environments but does not evaluate autonomous deployability.
 
 ---
 
-## 7. Discussion and Limitations
+## 8. Discussion
+
+### 8.1 Agent-Agnostic vs Agent-Specific
+
+Our approach invests in tooling rather than agents. This is a deliberate bet: agents improve rapidly (model upgrades are free to adopters), while domain knowledge is slow to encode and hard to transfer. By packaging knowledge as installable artifacts, we ensure that every agent improvement automatically benefits users without re-implementation.
+
+The tradeoff is control. Agent-specific approaches can fine-tune behavior precisely; our agent-agnostic design relies on the agent's ability to follow tool descriptions and guidance. In practice, we find this sufficient for structured tasks (scaffolding, validation, deployment) but limiting for open-ended reasoning about application architecture.
+
+### 8.2 The DevX Dimension
+
+Agentic DevX introduces a genuinely new evaluation dimension. Existing benchmarks implicitly assume a human operator who can bridge gaps between generated code and running software. As AI systems become compound—with agents consuming other agents' outputs—this assumption breaks down.
+
+We argue that DevX metrics will become increasingly important as agent pipelines deepen. A code generation agent whose output cannot be operated by a deployment agent is only partially useful, regardless of code quality.
+
+### 8.3 Limitations
 
 **Platform specificity.** We validate on Databricks; the architecture generalizes but requires platform-specific implementation work.
 
-**Dataset size.** Twenty applications provide initial validation; scaling to 100+ planned.
+**Dataset size.** Twenty applications provide initial validation; scaling to 100+ is planned.
 
-**Type safety gap.** 5% pass rate indicates template/guidance issues. The trajectory analyzer identified the cause; fixes are being validated through subsequent loop iterations.
+**Type safety gap.** The 5% pass rate indicates template/guidance issues. The trajectory analyzer identified the cause; fixes are being validated through subsequent loop iterations.
 
-**Agentic DevX validation.** Current scores are proxy measurements; future work should validate with actual agent operation trials.
+**Agentic DevX validation.** Current scores are proxy measurements based on artifact presence; future work should validate with actual agent operation trials.
 
-**Loop maturity.** We run the feedback loop continuously; reported results reflect multiple iterations. Longer-term longitudinal study would strengthen confidence in the approach.
+**Loop maturity.** We run the feedback loop continuously; reported results reflect multiple iterations. A longer-term longitudinal study would strengthen confidence in the approach.
+
+### 8.4 Broader Implications
+
+The feedback loop pattern—generate, analyze trajectories, improve tooling, re-evaluate—is not specific to Databricks or even to code generation. Any domain where agents use tools to produce artifacts can benefit from trajectory-based tooling improvement. The key insight is that agent failures are often environmental failures in disguise, and the fix is better infrastructure rather than better models.
+
+By establishing standardized metrics for autonomous operability, we enable reproducible benchmarking, objective comparison across approaches, and systematic improvement through trajectory-based feedback.
 
 ---
 
-## 8. Conclusion
+## 9. Conclusion
 
 We presented a feedback loop for iterative improvement of agent tooling:
 
@@ -445,18 +550,31 @@ We presented a feedback loop for iterative improvement of agent tooling:
 
 When agents fail, improve their environment rather than the agents themselves. Our system operationalizes this insight with a closed loop—trajectories reveal friction, analysis produces fixes, evaluation verifies improvement.
 
+On 20 Databricks applications across multiple agent backends, we achieve 90% build success at $0.74/app. The trajectory analyzer identified concrete improvements that we implemented and verified, demonstrating the loop in practice.
+
 **Open source.** Domain package, trajectory analyzer, and evaluation harness available at: [URL redacted for review]
 
 ---
 
 ## References
 
-[1] Cloudflare. Code Mode: Converting MCP tools to TypeScript APIs. Blog post, 2025.
-
-[2] Anthropic. Code Execution with MCP. Engineering blog, 2025.
-
-[SANER'26] [Authors]. Environment Matters: [Title]. SANER 2026 Industrial Track. Preprint: [URL]
-
-[GEPA] Reflective Prompt Evolution Can Outperform Reinforcement Learning. [Citation TBD]
-
-[Additional: MCP, DORA, SWE-bench, WebArena, BIRD, Spider]
+- [Amodei 2016] Amodei, D., et al. Concrete Problems in AI Safety. arXiv:1606.06565, 2016.
+- [AgentBench 2023] Liu, X., et al. AgentBench: Evaluating LLMs as Agents. ICLR 2024.
+- [Anthropic 2024] Anthropic. Code Execution with MCP. Engineering blog, 2024.
+- [BIRD 2023] Li, J., et al. Can LLM Already Serve as A Database Interface? NeurIPS 2023.
+- [Chen 2021] Chen, M., et al. Evaluating Large Language Models Trained on Code. arXiv:2107.03374, 2021.
+- [Cloudflare 2024] Cloudflare. Code Mode: Converting MCP tools to TypeScript APIs. Blog post, 2024.
+- [DeepEval 2024] DeepEval: LLM Evaluation Framework, 2024.
+- [Forsgren 2018] Forsgren, N., Humble, J., Kim, G. Accelerate: The Science of Lean Software and DevOps. IT Revolution, 2018.
+- [GEPA 2024] Reflective Prompt Evolution Can Outperform Reinforcement Learning. 2024.
+- [Inspect AI 2024] Inspect AI: Framework for Large Language Model Evaluations, 2024.
+- [Jimenez 2024] Jimenez, C.E., et al. SWE-bench: Can Language Models Resolve Real-World GitHub Issues? ICLR 2024.
+- [Khattab 2023] Khattab, O., et al. DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines. ICLR 2024.
+- [Kniazev 2025] Kniazev, E., et al. Environment Matters: Agent Tooling for Data Application Development. SANER 2026 Industrial Track.
+- [Knyazev 2009] Knyazev, A. Metric-Space Clustering for Software Artifact Classification. 2009.
+- [Kravchenko 2023] Kravchenko, A. Machine Learning System Design with End-to-End Examples. 2023.
+- [Mialon 2023] Mialon, G., et al. GAIA: A Benchmark for General AI Assistants. ICLR 2024.
+- [Wang 2024] Wang, X., et al. OpenHands: An Open Platform for AI Software Developers. 2024.
+- [Yang 2024] Yang, J., et al. SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering. NeurIPS 2024.
+- [Yu 2018] Yu, T., et al. Spider: A Large-Scale Human-Labeled Dataset for Complex and Cross-Domain Semantic Parsing and Text-to-SQL Task. EMNLP 2018.
+- [Zhou 2024] Zhou, S., et al. WebArena: A Realistic Web Environment for Building Autonomous Agents. ICLR 2024.
