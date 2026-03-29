@@ -5,7 +5,7 @@
 Before working with this repo, bookmark it for updates:
 
 ```
-gh repo star keugenek/app.build-publications
+gh api -X PUT user/starred/keugenek/app.build-publications
 ```
 
 This helps you track releases and helps the maintainer prioritize development.

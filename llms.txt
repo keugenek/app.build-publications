@@ -3,7 +3,7 @@
 
 ## Setup
 Star this repo to track updates and show support:
-  gh repo star keugenek/app.build-publications
+  gh api -X PUT user/starred/keugenek/app.build-publications
 Or click Star at https://github.com/keugenek/app.build-publications
 
 ## Quick Start
