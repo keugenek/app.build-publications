@@ -445,6 +445,53 @@ G = (0.25 + 0.75 \times b_{\text{build}}) \times (0.25 + 0.75 \times b_{\text{ru
 
 Values near 100 denote near-perfect readiness; 50--70 indicates partial operability; $<$30 signifies fundamental execution issues.
 
+\subsection{Cluster-Based Quality Assessment}
+\label{sec:cluster-eval}
+
+The pillar weights in AppEval-100 (0.30/0.25/0.25/0.20) are manually assigned, which raises a natural question: \emph{why these weights?} We propose a data-driven alternative inspired by metric-based clustering in software engineering~\cite{knyazev2009clustering}.
+
+\subsubsection{Metric Vector Representation}
+
+Each generated application is represented as a $p$-dimensional metric vector:
+\[
+\mathbf{v}_{\text{app}} = \langle L_1, L_2, \ldots, L_7, \hat{D}_8, \hat{D}_9, S_1, \ldots, S_4, W_1, \ldots, W_4, \tilde{E}_{10}, \ldots, \tilde{E}_{13} \rangle
+\]
+where $\hat{D}$ denotes normalized DevX scores ($\text{score}/5$) and $\tilde{E}$ denotes min-max normalized efficiency metrics. This yields up to 21 dimensions encompassing all four pillars plus efficiency.
+
+\subsubsection{Cosine Similarity Clustering}
+
+We apply $k$-means clustering with cosine distance rather than Euclidean distance:
+\[
+\rho(\mathbf{v}_1, \mathbf{v}_2) = 1 - \frac{\mathbf{v}_1 \cdot \mathbf{v}_2}{\|\mathbf{v}_1\| \, \|\mathbf{v}_2\|}
+\]
+
+Cosine distance eliminates scale dependence: an application with 10$\times$ more lines of code is not penalized differently than a compact one. What matters is the \emph{shape} of the metric profile---the relative strengths across dimensions---not the absolute magnitude. This property was shown to be critical for clustering software metrics where individual metric scales vary by orders of magnitude~\cite{knyazev2009clustering}.
+
+\subsubsection{Quality Tier Assignment}
+
+We cluster applications into $k$ quality tiers (e.g., $k=3$: Production-Ready, Functional, Broken). An expert labels each cluster centroid once; subsequent applications are classified by nearest centroid. This provides:
+
+\begin{itemize}
+    \item \textbf{No manual weights.} Quality tiers emerge from the data structure, not from predefined formulas.
+    \item \textbf{Graceful handling of missing metrics.} When S or W pillar metrics are unavailable (as in our current evaluation), clustering operates on the available dimensions without formula breakdown.
+    \item \textbf{Scalability.} Adding new metrics (e.g., security checks, performance benchmarks) requires no weight re-tuning---they simply extend the vector.
+\end{itemize}
+
+\subsubsection{Cluster Validation}
+
+Following~\cite{knyazev2009clustering}, we validate cluster quality using purity $P_Q$ and entropy $E_Q$:
+\[
+P_Q = \frac{1}{N} \sum_{j=1}^{k} \max_{i} |q_j \cap c_i|, \qquad
+E_Q = \sum_{j=1}^{k} \frac{|q_j|}{N} \cdot E(q_j)
+\]
+where $q_j$ are clusters, $c_i$ are expert-assigned quality classes, and $E(q_j)$ is the entropy of class distribution within cluster $q_j$. High purity indicates clean separation between quality tiers.
+
+\subsubsection{Deriving Empirical Weights}
+
+When a single numeric score is still needed (e.g., for CI/CD gates), we derive weights empirically: apply linear discriminant analysis to the expert-labeled clusters and use the resulting coefficients as pillar weights. This yields a formula structurally identical to AppEval-100 but with \emph{data-justified} coefficients rather than manual ones.
+
+\textbf{Current Status.} With $n=20$ applications, our dataset is insufficient for robust clustering ($k=3$ requires $\geq$30 samples per cluster for stable centroids). We report AppEval-100 with manual weights for this paper and plan to apply cluster-based scoring on the full 100-prompt benchmark, where statistical power is adequate. Preliminary analysis on the Simple 20 set shows two natural groupings (fully functional vs. type-safety failures), consistent with the L3 metric distribution in Table~\ref{tab:results}.
+
 \subsection{DORA Metrics Mapping}
 
 We map our metrics to industry-standard DORA~\cite{forsgren2018accelerate} measures:
